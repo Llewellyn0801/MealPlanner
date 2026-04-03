@@ -1,6 +1,7 @@
+import json
 import random
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
@@ -16,12 +17,35 @@ templates = Jinja2Templates(
 )
 
 
-def generate_meal_plan(db: Session) -> dict[str, str]:
-    def pick_random(meal_type: str) -> str:
+def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
+    def parse_json_list(payload: str) -> list[str]:
+        parsed = json.loads(payload)
+        if isinstance(parsed, list):
+            return [str(item) for item in parsed]
+        return []
+
+    def pick_random(meal_type: str) -> dict[str, Any]:
         meals = db.query(Meal).filter(Meal.meal_type == meal_type).all()
         if not meals:
-            return "No meal available"
-        return cast(str, random.choice(meals).name)
+            return {
+                "name": "No meal available",
+                "description": "",
+                "image_url": None,
+                "ingredients": [],
+                "instructions": [],
+                "cooking_tips": "",
+            }
+        meal = random.choice(meals)
+        meal_ingredients = cast(str, meal.ingredients)
+        meal_instructions = cast(str, meal.instructions)
+        return {
+            "name": meal.name,
+            "description": meal.description,
+            "image_url": meal.image_url,
+            "ingredients": parse_json_list(meal_ingredients),
+            "instructions": parse_json_list(meal_instructions),
+            "cooking_tips": meal.cooking_tips or "",
+        }
 
     return {
         "breakfast": pick_random("breakfast"),

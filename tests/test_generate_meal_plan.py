@@ -23,9 +23,30 @@ def test_generate_meal_plan_returns_fallback_when_no_meals():
         db.close()
 
     assert plan == {
-        "breakfast": "No meal available",
-        "lunch": "No meal available",
-        "dinner": "No meal available",
+        "breakfast": {
+            "name": "No meal available",
+            "description": "",
+            "image_url": None,
+            "ingredients": [],
+            "instructions": [],
+            "cooking_tips": "",
+        },
+        "lunch": {
+            "name": "No meal available",
+            "description": "",
+            "image_url": None,
+            "ingredients": [],
+            "instructions": [],
+            "cooking_tips": "",
+        },
+        "dinner": {
+            "name": "No meal available",
+            "description": "",
+            "image_url": None,
+            "ingredients": [],
+            "instructions": [],
+            "cooking_tips": "",
+        },
     }
 
 
@@ -34,9 +55,34 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
     try:
         db.add_all(
             [
-                Meal(name="Eggs", meal_type="breakfast", is_high_protein=True),
-                Meal(name="Chicken Bowl", meal_type="lunch", is_high_protein=True),
-                Meal(name="Steak", meal_type="dinner", is_high_protein=True),
+                Meal(
+                    name="Eggs",
+                    meal_type="breakfast",
+                    is_high_protein=True,
+                    description="Simple scrambled eggs.",
+                    image_url="https://example.com/eggs.jpg",
+                    ingredients='["eggs"]',
+                    instructions='["Crack eggs into a bowl.", "Scramble in a pan."]',
+                    cooking_tips="Use low heat for soft curds.",
+                ),
+                Meal(
+                    name="Chicken Bowl",
+                    meal_type="lunch",
+                    is_high_protein=True,
+                    description="Chicken and rice bowl.",
+                    image_url=None,
+                    ingredients='["chicken", "rice"]',
+                    instructions='["Cook chicken.", "Serve over rice."]',
+                ),
+                Meal(
+                    name="Steak",
+                    meal_type="dinner",
+                    is_high_protein=True,
+                    description="Pan-seared steak.",
+                    image_url=None,
+                    ingredients='["steak", "salt"]',
+                    instructions='["Season steak.", "Sear each side."]',
+                ),
             ]
         )
         db.commit()
@@ -48,4 +94,29 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
     finally:
         db.close()
 
-    assert plan == {"breakfast": "Eggs", "lunch": "Chicken Bowl", "dinner": "Steak"}
+    assert plan == {
+        "breakfast": {
+            "name": "Eggs",
+            "description": "Simple scrambled eggs.",
+            "image_url": "https://example.com/eggs.jpg",
+            "ingredients": ["eggs"],
+            "instructions": ["Crack eggs into a bowl.", "Scramble in a pan."],
+            "cooking_tips": "Use low heat for soft curds.",
+        },
+        "lunch": {
+            "name": "Chicken Bowl",
+            "description": "Chicken and rice bowl.",
+            "image_url": None,
+            "ingredients": ["chicken", "rice"],
+            "instructions": ["Cook chicken.", "Serve over rice."],
+            "cooking_tips": "",
+        },
+        "dinner": {
+            "name": "Steak",
+            "description": "Pan-seared steak.",
+            "image_url": None,
+            "ingredients": ["steak", "salt"],
+            "instructions": ["Season steak.", "Sear each side."],
+            "cooking_tips": "",
+        },
+    }

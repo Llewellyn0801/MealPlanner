@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Text
 
 from meal_planner.database.session import Base
 
@@ -9,6 +9,12 @@ class Meal(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     meal_type = Column(String, nullable=False, index=True)
+    description = Column(String, nullable=False, default="")
+    image_url = Column(String, nullable=True)
+    ingredients = Column(Text, nullable=False, default="[]")
+    instructions = Column(Text, nullable=False, default="")
+    cooking_tips = Column(Text, nullable=True)
+    tags = Column(String, nullable=False, default="")
     is_carnivore = Column(Boolean, default=False)
     is_high_protein = Column(Boolean, default=False)
     is_kid_friendly = Column(Boolean, default=False)
