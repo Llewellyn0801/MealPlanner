@@ -100,6 +100,49 @@
             border: 1px solid #fed7aa;
             font-size: 14px;
         }
+        .grocery-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+        .grocery-section.hidden {
+            display: none;
+        }
+        .grocery-section h2 {
+            margin-top: 0;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        .grocery-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .grocery-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+        }
+        .grocery-list li:last-child {
+            border-bottom: none;
+        }
+        .grocery-list input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .grocery-list label {
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -151,9 +194,21 @@
             </article>
             {% endfor %}
         </section>
+
+        <div class="toolbar mt-20">
+            <button class="btn btn-primary" id="toggle-grocery-btn">Show Grocery List</button>
+        </div>
+
+        <section id="grocery-section" class="grocery-section hidden">
+            <h2>Grocery List</h2>
+            <ul class="grocery-list" id="grocery-list">
+            </ul>
+        </section>
     </main>
 
     <script>
+        let currentPlan = {{ plan | tojson | safe }};
+
         const toggleRecipe = (button) => {
             const details = button.parentElement.querySelector(".recipe-details");
             details.classList.toggle("hidden");
@@ -216,9 +271,60 @@
         document.getElementById("new-plan-btn").addEventListener("click", async () => {
             const response = await fetch("/plan");
             const plan = await response.json();
+            currentPlan = plan;
             renderMealCard("breakfast", plan.breakfast);
             renderMealCard("lunch", plan.lunch);
             renderMealCard("dinner", plan.dinner);
+
+            // Hide grocery list when generating a new plan
+            const grocerySection = document.getElementById("grocery-section");
+            const toggleGroceryBtn = document.getElementById("toggle-grocery-btn");
+            grocerySection.classList.add("hidden");
+            toggleGroceryBtn.textContent = "Show Grocery List";
+        });
+
+        document.getElementById("toggle-grocery-btn").addEventListener("click", async () => {
+            const btn = document.getElementById("toggle-grocery-btn");
+            const section = document.getElementById("grocery-section");
+            const isHidden = section.classList.contains("hidden");
+
+            if (isHidden) {
+                // Fetch grocery list based on current plan
+                const response = await fetch("/grocery-list", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(currentPlan)
+                });
+                const data = await response.json();
+
+                // Render list
+                const list = document.getElementById("grocery-list");
+                list.innerHTML = "";
+                data.grocery_list.forEach((item, index) => {
+                    const li = document.createElement("li");
+                    const checkboxId = `grocery-item-${index}`;
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = checkboxId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = checkboxId;
+                    label.textContent = item;
+
+                    li.appendChild(checkbox);
+                    li.appendChild(label);
+                    list.appendChild(li);
+                });
+
+                section.classList.remove("hidden");
+                btn.textContent = "Hide Grocery List";
+            } else {
+                section.classList.add("hidden");
+                btn.textContent = "Show Grocery List";
+            }
         });
     </script>
 </body>

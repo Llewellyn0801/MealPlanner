@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from meal_planner.database.session import Base
 from meal_planner.models.meal import Meal
-from meal_planner.routes.plan import generate_meal_plan
+from meal_planner.services.meal_engine import generate_meal_plan
 
 
 def _make_session():
@@ -88,7 +88,7 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
         db.commit()
 
         monkeypatch.setattr(
-            "meal_planner.routes.plan.random.choice", lambda meals: meals[0]
+            "meal_planner.services.meal_engine.random.choice", lambda meals: meals[0]
         )
         plan = generate_meal_plan(db)
     finally:

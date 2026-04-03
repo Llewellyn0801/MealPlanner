@@ -9,6 +9,7 @@ class Meal(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     meal_type = Column(String, nullable=False, index=True)
+    difficulty = Column(String, nullable=False, default="simple")
     description = Column(String, nullable=False, default="")
     image_url = Column(String, nullable=True)
     ingredients = Column(Text, nullable=False, default="[]")

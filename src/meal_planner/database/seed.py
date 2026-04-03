@@ -9,6 +9,7 @@ SEED_MEALS = [
     {
         "name": "Ground Beef & Eggs Bowl",
         "meal_type": "breakfast",
+        "difficulty": "simple",
         "description": "Savory, high-protein breakfast bowl ready in under 15 minutes.",
         "image_url": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
         "ingredients": [
@@ -16,7 +17,6 @@ SEED_MEALS = [
             "2 large eggs",
             "1 tsp butter",
             "1/4 tsp sea salt",
-            "1/8 tsp black pepper",
         ],
         "instructions": [
             "Heat a skillet over medium heat and melt the butter.",
@@ -33,6 +33,7 @@ SEED_MEALS = [
     {
         "name": "Greek Yogurt Berry Bowl",
         "meal_type": "breakfast",
+        "difficulty": "simple",
         "description": "Creamy, refreshing bowl with fiber and protein.",
         "image_url": "https://images.unsplash.com/photo-1488477181946-6428a0291777",
         "ingredients": [
@@ -55,6 +56,7 @@ SEED_MEALS = [
     {
         "name": "Spinach Cheese Omelette",
         "meal_type": "breakfast",
+        "difficulty": "simple",
         "description": "Fluffy omelette packed with greens and melty cheese.",
         "image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71",
         "ingredients": [
@@ -62,7 +64,6 @@ SEED_MEALS = [
             "1/2 cup spinach, chopped",
             "30g cheddar cheese, grated",
             "1 tsp olive oil",
-            "pinch of salt",
         ],
         "instructions": [
             "Whisk eggs with a pinch of salt.",
@@ -79,6 +80,7 @@ SEED_MEALS = [
     {
         "name": "Overnight Oats",
         "meal_type": "breakfast",
+        "difficulty": "simple",
         "description": "No-cook breakfast with balanced carbs and healthy fats.",
         "image_url": "https://images.unsplash.com/photo-1517673400267-0251440c45dc",
         "ingredients": [
@@ -104,12 +106,12 @@ SEED_MEALS = [
     {
         "name": "Chicken Salad Wrap",
         "meal_type": "lunch",
+        "difficulty": "simple",
         "description": "Light and filling wrap ideal for quick lunches.",
         "image_url": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783",
         "ingredients": [
             "150g cooked chicken breast, diced",
             "2 tbsp plain Greek yogurt",
-            "1 tsp lemon juice",
             "1 whole-wheat wrap",
             "1 cup lettuce",
         ],
@@ -130,6 +132,7 @@ SEED_MEALS = [
     {
         "name": "Tuna Avocado Bowl",
         "meal_type": "lunch",
+        "difficulty": "simple",
         "description": "Low-carb bowl with healthy fats and plenty of protein.",
         "image_url": "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f",
         "ingredients": [
@@ -137,7 +140,6 @@ SEED_MEALS = [
             "1/2 avocado, diced",
             "1 cup cucumber, chopped",
             "1 tbsp olive oil",
-            "1 tsp lemon juice",
         ],
         "instructions": [
             "Add tuna, avocado, and cucumber to a bowl.",
@@ -153,6 +155,7 @@ SEED_MEALS = [
     {
         "name": "Turkey Lettuce Cups",
         "meal_type": "lunch",
+        "difficulty": "simple",
         "description": "Crunchy lettuce cups with savory turkey filling.",
         "image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd",
         "ingredients": [
@@ -160,7 +163,6 @@ SEED_MEALS = [
             "1 tsp soy sauce",
             "1 tsp sesame oil",
             "6 lettuce leaves",
-            "1 clove garlic, minced",
         ],
         "instructions": [
             "Heat a pan over medium heat and cook turkey until browned.",
@@ -176,6 +178,7 @@ SEED_MEALS = [
     {
         "name": "Beef Stir-Fry Bowl",
         "meal_type": "lunch",
+        "difficulty": "simple",
         "description": "Fast stir-fry with colorful vegetables and tender beef.",
         "image_url": "https://images.unsplash.com/photo-1604908554167-6d8fcb8b7a5e",
         "ingredients": [
@@ -183,7 +186,6 @@ SEED_MEALS = [
             "1 cup broccoli florets",
             "1/2 bell pepper, sliced",
             "1 tbsp soy sauce",
-            "1 tsp grated ginger",
         ],
         "instructions": [
             "Heat a wok or skillet and cook beef strips for 2 to 3 minutes.",
@@ -200,6 +202,7 @@ SEED_MEALS = [
     {
         "name": "Baked Salmon & Asparagus",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Simple tray-bake dinner with omega-3 rich salmon.",
         "image_url": "https://images.unsplash.com/photo-1467003909585-2f8a72700288",
         "ingredients": [
@@ -224,6 +227,7 @@ SEED_MEALS = [
     {
         "name": "Beef Meatballs with Zucchini",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Juicy meatballs paired with sauteed zucchini ribbons.",
         "image_url": "https://images.unsplash.com/photo-1529563021893-cc83c992d75d",
         "ingredients": [
@@ -248,6 +252,7 @@ SEED_MEALS = [
     {
         "name": "Lemon Garlic Chicken Thighs",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Crispy-skinned chicken thighs with bright lemon flavor.",
         "image_url": "https://images.unsplash.com/photo-1604503468506-a8da13d82791",
         "ingredients": [
@@ -274,6 +279,7 @@ SEED_MEALS = [
     {
         "name": "Shrimp Cauliflower Fried Rice",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Lower-carb fried rice alternative with quick-cooking shrimp.",
         "image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19",
         "ingredients": [
@@ -298,6 +304,7 @@ SEED_MEALS = [
     {
         "name": "Steak & Roasted Veggies",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Classic dinner plate with hearty roasted vegetables.",
         "image_url": "https://images.unsplash.com/photo-1558030006-450675393462",
         "ingredients": [
@@ -322,6 +329,7 @@ SEED_MEALS = [
     {
         "name": "Chicken Veggie Soup",
         "meal_type": "dinner",
+        "difficulty": "full",
         "description": "Comforting one-pot soup with lean chicken and vegetables.",
         "image_url": "https://images.unsplash.com/photo-1547592180-85f173990554",
         "ingredients": [
