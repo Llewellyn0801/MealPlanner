@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Today's Meals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 0 16px;
+            line-height: 1.5;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .meal {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 14px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Today's Meals</h1>
+    <div class="meal"><strong>Breakfast:</strong> <span id="breakfast">{{ plan.breakfast }}</span></div>
+    <div class="meal"><strong>Lunch:</strong> <span id="lunch">{{ plan.lunch }}</span></div>
+    <div class="meal"><strong>Dinner:</strong> <span id="dinner">{{ plan.dinner }}</span></div>
+
+    <button id="new-plan-btn">Generate New Plan</button>
+
+    <script>
+        const button = document.getElementById("new-plan-btn");
+        button.addEventListener("click", async () => {
+            const response = await fetch("/plan");
+            const plan = await response.json();
+            document.getElementById("breakfast").textContent = plan.breakfast;
+            document.getElementById("lunch").textContent = plan.lunch;
+            document.getElementById("dinner").textContent = plan.dinner;
+        });
+    </script>
+</body>
+</html>
