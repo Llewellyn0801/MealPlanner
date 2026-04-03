@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 
-from database.session import SessionLocal
-from models.meal import Meal
-
+from meal_planner.database.session import SessionLocal
+from meal_planner.models.meal import Meal
 
 SEED_MEALS = [
     # Breakfast

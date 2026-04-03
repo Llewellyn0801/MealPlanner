@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String
 
-from database.session import Base
+from meal_planner.database.session import Base
 
 
 class Meal(Base):

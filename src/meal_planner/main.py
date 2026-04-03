@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 
-from database.base import Base
-from database.seed import seed_meals
-from database.session import engine
-from routes.plan import router as plan_router
-
+from meal_planner.database.base import Base
+from meal_planner.database.seed import seed_meals
+from meal_planner.database.session import engine
+from meal_planner.routes.plan import router as plan_router
 
 app = FastAPI(title="Meal Planner")
 

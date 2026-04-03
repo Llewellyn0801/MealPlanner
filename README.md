@@ -23,21 +23,24 @@ A simple FastAPI app that generates a random daily meal plan (breakfast, lunch, 
 ## Project Structure
 
 ```
-meal_planner/
-├── main.py
-├── routes/
-│   └── plan.py
-├── models/
-│   └── meal.py
-├── database/
-│   ├── session.py
-│   ├── base.py
-│   └── seed.py
-├── templates/
-│   └── index.html
+.
+├── src/
+│   └── meal_planner/
+│       ├── main.py
+│       ├── routes/
+│       │   └── plan.py
+│       ├── models/
+│       │   └── meal.py
+│       ├── database/
+│       │   ├── session.py
+│       │   ├── base.py
+│       │   └── seed.py
+│       └── templates/
+│           └── index.html
 ├── Dockerfile
 ├── docker-compose.yml
-└── pyproject.toml
+├── pyproject.toml
+└── README.md
 ```
 
 ## Prerequisites
@@ -57,7 +60,7 @@ meal_planner/
 2. Run the app:
 
    ```bash
-   poetry run uvicorn main:app --reload
+   poetry run python -m uvicorn meal_planner.main:app --app-dir src --reload
    ```
 
 3. Open in your browser:
@@ -68,8 +71,6 @@ meal_planner/
 
 ## Run With Docker
 
-From the `meal_planner` directory:
-
 ```bash
 docker compose up --build
 ```
@@ -79,7 +80,7 @@ Then open [http://localhost:8000](http://localhost:8000).
 ## How It Works
 
 - On startup, the app creates database tables and seeds meals if the database is empty.
-- The root route (`/`) renders the current random meal plan in `templates/index.html`.
+- The root route (`/`) renders the current random meal plan in `src/meal_planner/templates/index.html`.
 - Clicking **Generate New Plan** calls `/plan` and refreshes breakfast/lunch/dinner in the page.
 
 ## Notes
