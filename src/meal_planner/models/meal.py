@@ -1,4 +1,6 @@
-from sqlalchemy import Boolean, Column, Integer, String, Text
+import datetime
+
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
 
 from meal_planner.database.session import Base
 
@@ -19,3 +21,13 @@ class Meal(Base):
     is_carnivore = Column(Boolean, default=False)
     is_high_protein = Column(Boolean, default=False)
     is_kid_friendly = Column(Boolean, default=False)
+
+
+class MealHistory(Base):
+    __tablename__ = "meal_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    meal_name = Column(String, nullable=False)
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
