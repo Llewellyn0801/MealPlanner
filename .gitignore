@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 meal_planner.db
+.idea/

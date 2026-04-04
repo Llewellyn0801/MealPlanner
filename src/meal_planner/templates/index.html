@@ -33,6 +33,11 @@
             background: #2563eb;
             color: #fff;
         }
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #1f2937;
+            margin-left: 8px;
+        }
         .meal-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -108,9 +113,6 @@
             border-radius: 14px;
             box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
         }
-        .grocery-section.hidden {
-            display: none;
-        }
         .grocery-section h2 {
             margin-top: 0;
             font-size: 24px;
@@ -120,15 +122,12 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            columns: 2;
         }
         .grocery-list li {
             padding: 8px 0;
-            border-bottom: 1px solid #f3f4f6;
             display: flex;
             align-items: center;
-        }
-        .grocery-list li:last-child {
-            border-bottom: none;
         }
         .grocery-list input[type="checkbox"] {
             margin-right: 12px;
@@ -139,9 +138,6 @@
         .grocery-list label {
             cursor: pointer;
             font-size: 16px;
-        }
-        .mt-20 {
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -164,6 +160,7 @@
                     <h2 class="meal-title">{{ meal.name }}</h2>
                     <p class="meal-description">{{ meal.description }}</p>
                     <button class="btn toggle-recipe-btn" type="button">View Recipe</button>
+                    <button class="btn btn-secondary reroll-btn" type="button">Re-roll</button>
 
                     <div class="recipe-details hidden">
                         <h4>Ingredients</h4>
@@ -195,13 +192,15 @@
             {% endfor %}
         </section>
 
-        <div class="toolbar mt-20">
-            <button class="btn btn-primary" id="toggle-grocery-btn">Show Grocery List</button>
-        </div>
-
-        <section id="grocery-section" class="grocery-section hidden">
+        <section id="grocery-section" class="grocery-section">
             <h2>Grocery List</h2>
             <ul class="grocery-list" id="grocery-list">
+                {% for item in grocery_list %}
+                <li>
+                    <input type="checkbox" id="grocery-item-{{ loop.index0 }}" />
+                    <label for="grocery-item-{{ loop.index0 }}">{{ item }}</label>
+                </li>
+                {% endfor %}
             </ul>
         </section>
     </main>
@@ -264,6 +263,23 @@
             }
         };
 
+        const updateGroceryList = async () => {
+            const response = await fetch("/grocery-list", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(currentPlan)
+            });
+            const data = await response.json();
+            const list = document.getElementById("grocery-list");
+            list.innerHTML = "";
+            data.grocery_list.forEach((item, index) => {
+                const li = document.createElement("li");
+                const checkboxId = `grocery-item-${index}`;
+                li.innerHTML = `<input type="checkbox" id="${checkboxId}" /><label for="${checkboxId}">${item}</label>`;
+                list.appendChild(li);
+            });
+        };
+
         document.querySelectorAll(".toggle-recipe-btn").forEach((button) => {
             button.addEventListener("click", () => toggleRecipe(button));
         });
@@ -275,56 +291,25 @@
             renderMealCard("breakfast", plan.breakfast);
             renderMealCard("lunch", plan.lunch);
             renderMealCard("dinner", plan.dinner);
-
-            // Hide grocery list when generating a new plan
-            const grocerySection = document.getElementById("grocery-section");
-            const toggleGroceryBtn = document.getElementById("toggle-grocery-btn");
-            grocerySection.classList.add("hidden");
-            toggleGroceryBtn.textContent = "Show Grocery List";
+            await updateGroceryList();
         });
 
-        document.getElementById("toggle-grocery-btn").addEventListener("click", async () => {
-            const btn = document.getElementById("toggle-grocery-btn");
-            const section = document.getElementById("grocery-section");
-            const isHidden = section.classList.contains("hidden");
-
-            if (isHidden) {
-                // Fetch grocery list based on current plan
-                const response = await fetch("/grocery-list", {
+        document.querySelectorAll(".reroll-btn").forEach((button) => {
+            button.addEventListener("click", async () => {
+                const mealType = button.closest(".meal-card").dataset.mealType;
+                const response = await fetch("/reroll-meal", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(currentPlan)
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        meal_type: mealType,
+                        meals: currentPlan,
+                    }),
                 });
-                const data = await response.json();
-
-                // Render list
-                const list = document.getElementById("grocery-list");
-                list.innerHTML = "";
-                data.grocery_list.forEach((item, index) => {
-                    const li = document.createElement("li");
-                    const checkboxId = `grocery-item-${index}`;
-
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.id = checkboxId;
-
-                    const label = document.createElement("label");
-                    label.htmlFor = checkboxId;
-                    label.textContent = item;
-
-                    li.appendChild(checkbox);
-                    li.appendChild(label);
-                    list.appendChild(li);
-                });
-
-                section.classList.remove("hidden");
-                btn.textContent = "Hide Grocery List";
-            } else {
-                section.classList.add("hidden");
-                btn.textContent = "Show Grocery List";
-            }
+                const newMeal = await response.json();
+                currentPlan[mealType] = newMeal;
+                renderMealCard(mealType, newMeal);
+                await updateGroceryList();
+            });
         });
     </script>
 </body>

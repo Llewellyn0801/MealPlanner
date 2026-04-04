@@ -61,6 +61,44 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
     }
 
 
+def _pick_meal(
+    meals: list[Meal],
+    recent_meal_names: set[str],
+    dinner_words: set[str] | None = None,
+) -> Meal | None:
+    # 1. Prefer health tags and no memory
+    unseen_matching = [
+        c for c in meals
+        if c.name not in recent_meal_names
+        and ("low_carb" in c.tags or "heart_healthy" in c.tags)
+    ]
+
+    # 2. Fallbacks
+    unseen = [c for c in meals if c.name not in recent_meal_names]
+
+    # Determine base selection list
+    if unseen_matching:
+        selection_pool = unseen_matching
+    elif unseen:
+        selection_pool = unseen
+    else:
+        selection_pool = meals
+
+    # Try to match ingredients if we have dinner words
+    if dinner_words:
+        ingredient_matches = []
+        for c in selection_pool:
+            c_dict = format_meal(c)
+            c_words = get_base_words(c_dict["ingredients"])
+            if dinner_words.intersection(c_words):
+                ingredient_matches.append(c)
+
+        if ingredient_matches:
+            selection_pool = ingredient_matches
+
+    return random.choice(selection_pool) if selection_pool else None
+
+
 def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
     # Get all recent meals to avoid repetition (e.g. last 15 inserted)
     recent_history = (
@@ -69,54 +107,25 @@ def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
         .limit(15)
         .all()
     )
-    recent_meal_names = {h.meal_name for h in recent_history}
+    recent_meal_names = {cast(str, h.meal_name) for h in recent_history}
+    all_meals = db.query(Meal).all()
 
     def pick_meal(
         meal_type: str, difficulty: str, dinner_words: set[str] | None = None
     ) -> tuple[dict[str, Any], set[str]]:
-        candidates = (
-            db.query(Meal)
-            .filter(Meal.meal_type == meal_type, Meal.difficulty == difficulty)
-            .all()
-        )
+        candidates = [
+            m for m in all_meals
+            if m.meal_type == meal_type and m.difficulty == difficulty
+        ]
         if not candidates:
-            candidates = db.query(Meal).filter(Meal.meal_type == meal_type).all()
+            candidates = [m for m in all_meals if m.meal_type == meal_type]
 
         if not candidates:
             return format_meal(None), set()
 
-        # 1. Prefer health tags and no memory
-        unseen_matching = [
-            c for c in candidates
-            if c.name not in recent_meal_names
-            and ("low_carb" in c.tags or "heart_healthy" in c.tags)
-        ]
-
-        # 2. Fallbacks
-        unseen = [c for c in candidates if c.name not in recent_meal_names]
-
-        # Determine base selection list
-        if unseen_matching:
-            selection_pool = unseen_matching
-        elif unseen:
-            selection_pool = unseen
-        else:
-            selection_pool = candidates
-
-        # Try to match ingredients if we have dinner words
-        if dinner_words:
-            ingredient_matches = []
-            for c in selection_pool:
-                c_dict = format_meal(c)
-                c_words = get_base_words(c_dict["ingredients"])
-                if dinner_words.intersection(c_words):
-                    ingredient_matches.append(c)
-
-            if ingredient_matches:
-                selection_pool = ingredient_matches
-
-        chosen = random.choice(selection_pool)
-        recent_meal_names.add(chosen.name)
+        chosen = _pick_meal(candidates, recent_meal_names, dinner_words)
+        if chosen:
+            recent_meal_names.add(cast(str, chosen.name))
 
         c_dict = format_meal(chosen)
         c_words = get_base_words(c_dict["ingredients"])
