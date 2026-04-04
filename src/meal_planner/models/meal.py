@@ -27,7 +27,8 @@ class MealHistory(Base):
     __tablename__ = "meal_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    meal_name = Column(String, nullable=False)
+    meal_name = Column(String, nullable=False, index=True)
+    meal_type = Column(String, nullable=False, index=True)
     created_at = Column(
         DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
     )

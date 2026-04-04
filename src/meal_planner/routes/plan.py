@@ -2,8 +2,9 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from meal_planner.database.session import get_db
@@ -51,7 +52,6 @@ def reroll_meal(
         meal["name"] for meal in current_plan["meals"].values() if meal
     ]
 
-    # A simple way to get a new meal: find one that isn't in the current plan
     new_meal = (
         db.query(Meal)
         .filter(
@@ -61,8 +61,29 @@ def reroll_meal(
         .first()
     )
 
-    # Fallback: if no new meal is found, just get any meal of that type
     if not new_meal:
-        new_meal = db.query(Meal).filter(Meal.meal_type == meal_type_to_reroll).first()
+        new_meal = (
+            db.query(Meal).filter(Meal.meal_type == meal_type_to_reroll).first()
+        )
 
     return format_meal(new_meal)
+
+
+@router.get("/search", response_class=HTMLResponse)
+def search_meals(request: Request, q: str | None = None, db: Session = Depends(get_db)):
+    if not q or not q.strip():
+        return RedirectResponse(url="/")
+
+    search_results = (
+        db.query(Meal)
+        .filter(or_(Meal.name.ilike(f"%{q}%"), Meal.tags.ilike(f"%{q}%")))
+        .all()
+    )
+
+    formatted_results = [format_meal(meal) for meal in search_results]
+
+    return templates.TemplateResponse(
+        request=request,
+        name="search.html",
+        context={"request": request, "results": formatted_results, "query": q},
+    )

@@ -1,3 +1,4 @@
+import datetime
 import json
 import random
 from typing import Any, cast
@@ -30,7 +31,6 @@ def get_base_words(ingredients: list[str]) -> set[str]:
     words = set()
     for item in ingredients:
         for word in item.lower().replace(",", "").replace(".", "").split():
-            # ignore anything with digits (like '200g' or '1/2')
             if word.isnumeric() or any(char.isdigit() for char in word):
                 continue
             if word not in stop_words and len(word) > 2:
@@ -61,57 +61,73 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
     }
 
 
+def _score_meal(meal: Meal, meal_type: str) -> int:
+    """Scores a meal based on desired tags."""
+    score = 0
+    tags = meal.tags.split(",")
+    if "low_carb" in tags:
+        score += 1
+    if "heart_healthy" in tags:
+        score += 1
+    if meal_type == "dinner" and "high_protein" in tags:
+        score += 1
+    if meal_type == "dinner" and "kid_friendly" in tags:
+        score += 1
+    return score
+
+
 def _pick_meal(
     meals: list[Meal],
+    meal_type: str,
     recent_meal_names: set[str],
-    dinner_words: set[str] | None = None,
 ) -> Meal | None:
-    # 1. Prefer health tags and no memory
-    unseen_matching = [
-        c for c in meals
-        if c.name not in recent_meal_names
-        and ("low_carb" in c.tags or "heart_healthy" in c.tags)
-    ]
+    if not meals:
+        return None
 
-    # 2. Fallbacks
-    unseen = [c for c in meals if c.name not in recent_meal_names]
+    # Primary pool: unseen meals if possible.
+    unseen_meals = [m for m in meals if m.name not in recent_meal_names]
 
-    # Determine base selection list
-    if unseen_matching:
-        selection_pool = unseen_matching
-    elif unseen:
-        selection_pool = unseen
+    if unseen_meals:
+        selection_pool = unseen_meals
     else:
+        # Fallback: if we've seen everything, we have to repeat.
         selection_pool = meals
 
-    # Try to match ingredients if we have dinner words
-    if dinner_words:
-        ingredient_matches = []
-        for c in selection_pool:
-            c_dict = format_meal(c)
-            c_words = get_base_words(c_dict["ingredients"])
-            if dinner_words.intersection(c_words):
-                ingredient_matches.append(c)
+    # Score and sort the meals
+    scored_meals = [(_score_meal(m, meal_type), m) for m in selection_pool]
+    scored_meals.sort(key=lambda x: x[0], reverse=True)
 
-        if ingredient_matches:
-            selection_pool = ingredient_matches
+    # Take the top 5 (or fewer if not enough meals)
+    top_meals = [m for score, m in scored_meals[:5]]
 
-    return random.choice(selection_pool) if selection_pool else None
+    return random.choice(top_meals) if top_meals else None
 
 
 def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
-    # Get all recent meals to avoid repetition (e.g. last 15 inserted)
-    recent_history = (
-        db.query(MealHistory)
-        .order_by(MealHistory.created_at.desc())
-        .limit(15)
-        .all()
-    )
-    recent_meal_names = {cast(str, h.meal_name) for h in recent_history}
     all_meals = db.query(Meal).all()
+    cutoff_time = datetime.datetime.now(
+        datetime.timezone.utc
+    ) - datetime.timedelta(hours=48)
+    recent_history = (
+        db.query(MealHistory).filter(MealHistory.created_at >= cutoff_time).all()
+    )
+
+    recent_meals_by_type = {
+        "breakfast": {
+            cast(str, h.meal_name)
+            for h in recent_history
+            if h.meal_type == "breakfast"
+        },
+        "lunch": {
+            cast(str, h.meal_name) for h in recent_history if h.meal_type == "lunch"
+        },
+        "dinner": {
+            cast(str, h.meal_name) for h in recent_history if h.meal_type == "dinner"
+        },
+    }
 
     def pick_meal(
-        meal_type: str, difficulty: str, dinner_words: set[str] | None = None
+        meal_type: str, difficulty: str
     ) -> tuple[dict[str, Any], set[str]]:
         candidates = [
             m for m in all_meals
@@ -123,20 +139,16 @@ def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
         if not candidates:
             return format_meal(None), set()
 
-        chosen = _pick_meal(candidates, recent_meal_names, dinner_words)
-        if chosen:
-            recent_meal_names.add(cast(str, chosen.name))
+        recent_names = recent_meals_by_type.get(meal_type, set())
+        chosen = _pick_meal(candidates, meal_type, recent_names)
 
         c_dict = format_meal(chosen)
         c_words = get_base_words(c_dict["ingredients"])
         return c_dict, c_words
 
-    # Pick dinner first (to get ingredient words)
     dinner_dict, dinner_words = pick_meal("dinner", "full_meal")
-
-    # Pick breakfast and lunch attempting to match dinner words
-    breakfast_dict, _ = pick_meal("breakfast", "simple", dinner_words=dinner_words)
-    lunch_dict, _ = pick_meal("lunch", "simple", dinner_words=dinner_words)
+    breakfast_dict, _ = pick_meal("breakfast", "simple")
+    lunch_dict, _ = pick_meal("lunch", "simple")
 
     plan = {
         "breakfast": breakfast_dict,
@@ -144,10 +156,9 @@ def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
         "dinner": dinner_dict,
     }
 
-    # Save the new plan into history
     for meal_type, m_dict in plan.items():
         if m_dict and m_dict["name"] != "No meal available":
-            db.add(MealHistory(meal_name=m_dict["name"]))
+            db.add(MealHistory(meal_name=m_dict["name"], meal_type=meal_type))
     db.commit()
 
     return plan

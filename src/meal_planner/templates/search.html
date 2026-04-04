@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Results for "{{ query }}"</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+        h1 {
+            margin: 0 0 18px;
+        }
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .meal-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+        .meal-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+        }
+        .meal-content {
+            padding: 14px;
+        }
+        .meal-title {
+            margin: 0 0 8px;
+            font-size: 20px;
+        }
+        .recipe-details {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .hidden {
+            display: none;
+        }
+        .recipe-details h4 {
+            margin: 10px 0 6px;
+            font-size: 15px;
+        }
+        .recipe-details ul,
+        .recipe-details ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Search Results for "{{ query }}"</h1>
+        <p><a href="/">Back to Home</a></p>
+
+        {% if results %}
+        <section class="meal-grid">
+            {% for meal in results %}
+            <article class="meal-card">
+                {% if meal.image_url %}
+                <img class="meal-image" src="{{ meal.image_url }}" alt="{{ meal.name }}" />
+                {% endif %}
+                <div class="meal-content">
+                    <h2 class="meal-title">{{ meal.name }}</h2>
+                    <button class="btn toggle-recipe-btn" type="button">View Recipe</button>
+                    <div class="recipe-details hidden">
+                        <h4>Ingredients</h4>
+                        <ul>
+                            {% for ingredient in meal.ingredients %}
+                            <li>{{ ingredient }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h4>Instructions</h4>
+                        <ol>
+                            {% for step in meal.instructions %}
+                            <li>{{ step }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <p>No meals found matching your search.</p>
+        {% endif %}
+    </main>
+
+    <script>
+        document.querySelectorAll(".toggle-recipe-btn").forEach((button) => {
+            button.addEventListener("click", () => {
+                const details = button.parentElement.querySelector(".recipe-details");
+                details.classList.toggle("hidden");
+                button.textContent = details.classList.contains("hidden")
+                    ? "View Recipe"
+                    : "Hide Recipe";
+            });
+        });
+    </script>
+</body>
+</html>

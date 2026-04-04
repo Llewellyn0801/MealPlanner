@@ -58,6 +58,7 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
                 Meal(
                     name="Eggs",
                     meal_type="breakfast",
+                    difficulty="simple",
                     is_high_protein=True,
                     description="Simple scrambled eggs.",
                     image_url="https://example.com/eggs.jpg",
@@ -68,6 +69,7 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
                 Meal(
                     name="Chicken Bowl",
                     meal_type="lunch",
+                    difficulty="simple",
                     is_high_protein=True,
                     description="Chicken and rice bowl.",
                     image_url=None,
@@ -77,6 +79,7 @@ def test_generate_meal_plan_returns_meal_per_type(monkeypatch):
                 Meal(
                     name="Steak",
                     meal_type="dinner",
+                    difficulty="full_meal",
                     is_high_protein=True,
                     description="Pan-seared steak.",
                     image_url=None,

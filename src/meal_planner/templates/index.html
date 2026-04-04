@@ -38,6 +38,18 @@
             color: #1f2937;
             margin-left: 8px;
         }
+        .search-form {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 8px;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
         .meal-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -55,6 +67,7 @@
             height: 170px;
             object-fit: cover;
             display: block;
+            background-color: #e5e7eb; /* Placeholder color */
         }
         .meal-content {
             padding: 14px;
@@ -113,6 +126,9 @@
             border-radius: 14px;
             box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
         }
+        .grocery-section.hidden {
+            display: none;
+        }
         .grocery-section h2 {
             margin-top: 0;
             font-size: 24px;
@@ -139,10 +155,23 @@
             cursor: pointer;
             font-size: 16px;
         }
+        .mt-20 {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <main class="container">
+        <form action="/search" method="get" class="search-form">
+            <input
+                type="search"
+                name="q"
+                class="search-input"
+                placeholder="Search meals by name or tag..."
+            />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
         <h1>Today's Meal Plan</h1>
         <div class="toolbar">
             <button class="btn btn-primary" id="new-plan-btn">Generate New Plan</button>
@@ -152,15 +181,17 @@
             {% for meal_type in ["breakfast", "lunch", "dinner"] %}
             {% set meal = plan[meal_type] %}
             <article class="meal-card" data-meal-type="{{ meal_type }}">
-                {% if meal.image_url %}
-                <img class="meal-image" src="{{ meal.image_url }}" alt="{{ meal.name }}" />
-                {% endif %}
+                <img
+                    class="meal-image"
+                    src="{{ meal.image_url or 'https://source.unsplash.com/600x400/?food-placeholder' }}"
+                    alt="{{ meal.name }}"
+                />
                 <div class="meal-content">
                     <p class="meal-type">{{ meal_type }}</p>
                     <h2 class="meal-title">{{ meal.name }}</h2>
                     <p class="meal-description">{{ meal.description }}</p>
                     <button class="btn toggle-recipe-btn" type="button">View Recipe</button>
-                    <button class="btn btn-secondary reroll-btn" type="button">Re-roll</button>
+                    <button class="btn btn-secondary reroll-btn" type="button">Next</button>
 
                     <div class="recipe-details hidden">
                         <h4>Ingredients</h4>
@@ -192,7 +223,11 @@
             {% endfor %}
         </section>
 
-        <section id="grocery-section" class="grocery-section">
+        <div class="toolbar mt-20">
+            <button class="btn btn-primary" id="toggle-grocery-btn">Show Grocery List</button>
+        </div>
+
+        <section id="grocery-section" class="grocery-section hidden">
             <h2>Grocery List</h2>
             <ul class="grocery-list" id="grocery-list">
                 {% for item in grocery_list %}
@@ -220,21 +255,12 @@
             const card = document.querySelector(`[data-meal-type="${mealType}"]`);
             if (!card) return;
 
+            const image = card.querySelector(".meal-image");
+            image.src = meal.image_url || 'https://source.unsplash.com/600x400/?food-placeholder';
+            image.alt = meal.name;
+
             card.querySelector(".meal-title").textContent = meal.name;
             card.querySelector(".meal-description").textContent = meal.description || "";
-
-            let image = card.querySelector(".meal-image");
-            if (meal.image_url) {
-                if (!image) {
-                    image = document.createElement("img");
-                    image.className = "meal-image";
-                    card.prepend(image);
-                }
-                image.src = meal.image_url;
-                image.alt = meal.name;
-            } else if (image) {
-                image.remove();
-            }
 
             const ingredientsList = card.querySelector(".ingredients-list");
             ingredientsList.innerHTML = "";
@@ -285,13 +311,7 @@
         });
 
         document.getElementById("new-plan-btn").addEventListener("click", async () => {
-            const response = await fetch("/plan");
-            const plan = await response.json();
-            currentPlan = plan;
-            renderMealCard("breakfast", plan.breakfast);
-            renderMealCard("lunch", plan.lunch);
-            renderMealCard("dinner", plan.dinner);
-            await updateGroceryList();
+            window.location.reload();
         });
 
         document.querySelectorAll(".reroll-btn").forEach((button) => {
@@ -308,8 +328,26 @@
                 const newMeal = await response.json();
                 currentPlan[mealType] = newMeal;
                 renderMealCard(mealType, newMeal);
-                await updateGroceryList();
+
+                if (!document.getElementById("grocery-section").classList.contains("hidden")) {
+                    await updateGroceryList();
+                }
             });
+        });
+
+        document.getElementById("toggle-grocery-btn").addEventListener("click", async () => {
+            const btn = document.getElementById("toggle-grocery-btn");
+            const section = document.getElementById("grocery-section");
+            const isHidden = section.classList.contains("hidden");
+
+            if (isHidden) {
+                await updateGroceryList();
+                section.classList.remove("hidden");
+                btn.textContent = "Hide Grocery List";
+            } else {
+                section.classList.add("hidden");
+                btn.textContent = "Show Grocery List";
+            }
         });
     </script>
 </body>
