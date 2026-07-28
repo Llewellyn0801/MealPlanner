@@ -18,15 +18,46 @@ def parse_json_list(payload: str) -> list[str]:
     return []
 
 
+def parse_json_dict_list(payload: str) -> list[dict[str, Any]]:
+    try:
+        parsed = json.loads(payload)
+        if isinstance(parsed, list):
+            return [item for item in parsed if isinstance(item, dict)]
+    except Exception:
+        pass
+    return []
+
+
 def get_base_words(ingredients: list[str]) -> set[str]:
     """
     Extract standard base words ignoring common units and numbers
     to match shared ingredients.
     """
     stop_words = {
-        "cup", "cups", "tsp", "tbsp", "g", "ml", "large", "small",
-        "of", "and", "pinch", "clove", "can", "in", "diced", "chopped",
-        "sliced", "minced", "grated", "peeled", "water", "salt", "pepper", "oil",
+        "cup",
+        "cups",
+        "tsp",
+        "tbsp",
+        "g",
+        "ml",
+        "large",
+        "small",
+        "of",
+        "and",
+        "pinch",
+        "clove",
+        "can",
+        "in",
+        "diced",
+        "chopped",
+        "sliced",
+        "minced",
+        "grated",
+        "peeled",
+        "water",
+        "salt",
+        "pepper",
+        "oil",
     }
     words = set()
     for item in ingredients:
@@ -44,20 +75,44 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
             "name": "No meal available",
             "description": "",
             "image_url": None,
+            "core_base": [],
+            "family_additions": [],
+            "user_alternatives": [],
             "ingredients": [],
             "instructions": [],
             "cooking_tips": "",
+            "tags": "",
         }
 
     meal_ingredients = cast(str, meal.ingredients)
     meal_instructions = cast(str, meal.instructions)
+    meal_core_base = cast(str, getattr(meal, "core_base", "[]"))
+    meal_family_additions = cast(str, getattr(meal, "family_additions", "[]"))
+    meal_user_alternatives = cast(str, getattr(meal, "user_alternatives", "[]"))
+
+    core_base = parse_json_dict_list(meal_core_base)
+    family_additions = parse_json_dict_list(meal_family_additions)
+    user_alternatives = parse_json_dict_list(meal_user_alternatives)
+    ingredients = parse_json_list(meal_ingredients)
+
+    if not ingredients and core_base:
+        ingredients = [
+            item["name"]
+            for item in core_base + family_additions + user_alternatives
+            if isinstance(item, dict) and "name" in item
+        ]
+
     return {
         "name": meal.name,
         "description": meal.description,
         "image_url": meal.image_url,
-        "ingredients": parse_json_list(meal_ingredients),
+        "core_base": core_base,
+        "family_additions": family_additions,
+        "user_alternatives": user_alternatives,
+        "ingredients": ingredients,
         "instructions": parse_json_list(meal_instructions),
         "cooking_tips": meal.cooking_tips or "",
+        "tags": meal.tags or "",
     }
 
 
@@ -105,18 +160,16 @@ def _pick_meal(
 
 def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
     all_meals = db.query(Meal).all()
-    cutoff_time = datetime.datetime.now(
-        datetime.timezone.utc
-    ) - datetime.timedelta(hours=48)
+    cutoff_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+        hours=48
+    )
     recent_history = (
         db.query(MealHistory).filter(MealHistory.created_at >= cutoff_time).all()
     )
 
     recent_meals_by_type = {
         "breakfast": {
-            cast(str, h.meal_name)
-            for h in recent_history
-            if h.meal_type == "breakfast"
+            cast(str, h.meal_name) for h in recent_history if h.meal_type == "breakfast"
         },
         "lunch": {
             cast(str, h.meal_name) for h in recent_history if h.meal_type == "lunch"
@@ -126,11 +179,10 @@ def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
         },
     }
 
-    def pick_meal(
-        meal_type: str, difficulty: str
-    ) -> tuple[dict[str, Any], set[str]]:
+    def pick_meal(meal_type: str, difficulty: str) -> tuple[dict[str, Any], set[str]]:
         candidates = [
-            m for m in all_meals
+            m
+            for m in all_meals
             if m.meal_type == meal_type and m.difficulty == difficulty
         ]
         if not candidates:

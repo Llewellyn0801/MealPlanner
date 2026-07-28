@@ -1,5 +1,5 @@
-from meal_planner.database.session import SessionLocal, Base, engine
 from meal_planner.database.seed import seed_meals
+from meal_planner.database.session import Base, SessionLocal, engine
 from meal_planner.services.meal_engine import generate_meal_plan
 
 Base.metadata.create_all(bind=engine)

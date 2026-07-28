@@ -1,23 +1,35 @@
 [project]
 name = "meal-planner"
 version = "0.1.0"
-description = ""
+description = "A FastAPI app that generates a random daily meal plan"
+readme = "README.md"
 authors = [
-    {name = "Llewellyn0801",email = "llewellyn0801@gmail.com"}
+    {name = "Llewellyn0801", email = "llewellyn0801@gmail.com"}
 ]
-requires-python = ">=3.12,<4.0"
+requires-python = ">=3.12"
 dependencies = [
-    "fastapi (>=0.135.3,<0.136.0)",
-    "sqlalchemy (>=2.0.48,<3.0.0)",
-    "jinja2 (>=3.1.6,<4.0.0)",
-    "uvicorn[standard] (>=0.42.0,<0.43.0)",
+    "fastapi>=0.135.3,<0.136.0",
+    "sqlalchemy>=2.0.48,<3.0.0",
+    "jinja2>=3.1.6,<4.0.0",
+    "uvicorn[standard]>=0.42.0,<0.43.0",
 ]
 
-[tool.poetry]
-package-mode = false
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^9.0.2"
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2,<10.0.0",
+    "black>=26.3.1,<27.0.0",
+    "flake8>=7.3.0,<8.0.0",
+    "pre-commit>=4.5.1,<5.0.0",
+    "ruff>=0.15.9,<0.16.0",
+    "mypy>=1.20.0,<2.0.0",
+]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -28,7 +40,7 @@ line-length = 88
 
 [tool.flake8]
 max-line-length = 88
-extend-ignore = ["E203", "W503"]
+extend-ignore = ["E203", "W503", "E501"]
 
 [tool.ruff]
 line-length = 88
@@ -36,23 +48,9 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+ignore = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true
 warn_unused_configs = true
-
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[dependency-groups]
-dev = [
-    "pytest (>=9.0.2,<10.0.0)",
-    "black (>=26.3.1,<27.0.0)",
-    "flake8 (>=7.3.0,<8.0.0)",
-    "pre-commit (>=4.5.1,<5.0.0)",
-    "ruff (>=0.15.9,<0.16.0)",
-    "mypy (>=1.20.0,<2.0.0)"
-]

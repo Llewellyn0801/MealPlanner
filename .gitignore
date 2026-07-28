@@ -2,4 +2,7 @@
 __pycache__/
 *.pyc
 meal_planner.db
+.vscode/
 .idea/
+.DS_Store
+*.egg-info/

@@ -62,9 +62,7 @@ def reroll_meal(
     )
 
     if not new_meal:
-        new_meal = (
-            db.query(Meal).filter(Meal.meal_type == meal_type_to_reroll).first()
-        )
+        new_meal = db.query(Meal).filter(Meal.meal_type == meal_type_to_reroll).first()
 
     return format_meal(new_meal)
 

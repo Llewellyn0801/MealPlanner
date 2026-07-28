@@ -18,7 +18,7 @@ A simple FastAPI app that generates a random daily meal plan (breakfast, lunch, 
 - SQLAlchemy
 - Jinja2 templates
 - Uvicorn
-- Poetry
+- uv
 
 ## Project Structure
 
@@ -40,13 +40,14 @@ A simple FastAPI app that generates a random daily meal plan (breakfast, lunch, 
 ├── Dockerfile
 ├── docker-compose.yml
 ├── pyproject.toml
+├── uv.lock
 └── README.md
 ```
 
 ## Prerequisites
 
 - Python 3.12+
-- Poetry
+- uv
 - (Optional) Docker + Docker Compose
 
 ## Local Setup
@@ -54,13 +55,13 @@ A simple FastAPI app that generates a random daily meal plan (breakfast, lunch, 
 1. Install dependencies:
 
    ```bash
-   poetry install
+   uv sync
    ```
 
 2. Run the app:
 
    ```bash
-   poetry run python -m uvicorn meal_planner.main:app --app-dir src --reload
+   uv run python -m uvicorn meal_planner.main:app --app-dir src --reload
    ```
 
 3. Open in your browser:
