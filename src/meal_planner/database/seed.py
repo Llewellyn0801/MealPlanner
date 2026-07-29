@@ -13,19 +13,6 @@ SEED_MEALS = [
         "name": "Greek Yogurt Berry & Chia Bowl",
         "meal_type": "breakfast",
         "difficulty": "simple",
-<<<<<<< HEAD
-        "tags": "carnivore,low_carb,high_protein",
-        "ingredients": ["200g ground beef", "2 eggs"],
-        "instructions": ["Cook beef, add eggs."],
-    },
-    {
-        "name": "Greek Yogurt Berry Bowl",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "tags": "high_protein,heart_healthy",
-        "ingredients": ["Greek yogurt", "berries"],
-        "instructions": ["Mix and serve."],
-=======
         "description": "Heart-healthy, low-sodium breakfast bowl rich in protein and fiber.",
         "image_url": "https://images.unsplash.com/photo-1488477181946-6428a0291777",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
@@ -75,17 +62,11 @@ SEED_MEALS = [
         "is_carnivore": False,
         "is_high_protein": True,
         "is_kid_friendly": True,
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
     },
     {
         "name": "Mediterranean Spinach & Avocado Scramble",
         "meal_type": "breakfast",
         "difficulty": "simple",
-<<<<<<< HEAD
-        "tags": "low_carb,high_protein",
-        "ingredients": ["3 eggs", "spinach", "cheese"],
-        "instructions": ["Make omelette."],
-=======
         "description": "Fluffy egg scramble with fresh spinach and avocado healthy fats.",
         "image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
@@ -136,51 +117,11 @@ SEED_MEALS = [
         "is_carnivore": False,
         "is_high_protein": True,
         "is_kid_friendly": True,
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
     },
     {
         "name": "Smoked Salmon & Dill Cucumber Plate",
         "meal_type": "breakfast",
         "difficulty": "simple",
-<<<<<<< HEAD
-        "tags": "high_protein,heart_healthy",
-        "ingredients": ["oats", "milk", "peanut butter"],
-        "instructions": ["Mix and refrigerate."],
-    },
-    {
-        "name": "Avocado Toast with Poached Egg",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "tags": "heart_healthy",
-        "ingredients": ["bread", "avocado", "egg"],
-        "instructions": ["Toast, mash, poach."],
-    },
-    {
-        "name": "Scrambled Eggs with Spinach",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "tags": "low_carb,heart_healthy",
-        "ingredients": ["2 eggs", "spinach"],
-        "instructions": ["Scramble eggs with spinach."],
-    },
-    {
-        "name": "Omelette with Mushrooms",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "tags": "low_carb",
-        "ingredients": ["2 eggs", "mushrooms"],
-        "instructions": ["Make mushroom omelette."],
-    },
-    {
-        "name": "Greek Yogurt with Nuts",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "tags": "high_protein,heart_healthy",
-        "ingredients": ["yogurt", "nuts"],
-        "instructions": ["Mix and serve."],
-    },
-    # Lunches
-=======
         "description": "Omega-3 rich wild smoked salmon with crisp cucumber and fresh dill.",
         "image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
@@ -284,74 +225,10 @@ SEED_MEALS = [
         "is_high_protein": True,
         "is_kid_friendly": False,
     },
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
     {
         "name": "Overnight Chia & Almond Butter Pudding",
         "meal_type": "breakfast",
         "difficulty": "simple",
-<<<<<<< HEAD
-        "tags": "high_protein",
-        "ingredients": ["chicken", "wrap", "lettuce"],
-        "instructions": ["Assemble wrap."],
-    },
-    {
-        "name": "Turkey Lettuce Cups",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["ground turkey", "lettuce"],
-        "instructions": ["Cook turkey, serve in lettuce."],
-    },
-    {
-        "name": "Beef Stir-Fry Bowl",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "high_protein,low_carb",
-        "ingredients": ["beef", "broccoli", "soy sauce"],
-        "instructions": ["Stir-fry."],
-    },
-    {
-        "name": "Quinoa Salad Bowl",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "heart_healthy,low_sodium",
-        "ingredients": ["quinoa", "tomatoes", "cucumber"],
-        "instructions": ["Mix salad."],
-    },
-    {
-        "name": "Chicken Salad Bowl",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["chicken", "lettuce"],
-        "instructions": ["Grill chicken, serve on lettuce."],
-    },
-    {
-        "name": "Tuna Avocado Bowl",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "low_carb,heart_healthy",
-        "ingredients": ["tuna", "avocado"],
-        "instructions": ["Mix and serve."],
-    },
-    {
-        "name": "Ground Beef Bowl",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["ground beef"],
-        "instructions": ["Cook and serve."],
-    },
-    {
-        "name": "Egg Salad Lettuce Wraps",
-        "meal_type": "lunch",
-        "difficulty": "simple",
-        "tags": "low_carb",
-        "ingredients": ["eggs", "lettuce", "mayo"],
-        "instructions": ["Make egg salad, wrap in lettuce."],
-    },
-    # Dinners
-=======
         "description": "No-cook chia pudding packed with soluble fiber and healthy monounsaturated fats.",
         "image_url": "https://images.unsplash.com/photo-1559564109-ce8041d40c06",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,simple",
@@ -510,7 +387,6 @@ SEED_MEALS = [
         "is_high_protein": True,
         "is_kid_friendly": False,
     },
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
     {
         "name": "Turkey & Broccoli Pepper Stir-Fry",
         "meal_type": "lunch",
@@ -677,19 +553,6 @@ SEED_MEALS = [
         "name": "Herb Roasted Salmon & Lemon Asparagus",
         "meal_type": "dinner",
         "difficulty": "full_meal",
-<<<<<<< HEAD
-        "tags": "low_carb,high_protein,heart_healthy",
-        "ingredients": ["salmon", "asparagus"],
-        "instructions": ["Bake at 200C."],
-    },
-    {
-        "name": "Beef Meatballs with Zucchini",
-        "meal_type": "dinner",
-        "difficulty": "full_meal",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["ground beef", "zucchini"],
-        "instructions": ["Make meatballs, serve with zucchini."],
-=======
         "description": "Premium wild salmon roasted with extra virgin olive oil and tender asparagus spears.",
         "image_url": "https://images.unsplash.com/photo-1467003909585-2f8a72700288",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
@@ -741,72 +604,11 @@ SEED_MEALS = [
         "is_carnivore": False,
         "is_high_protein": True,
         "is_kid_friendly": True,
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
     },
     {
         "name": "Lemon Garlic Baked Cod & Steamed Broccoli",
         "meal_type": "dinner",
         "difficulty": "full_meal",
-<<<<<<< HEAD
-        "tags": "low_carb,high_protein",
-        "ingredients": ["chicken thighs", "lemon", "garlic"],
-        "instructions": ["Cook chicken."],
-    },
-    {
-        "name": "Shrimp Cauliflower Fried Rice",
-        "meal_type": "dinner",
-        "difficulty": "full_meal",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["shrimp", "cauliflower rice"],
-        "instructions": ["Make fried rice."],
-    },
-    {
-        "name": "Grilled Chicken Thighs & Broccoli",
-        "meal_type": "dinner",
-        "difficulty": "full_meal",
-        "tags": "low_carb,heart_healthy",
-        "ingredients": ["chicken thighs", "broccoli"],
-        "instructions": ["Grill chicken, steam broccoli."],
-    },
-    {
-        "name": "Beef Patties & Eggs",
-        "meal_type": "dinner",
-        "difficulty": "full_meal",
-        "tags": "low_carb,high_protein",
-        "ingredients": ["ground beef", "eggs"],
-        "instructions": ["Cook patties and eggs."],
-    },
-]
-
-
-def get_or_create_meal(db: Session, meal_data: dict[str, Any]) -> None:
-    """Checks if a meal exists by name and creates it if it doesn't."""
-    existing_meal = db.query(Meal).filter(Meal.name == meal_data["name"]).first()
-    if existing_meal:
-        return
-
-    instructions = meal_data.get("instructions")
-    if isinstance(instructions, str):
-        instructions = [instructions]
-
-    meal_payload = {
-        "name": meal_data["name"],
-        "meal_type": meal_data["meal_type"],
-        "difficulty": meal_data.get("difficulty", "simple"),
-        "ingredients": json.dumps(meal_data.get("ingredients", [])),
-        "instructions": json.dumps(instructions),
-        "tags": meal_data.get("tags", ""),
-        "description": meal_data.get(
-            "description", f"A delicious {meal_data['name'].lower()}."
-        ),
-        "image_url": IMAGE_MAPPING.get(meal_data["name"]),
-        "cooking_tips": meal_data.get("cooking_tips"),
-        "is_carnivore": "carnivore" in meal_data.get("tags", ""),
-        "is_high_protein": "high_protein" in meal_data.get("tags", ""),
-        "is_kid_friendly": "kid_friendly" in meal_data.get("tags", ""),
-    }
-    db.add(Meal(**meal_payload))
-=======
         "description": "Flaky white cod baked with fresh garlic, herbs, olive oil, and vibrant steamed broccoli.",
         "image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
@@ -1061,15 +863,11 @@ def _seed_if_empty(db: Session) -> None:
 
         db.add(Meal(**meal_payload))
     db.commit()
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
 
 
 def seed_meals() -> None:
-    """Seeds the database with an initial set of meals."""
     db = SessionLocal()
     try:
-        for meal_data in ALL_MEALS:
-            get_or_create_meal(db, meal_data)
-        db.commit()
+        _seed_if_empty(db)
     finally:
         db.close()

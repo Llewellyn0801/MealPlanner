@@ -73,14 +73,9 @@ def test_generate_meal_plan_returns_structured_components(monkeypatch):
                 Meal(
                     name="Eggs & Avocado",
                     meal_type="breakfast",
-<<<<<<< HEAD
                     difficulty="simple",
-                    is_high_protein=True,
-                    description="Simple scrambled eggs.",
-=======
                     tags="user_safe,heart_healthy,low_carb",
                     description="Scrambled eggs with avocado.",
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
                     image_url="https://example.com/eggs.jpg",
                     core_base=json.dumps(
                         [
@@ -120,14 +115,9 @@ def test_generate_meal_plan_returns_structured_components(monkeypatch):
                 Meal(
                     name="Chicken & Salad",
                     meal_type="lunch",
-<<<<<<< HEAD
                     difficulty="simple",
-                    is_high_protein=True,
-                    description="Chicken and rice bowl.",
-=======
                     tags="user_safe,heart_healthy",
                     description="Grilled chicken with salad.",
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
                     image_url=None,
                     core_base=json.dumps(
                         [
@@ -154,14 +144,9 @@ def test_generate_meal_plan_returns_structured_components(monkeypatch):
                 Meal(
                     name="Salmon & Asparagus",
                     meal_type="dinner",
-<<<<<<< HEAD
                     difficulty="full_meal",
-                    is_high_protein=True,
-                    description="Pan-seared steak.",
-=======
                     tags="user_safe,heart_healthy",
                     description="Roasted salmon.",
->>>>>>> 4c0665a (update meal planner and use uv instead of poetry)
                     image_url=None,
                     core_base=json.dumps(
                         [
