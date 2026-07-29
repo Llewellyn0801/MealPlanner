@@ -1,5 +1,5 @@
 import json
-from typing import cast
+from typing import Any, cast
 
 from sqlalchemy.orm import Session
 
@@ -7,7 +7,7 @@ from meal_planner.database.base import Base
 from meal_planner.database.session import SessionLocal
 from meal_planner.models.meal import Meal
 
-SEED_MEALS = [
+SEED_MEALS: list[dict[str, Any]] = [
     # BREAKFASTS (5)
     {
         "name": "Greek Yogurt Berry & Chia Bowl",
@@ -610,7 +610,10 @@ SEED_MEALS = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Flaky white cod baked with fresh garlic, herbs, olive oil, and vibrant steamed broccoli.",
-        "image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19",
+        # TODO: this had the same image_url as "Mediterranean Grilled Shrimp & Zucchini
+        # Salad" below - cleared rather than guessed. Add a self-hosted image at
+        # /static/images/lemon-garlic-cod.jpg and set image_url to that path (see README).
+        "image_url": None,
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
         "core_base": [
             {

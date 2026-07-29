@@ -35,3 +35,9 @@ precommit-install:
 
 precommit-run:
 	$(UV) run pre-commit run --all-files
+
+migrate:
+	$(UV) run alembic upgrade head
+
+revision:
+	$(UV) run alembic revision --autogenerate -m "$(m)"

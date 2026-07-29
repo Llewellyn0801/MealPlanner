@@ -4,12 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search Results for "{{ query }}"</title>
+    <script>
+        (function () {
+            const stored = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = stored || (prefersDark ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
     <style>
+        :root {
+            --body-bg: #f4f7fb;
+            --text-main: #1f2937;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --link-color: #0284c7;
+            --shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.08);
+        }
+
+        html[data-theme="dark"] {
+            --body-bg: #0b1220;
+            --text-main: #e2e8f0;
+            --card-bg: #131c2e;
+            --border-color: #253248;
+            --link-color: #38bdf8;
+            --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        html {
+            color-scheme: light dark;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #1f2937;
+            background: var(--body-bg);
+            color: var(--text-main);
+            transition: background 0.2s ease, color 0.2s ease;
         }
         .container {
             max-width: 980px;
@@ -19,6 +50,9 @@
         h1 {
             margin: 0 0 18px;
         }
+        a {
+            color: var(--link-color);
+        }
         .btn {
             border: 0;
             border-radius: 8px;
@@ -26,17 +60,25 @@
             cursor: pointer;
             font-size: 14px;
         }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
         .meal-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
         }
         .meal-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            box-shadow: var(--shadow-sm);
         }
         .meal-image {
             width: 100%;
@@ -54,7 +96,7 @@
         .recipe-details {
             margin-top: 12px;
             padding-top: 12px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border-color);
         }
         .hidden {
             display: none;
@@ -72,7 +114,13 @@
 </head>
 <body>
     <main class="container">
-        <h1>Search Results for "{{ query }}"</h1>
+        <div class="top-bar">
+            <h1>Search Results for "{{ query }}"</h1>
+            <button type="button" id="theme-toggle-btn" class="btn" aria-label="Toggle dark mode">
+                <span id="theme-toggle-icon">🌙</span>
+                <span id="theme-toggle-label">Dark Mode</span>
+            </button>
+        </div>
         <p><a href="/">Back to Home</a></p>
 
         {% if results %}
@@ -109,6 +157,26 @@
     </main>
 
     <script>
+        const themeToggleBtn = document.getElementById("theme-toggle-btn");
+        const themeToggleIcon = document.getElementById("theme-toggle-icon");
+        const themeToggleLabel = document.getElementById("theme-toggle-label");
+
+        const syncThemeButton = () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            themeToggleIcon.textContent = isDark ? "☀️" : "🌙";
+            themeToggleLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+        };
+
+        themeToggleBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const nextTheme = isDark ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        });
+
+        syncThemeButton();
+
         document.querySelectorAll(".toggle-recipe-btn").forEach((button) => {
             button.addEventListener("click", () => {
                 const details = button.parentElement.querySelector(".recipe-details");

@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Health-Aware Modular Meal Planner</title>
+    <script>
+        (function () {
+            const stored = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = stored || (prefersDark ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -12,10 +20,24 @@
             --primary: #0284c7;
             --primary-hover: #0369a1;
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            --body-bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
+            --text-subtle: #475569;
+            --text-body: #334155;
             --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --hover-surface: #f1f5f9;
+            --muted-surface: #f8fafc;
+            --muted-surface-border: #e2e8f0;
+            --image-placeholder-bg: #e2e8f0;
+            --tip-bg: #fffbe6;
+            --tip-border: #ffe58f;
+            --tip-text: #8c6b00;
+            --grocery-item-bg: #f8fafc;
+            --grocery-item-border: #f1f5f9;
+            --grocery-checked-text: #94a3b8;
             --user-badge-bg: #ecfdf5;
             --user-badge-color: #047857;
             --user-badge-border: #a7f3d0;
@@ -31,16 +53,56 @@
             --radius-md: 10px;
         }
 
+        html[data-theme="dark"] {
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --bg-gradient: linear-gradient(135deg, #05070f 0%, #0f172a 50%, #05070f 100%);
+            --body-bg: #0b1220;
+            --card-bg: #131c2e;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-subtle: #cbd5e1;
+            --text-body: #cbd5e1;
+            --border-color: #253248;
+            --input-bg: #182338;
+            --hover-surface: #1c2a42;
+            --muted-surface: #182338;
+            --muted-surface-border: #253248;
+            --image-placeholder-bg: #1c2a42;
+            --tip-bg: #2a2410;
+            --tip-border: #4d3f10;
+            --tip-text: #fbbf24;
+            --grocery-item-bg: #182338;
+            --grocery-item-border: #253248;
+            --grocery-checked-text: #64748b;
+            --user-badge-bg: rgba(16, 185, 129, 0.15);
+            --user-badge-color: #6ee7b7;
+            --user-badge-border: rgba(16, 185, 129, 0.35);
+            --family-badge-bg: rgba(59, 130, 246, 0.15);
+            --family-badge-color: #93c5fd;
+            --family-badge-border: rgba(59, 130, 246, 0.35);
+            --core-badge-bg: rgba(245, 158, 11, 0.15);
+            --core-badge-color: #fbbf24;
+            --core-badge-border: rgba(245, 158, 11, 0.35);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+        }
+
         * {
             box-sizing: border-box;
+        }
+
+        html {
+            color-scheme: light dark;
         }
 
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #f8fafc;
+            background: var(--body-bg);
             color: var(--text-main);
             min-height: 100vh;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         /* HEADER & HERO */
@@ -152,7 +214,8 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             font-size: 15px;
-            background: #ffffff;
+            background: var(--input-bg);
+            color: var(--text-main);
         }
 
         /* MAIN CONTAINER */
@@ -198,13 +261,13 @@
         }
 
         .btn-secondary {
-            background: #ffffff;
+            background: var(--card-bg);
             color: var(--text-main);
             border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: #f1f5f9;
+            background: var(--hover-surface);
             transform: translateY(-1px);
         }
 
@@ -235,7 +298,7 @@
             position: relative;
             height: 200px;
             overflow: hidden;
-            background: #e2e8f0;
+            background: var(--image-placeholder-bg);
         }
 
         .meal-image {
@@ -289,8 +352,8 @@
 
         /* MODULAR COMPONENTS BOX */
         .modular-breakdown {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--muted-surface);
+            border: 1px solid var(--muted-surface-border);
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 16px;
@@ -336,7 +399,7 @@
         }
 
         .comp-text {
-            color: #334155;
+            color: var(--text-body);
             font-weight: 500;
         }
 
@@ -360,7 +423,7 @@
         }
 
         .recipe-toggle-btn:hover {
-            background: #f1f5f9;
+            background: var(--hover-surface);
         }
 
         .recipe-details {
@@ -386,7 +449,7 @@
             margin: 0;
             padding-left: 20px;
             font-size: 13px;
-            color: #475569;
+            color: var(--text-subtle);
         }
 
         .recipe-list li {
@@ -394,12 +457,12 @@
         }
 
         .cooking-tip-box {
-            background: #fffbe6;
-            border: 1px solid #ffe58f;
+            background: var(--tip-bg);
+            border: 1px solid var(--tip-border);
             border-radius: 8px;
             padding: 10px 12px;
             font-size: 13px;
-            color: #8c6b00;
+            color: var(--tip-text);
             margin-top: 12px;
         }
 
@@ -448,10 +511,10 @@
             align-items: flex-start;
             gap: 10px;
             font-size: 14px;
-            background: #f8fafc;
+            background: var(--grocery-item-bg);
             padding: 10px 12px;
             border-radius: 8px;
-            border: 1px solid #f1f5f9;
+            border: 1px solid var(--grocery-item-border);
         }
 
         .grocery-item-row input[type="checkbox"] {
@@ -464,14 +527,14 @@
 
         .grocery-item-label {
             cursor: pointer;
-            color: #334155;
+            color: var(--text-body);
             flex-grow: 1;
             line-height: 1.4;
         }
 
         .grocery-item-row input:checked + .grocery-item-label {
             text-decoration: line-through;
-            color: #94a3b8;
+            color: var(--grocery-checked-text);
         }
 
         @media (max-width: 640px) {
@@ -487,6 +550,10 @@
         <div class="header-container">
             <div class="title-area">
                 <h1>Modular Family Meal Planner</h1>
+                <button type="button" id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle dark mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                    <span id="theme-toggle-label">Dark Mode</span>
+                </button>
             </div>
 
             <div class="health-profile-card">
@@ -615,6 +682,26 @@
     </main>
 
     <script>
+        const themeToggleBtn = document.getElementById("theme-toggle-btn");
+        const themeToggleIcon = document.getElementById("theme-toggle-icon");
+        const themeToggleLabel = document.getElementById("theme-toggle-label");
+
+        const syncThemeButton = () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            themeToggleIcon.textContent = isDark ? "☀️" : "🌙";
+            themeToggleLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+        };
+
+        themeToggleBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const nextTheme = isDark ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        });
+
+        syncThemeButton();
+
         let currentPlan = {{ plan | tojson | safe }};
 
         const toggleRecipe = (button) => {
