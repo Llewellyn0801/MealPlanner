@@ -14,7 +14,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "breakfast",
         "difficulty": "simple",
         "description": "Heart-healthy, low-sodium breakfast bowl rich in protein and fiber.",
-        "image_url": "https://images.unsplash.com/photo-1488477181946-6428a0291777",
+        "image_url": "/static/images/greek-yogurt-berry-&-chia-bowl.png",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
         "core_base": [
             {
