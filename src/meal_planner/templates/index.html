@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Health-Aware Modular Meal Planner</title>
+    <title>Health-Aware Modular Meal Planner with Macro Tracking</title>
     <script>
         (function () {
             const stored = localStorage.getItem("theme");
@@ -201,9 +201,154 @@
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
+        /* MAIN CONTAINER */
+        .main-container {
+            max-width: 1080px;
+            margin: -24px auto 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* PREFERENCE & DISLIKES CONTROL PANEL */
+        .preference-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .preference-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pref-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .pref-group {
+            flex: 1;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pref-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .input-text {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .checkbox-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-body);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* DAILY MACRO SUMMARY BANNER */
+        .macro-summary-banner {
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(14, 165, 233, 0.03) 100%);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .macro-summary-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .macro-summary-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .macro-stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            min-width: 90px;
+        }
+
+        .macro-stat-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .macro-stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-cal { color: #ef4444; }
+        .stat-prot { color: #3b82f6; }
+        .stat-carb { color: #f59e0b; }
+        .stat-fat { color: #10b981; }
+
         /* SEARCH FORM */
         .search-form {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: flex;
             gap: 8px;
         }
@@ -216,15 +361,6 @@
             font-size: 15px;
             background: var(--input-bg);
             color: var(--text-main);
-        }
-
-        /* MAIN CONTAINER */
-        .main-container {
-            max-width: 1080px;
-            margin: -24px auto 40px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
         }
 
         .action-bar {
@@ -338,17 +474,40 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 20px;
             font-weight: 700;
-            margin: 0 0 8px;
+            margin: 0 0 6px;
             color: var(--text-main);
             line-height: 1.3;
         }
 
         .meal-description {
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            line-height: 1.5;
-            margin: 0 0 16px;
+            line-height: 1.45;
+            margin: 0 0 12px;
         }
+
+        /* CARD MACRO BADGES ROW */
+        .card-macro-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .macro-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-cal { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .badge-prot { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .badge-carb { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .badge-fat { background: rgba(16, 185, 129, 0.12); color: #10b981; }
 
         /* MODULAR COMPONENTS BOX */
         .modular-breakdown {
@@ -497,6 +656,30 @@
             color: var(--text-main);
         }
 
+        .grocery-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .grocery-category-box {
+            background: var(--muted-surface);
+            border: 1px solid var(--muted-surface-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        .category-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 12px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .grocery-items-list {
             list-style: none;
             padding: 0;
@@ -509,20 +692,20 @@
         .grocery-item-row {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            font-size: 14px;
-            background: var(--grocery-item-bg);
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--grocery-item-border);
+            gap: 8px;
+            font-size: 13.5px;
+            background: var(--card-bg);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
         }
 
         .grocery-item-row input[type="checkbox"] {
-            margin-top: 2px;
+            margin-top: 3px;
             cursor: pointer;
             accent-color: var(--primary);
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
         }
 
         .grocery-item-label {
@@ -532,7 +715,8 @@
             line-height: 1.4;
         }
 
-        .grocery-item-row input:checked + .grocery-item-label {
+        .grocery-item-row input:checked + .comp-badge + .grocery-item-label,
+        .grocery-item-row input:checked ~ .grocery-item-label {
             text-decoration: line-through;
             color: var(--grocery-checked-text);
         }
@@ -541,6 +725,8 @@
             h1 { font-size: 24px; }
             .hero-header { padding: 24px 16px 36px; }
             .health-profile-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .macro-summary-banner { flex-direction: column; align-items: flex-start; }
+            .macro-summary-stats { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -576,16 +762,72 @@
                 type="search"
                 name="q"
                 class="search-input"
-                placeholder="Search meals by name or tag..."
+                placeholder="Search 24+ meals by name or tag..."
             />
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <div class="action-bar">
-            <button class="btn btn-primary" id="new-plan-btn">
-                ✨ Generate New Daily Plan
-            </button>
-        </div>
+        <!-- PREFERENCES & DISLIKES PANEL -->
+        <section class="preference-panel">
+            <div class="preference-title">⚙️ Plan Personalization & Ingredient Filters</div>
+            <div class="pref-row">
+                <div class="pref-group">
+                    <label class="pref-label" for="dislikes-input">🚫 Disliked Ingredients / Exclusions (comma separated):</label>
+                    <input
+                        type="text"
+                        id="dislikes-input"
+                        class="input-text"
+                        placeholder="e.g. tuna, mushrooms, tofu, pork"
+                        value="{{ dislikes }}"
+                    />
+                </div>
+                <div class="pref-group">
+                    <label class="pref-label">🌟 Preferred Diet Boosts:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="likes" value="high_protein" checked /> 💪 High Protein
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="likes" value="low_carb" /> 🥦 Low Carb
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="likes" value="heart_healthy" checked /> ❤️ Heart Healthy
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="likes" value="kid_friendly" /> 👶 Kid Friendly
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                <button type="button" id="apply-preferences-btn" class="btn btn-primary">
+                    🎯 Apply Preferences & Generate Custom Plan
+                </button>
+            </div>
+        </section>
+
+        <!-- DAILY MACRO SUMMARY BANNER -->
+        <section class="macro-summary-banner">
+            <h2 class="macro-summary-title">📊 Aggregated Daily Macro Summary</h2>
+            <div class="macro-summary-stats">
+                <div class="macro-stat-box">
+                    <span class="macro-stat-value stat-cal" id="sum-cal">{{ total_macros.calories }}</span>
+                    <span class="macro-stat-label">Calories (kcal)</span>
+                </div>
+                <div class="macro-stat-box">
+                    <span class="macro-stat-value stat-prot" id="sum-prot">{{ total_macros.protein_g }}g</span>
+                    <span class="macro-stat-label">Protein</span>
+                </div>
+                <div class="macro-stat-box">
+                    <span class="macro-stat-value stat-carb" id="sum-carb">{{ total_macros.carbs_g }}g</span>
+                    <span class="macro-stat-label">Carbs</span>
+                </div>
+                <div class="macro-stat-box">
+                    <span class="macro-stat-value stat-fat" id="sum-fat">{{ total_macros.fats_g }}g</span>
+                    <span class="macro-stat-label">Fats</span>
+                </div>
+            </div>
+        </section>
 
         <section class="meal-grid">
             {% for meal_type in ["breakfast", "lunch", "dinner"] %}
@@ -601,6 +843,14 @@
                 <div class="meal-body">
                     <h2 class="meal-title">{{ meal.name }}</h2>
                     <p class="meal-description">{{ meal.description }}</p>
+
+                    <!-- CARD MACROS BADGES -->
+                    <div class="card-macro-row">
+                        <span class="macro-badge badge-cal">🔥 <span class="m-cal">{{ meal.calories }}</span> kcal</span>
+                        <span class="macro-badge badge-prot">💪 <span class="m-prot">{{ meal.protein_g }}</span>g P</span>
+                        <span class="macro-badge badge-carb">🌾 <span class="m-carb">{{ meal.carbs_g }}</span>g C</span>
+                        <span class="macro-badge badge-fat">🥑 <span class="m-fat">{{ meal.fats_g }}</span>g F</span>
+                    </div>
 
                     <!-- MODULAR BASE + SIDES STRUCTURE -->
                     <div class="modular-breakdown">
@@ -668,16 +918,11 @@
 
         <section id="grocery-section" class="grocery-card hidden">
             <div class="grocery-header">
-                <h2 class="grocery-title">Grocery List</h2>
+                <h2 class="grocery-title">🛒 Categorized Grocery List</h2>
             </div>
-            <ul class="grocery-items-list" id="grocery-list">
-                {% for item in grocery_list %}
-                <li class="grocery-item-row">
-                    <input type="checkbox" id="grocery-item-{{ loop.index0 }}" />
-                    <label for="grocery-item-{{ loop.index0 }}" class="grocery-item-label">{{ item }}</label>
-                </li>
-                {% endfor %}
-            </ul>
+            <div id="grocery-categories-container" class="grocery-categories-grid">
+                <!-- Dynamically populated via renderGroceryList -->
+            </div>
         </section>
     </main>
 
@@ -703,6 +948,89 @@
         syncThemeButton();
 
         let currentPlan = {{ plan | tojson | safe }};
+        let initialGroceryData = {{ grocery_data | tojson | safe }};
+
+        const getSelectedPreferences = () => {
+            const dislikes = document.getElementById("dislikes-input").value;
+            const likes = Array.from(document.querySelectorAll('input[name="likes"]:checked')).map(cb => cb.value);
+            return { dislikes, likes };
+        };
+
+        const updateMacroSummary = (totals) => {
+            if (!totals) {
+                totals = { calories: 0, protein_g: 0, carbs_g: 0, fats_g: 0 };
+                Object.values(currentPlan).forEach(m => {
+                    if (m) {
+                        totals.calories += (m.calories || 0);
+                        totals.protein_g += (m.protein_g || 0);
+                        totals.carbs_g += (m.carbs_g || 0);
+                        totals.fats_g += (m.fats_g || 0);
+                    }
+                });
+            }
+            document.getElementById("sum-cal").textContent = totals.calories || 0;
+            document.getElementById("sum-prot").textContent = (totals.protein_g || 0) + "g";
+            document.getElementById("sum-carb").textContent = (totals.carbs_g || 0) + "g";
+            document.getElementById("sum-fat").textContent = (totals.fats_g || 0) + "g";
+        };
+
+        const renderGroceryList = (groceryData) => {
+            const container = document.getElementById("grocery-categories-container");
+            container.innerHTML = "";
+
+            const categories = (groceryData && groceryData.grocery_list) ? groceryData.grocery_list : {};
+            const categoryIcons = {
+                "Produce": "🥗",
+                "Protein": "🥩",
+                "Pantry/Grains": "🌾",
+                "Dairy/Fats": "🥑"
+            };
+
+            let totalItems = 0;
+            Object.keys(categories).forEach(cat => {
+                const catData = categories[cat];
+                const core = catData.core || [];
+                const family = catData.family_only || [];
+                const user = catData.user_only || [];
+
+                if (core.length === 0 && family.length === 0 && user.length === 0) return;
+
+                const catBox = document.createElement("div");
+                catBox.className = "grocery-category-box";
+
+                const icon = categoryIcons[cat] || "🛒";
+                catBox.innerHTML = `<h3 class="category-heading">${icon} ${cat}</h3>`;
+
+                const ul = document.createElement("ul");
+                ul.className = "grocery-items-list";
+
+                const appendItems = (items, badgeClass, badgeLabel) => {
+                    items.forEach(item => {
+                        totalItems++;
+                        const li = document.createElement("li");
+                        li.className = "grocery-item-row";
+                        const checkboxId = `grocery-item-${totalItems}`;
+                        li.innerHTML = `
+                            <input type="checkbox" id="${checkboxId}" />
+                            <span class="comp-badge ${badgeClass}">${badgeLabel}</span>
+                            <label class="grocery-item-label" for="${checkboxId}">${item}</label>
+                        `;
+                        ul.appendChild(li);
+                    });
+                };
+
+                appendItems(core, "comp-core", "Core");
+                appendItems(family, "comp-family", "Family");
+                appendItems(user, "comp-user", "User");
+
+                catBox.appendChild(ul);
+                container.appendChild(catBox);
+            });
+
+            if (totalItems === 0) {
+                container.innerHTML = "<p style='color: var(--text-muted); padding: 10px;'>No grocery items found for this plan.</p>";
+            }
+        };
 
         const toggleRecipe = (button) => {
             const details = button.closest(".meal-body").querySelector(".recipe-details");
@@ -732,6 +1060,11 @@
 
             card.querySelector(".meal-title").textContent = meal.name;
             card.querySelector(".meal-description").textContent = meal.description || "";
+
+            card.querySelector(".m-cal").textContent = meal.calories || 0;
+            card.querySelector(".m-prot").textContent = meal.protein_g || 0;
+            card.querySelector(".m-carb").textContent = meal.carbs_g || 0;
+            card.querySelector(".m-fat").textContent = meal.fats_g || 0;
 
             const coreText = card.querySelector(".core-text");
             const familyText = card.querySelector(".family-text");
@@ -774,6 +1107,25 @@
             }
         };
 
+        const fetchNewPlan = async () => {
+            const prefs = getSelectedPreferences();
+            const response = await fetch("/plan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(prefs)
+            });
+            const data = await response.json();
+            currentPlan = data.plan;
+            Object.keys(currentPlan).forEach(mealType => {
+                renderMealCard(mealType, currentPlan[mealType]);
+            });
+            updateMacroSummary(data.total_macros);
+
+            if (!document.getElementById("grocery-section").classList.contains("hidden")) {
+                await updateGroceryList();
+            }
+        };
+
         const updateGroceryList = async () => {
             const response = await fetch("/grocery-list", {
                 method: "POST",
@@ -781,40 +1133,32 @@
                 body: JSON.stringify(currentPlan)
             });
             const data = await response.json();
-            const list = document.getElementById("grocery-list");
-            list.innerHTML = "";
-            const items = data.grocery_list || [];
-            items.forEach((item, index) => {
-                const li = document.createElement("li");
-                li.className = "grocery-item-row";
-                const checkboxId = `grocery-item-${index}`;
-                li.innerHTML = `<input type="checkbox" id="${checkboxId}" /><label class="grocery-item-label" for="${checkboxId}">${item}</label>`;
-                list.appendChild(li);
-            });
+            renderGroceryList(data);
         };
 
         document.querySelectorAll(".recipe-toggle-btn").forEach((button) => {
             button.addEventListener("click", () => toggleRecipe(button));
         });
 
-        document.getElementById("new-plan-btn").addEventListener("click", async () => {
-            window.location.reload();
-        });
+        document.getElementById("apply-preferences-btn").addEventListener("click", fetchNewPlan);
 
         document.querySelectorAll(".reroll-btn").forEach((button) => {
             button.addEventListener("click", async () => {
                 const mealType = button.closest(".meal-card").dataset.mealType;
+                const prefs = getSelectedPreferences();
                 const response = await fetch("/reroll-meal", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         meal_type: mealType,
                         meals: currentPlan,
+                        dislikes: prefs.dislikes,
                     }),
                 });
                 const newMeal = await response.json();
                 currentPlan[mealType] = newMeal;
                 renderMealCard(mealType, newMeal);
+                updateMacroSummary();
 
                 if (!document.getElementById("grocery-section").classList.contains("hidden")) {
                     await updateGroceryList();
@@ -836,6 +1180,9 @@
                 btn.textContent = "🛒 Generate Aggregated Grocery List";
             }
         });
+
+        // Initialize server-rendered grocery list
+        renderGroceryList(initialGroceryData);
     </script>
 </body>
 </html>

@@ -24,6 +24,10 @@ class Meal(Base):
     is_carnivore = Column(Boolean, default=False)
     is_high_protein = Column(Boolean, default=False)
     is_kid_friendly = Column(Boolean, default=False)
+    calories = Column(Integer, nullable=False, default=0)
+    protein_g = Column(Integer, nullable=False, default=0)
+    carbs_g = Column(Integer, nullable=False, default=0)
+    fats_g = Column(Integer, nullable=False, default=0)
 
 
 class MealHistory(Base):

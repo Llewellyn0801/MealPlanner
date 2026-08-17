@@ -8,7 +8,7 @@ from meal_planner.database.session import SessionLocal
 from meal_planner.models.meal import Meal
 
 SEED_MEALS: list[dict[str, Any]] = [
-    # BREAKFASTS (5)
+    # BREAKFASTS (8)
     {
         "name": "Greek Yogurt Berry & Chia Bowl",
         "meal_type": "breakfast",
@@ -16,6 +16,10 @@ SEED_MEALS: list[dict[str, Any]] = [
         "description": "Heart-healthy, low-sodium breakfast bowl rich in protein and fiber.",
         "image_url": "/static/images/greek-yogurt-berry-&-chia-bowl.png",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 340,
+        "protein_g": 24,
+        "carbs_g": 32,
+        "fats_g": 12,
         "core_base": [
             {
                 "name": "1 cup Plain Low-Fat Greek Yogurt",
@@ -68,8 +72,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "breakfast",
         "difficulty": "simple",
         "description": "Fluffy egg scramble with fresh spinach and avocado healthy fats.",
-        "image_url": "https://images.unsplash.com/photo-1510693206972-df098062cb71",
+        "image_url": "/static/images/mediterranean-spinach-avocado-scramble.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 390,
+        "protein_g": 21,
+        "carbs_g": 8,
+        "fats_g": 31,
         "core_base": [
             {
                 "name": "3 Large Eggs",
@@ -123,8 +131,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "breakfast",
         "difficulty": "simple",
         "description": "Omega-3 rich wild smoked salmon with crisp cucumber and fresh dill.",
-        "image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
+        "image_url": "/static/images/smoked-salmon-dill-cucumber-plate.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 310,
+        "protein_g": 26,
+        "carbs_g": 6,
+        "fats_g": 20,
         "core_base": [
             {
                 "name": "120g Wild Smoked Salmon",
@@ -172,8 +184,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "breakfast",
         "difficulty": "simple",
         "description": "Plant-based low-glycemic scramble with turmeric and sautéed mushrooms.",
-        "image_url": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec",
+        "image_url": "/static/images/tofu-mushroom-garden-scramble.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 280,
+        "protein_g": 22,
+        "carbs_g": 10,
+        "fats_g": 18,
         "core_base": [
             {
                 "name": "200g Firm Tofu (crumbled)",
@@ -230,8 +246,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "breakfast",
         "difficulty": "simple",
         "description": "No-cook chia pudding packed with soluble fiber and healthy monounsaturated fats.",
-        "image_url": "https://images.unsplash.com/photo-1559564109-ce8041d40c06",
+        "image_url": "/static/images/overnight-chia-almond-butter-pudding.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,simple",
+        "calories": 360,
+        "protein_g": 12,
+        "carbs_g": 30,
+        "fats_g": 22,
         "core_base": [
             {
                 "name": "3 tbsp Chia Seeds",
@@ -274,14 +294,182 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_high_protein": False,
         "is_kid_friendly": True,
     },
-    # LUNCHES (5)
+    {
+        "name": "Avocado Toast & Soft Poached Eggs",
+        "meal_type": "breakfast",
+        "difficulty": "simple",
+        "description": "Creamy avocado on artisanal whole grain sourdough topped with golden poached eggs.",
+        "image_url": "/static/images/avocado-toast-poached-eggs.jpg",
+        "tags": "heart_healthy,user_safe,high_protein,simple",
+        "calories": 420,
+        "protein_g": 18,
+        "carbs_g": 35,
+        "fats_g": 22,
+        "core_base": [
+            {
+                "name": "2 Large Eggs",
+                "category": "Protein",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1/2 Avocado (mashed)",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 slice Whole Grain Sourdough",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1 tsp Extra Virgin Olive Oil & Everything Seasoning",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "2 Crispy Bacon Strips",
+                "category": "Protein",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1/2 cup Cherry Tomatoes & Microgreens",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Toast sourdough slice until golden.",
+            "Mash avocado with lemon juice and spread generously on toast.",
+            "Poach eggs in simmering water for 3 minutes until white is set and yolk is runny.",
+            "Top toast with poached eggs, olive oil drizzle, and seasoning.",
+        ],
+        "cooking_tips": "Add a splash of vinegar to poaching water to keep egg whites tight.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Protein Cinnamon Oat & Berry Bowl",
+        "meal_type": "breakfast",
+        "difficulty": "simple",
+        "description": "Warm rolled oats infused with whey protein, Ceylon cinnamon, and dark berries.",
+        "image_url": "/static/images/protein-cinnamon-oat-berry-bowl.jpg",
+        "tags": "heart_healthy,high_protein,user_safe,simple",
+        "calories": 410,
+        "protein_g": 28,
+        "carbs_g": 52,
+        "fats_g": 8,
+        "core_base": [
+            {
+                "name": "1/2 cup Rolled Oats",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 scoop Vanilla Protein Powder",
+                "category": "Protein",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "1/2 cup Fresh Blackberries & Raspberries",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 tsp Ceylon Cinnamon",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 tbsp Pure Maple Syrup",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1 tbsp Pumpkin Seeds",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Cook rolled oats in water or unsweetened almond milk for 5 minutes.",
+            "Remove from heat and stir in protein powder and cinnamon until smooth.",
+            "Top with dark berries.",
+        ],
+        "cooking_tips": "Stir in protein powder after removing oats from direct heat to prevent clumping.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Fluffy Garden Veggie & Goat Cheese Omelet",
+        "meal_type": "breakfast",
+        "difficulty": "simple",
+        "description": "3-egg omelet loaded with cherry tomatoes, spinach, bell peppers, and creamy goat cheese.",
+        "image_url": "/static/images/fluffy-garden-veggie-goat-cheese-omelet.jpg",
+        "tags": "low_carb,heart_healthy,user_safe,high_protein,simple",
+        "calories": 380,
+        "protein_g": 26,
+        "carbs_g": 8,
+        "fats_g": 28,
+        "core_base": [
+            {"name": "3 Large Eggs", "category": "Protein", "tags": ["user_safe"]},
+            {
+                "name": "1/2 cup Cherry Tomatoes & Spinach",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "30g Soft Goat Cheese",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1 tbsp Olive Oil",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 slice Roasted Breakfast Potatoes",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {"name": "1/2 Sliced Avocado", "category": "Produce", "tags": ["user_safe"]}
+        ],
+        "instructions": [
+            "Whisk eggs with herbs and pour into warm oiled skillet.",
+            "Sauté veggies lightly and add to half of omelet along with crumbled goat cheese.",
+            "Fold over and serve warm.",
+        ],
+        "cooking_tips": "Goat cheese adds tangy richness with less lactose than conventional cow cheeses.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    # LUNCHES (8)
     {
         "name": "Lemon Herb Chicken & Mediterranean Greens",
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Grilled chicken breast over fresh greens, cucumbers, and extra virgin olive oil.",
-        "image_url": "https://images.unsplash.com/photo-1505253758473-96b7015fcd40",
+        "image_url": "/static/images/lemon-herb-chicken-mediterranean-greens.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 440,
+        "protein_g": 42,
+        "carbs_g": 12,
+        "fats_g": 24,
         "core_base": [
             {
                 "name": "180g Grilled Chicken Breast",
@@ -339,8 +527,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Heart-healthy albacore tuna salad tossed with avocado, olive oil, and crunchy celery.",
-        "image_url": "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f",
+        "image_url": "/static/images/wild-tuna-avocado-romaine-salad.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 380,
+        "protein_g": 36,
+        "carbs_g": 10,
+        "fats_g": 22,
         "core_base": [
             {
                 "name": "1 can Pole-Caught Albacore Tuna (drained)",
@@ -392,8 +584,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Lean turkey stir-fry with antioxidant-rich broccoli florets and bell peppers.",
-        "image_url": "https://images.unsplash.com/photo-1547592166-23ac45744acd",
+        "image_url": "/static/images/turkey-broccoli-pepper-stir-fry.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 420,
+        "protein_g": 40,
+        "carbs_g": 16,
+        "fats_g": 22,
         "core_base": [
             {
                 "name": "200g Lean Ground Turkey",
@@ -451,8 +647,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Succulent grilled wild shrimp with tender zucchini ribbons and olive oil lemon dressing.",
-        "image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19",
+        "image_url": "/static/images/mediterranean-grilled-shrimp-zucchini-salad.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 360,
+        "protein_g": 34,
+        "carbs_g": 12,
+        "fats_g": 19,
         "core_base": [
             {
                 "name": "180g Wild Shrimp (peeled)",
@@ -504,8 +704,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "High-fiber brown lentils with sauteed spinach, carrots, and cold-pressed olive oil.",
-        "image_url": "https://images.unsplash.com/photo-1547592180-85f173990554",
+        "image_url": "/static/images/heart-healthy-lentil-spinach-bowl.jpg",
         "tags": "heart_healthy,low_sodium,user_safe,high_protein,simple",
+        "calories": 390,
+        "protein_g": 20,
+        "carbs_g": 54,
+        "fats_g": 11,
         "core_base": [
             {
                 "name": "1 cup Cooked Brown Lentils",
@@ -548,14 +752,181 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_high_protein": True,
         "is_kid_friendly": False,
     },
-    # DINNERS (5)
+    {
+        "name": "Grilled Chicken Shawarma & Herb Tahini Bowl",
+        "meal_type": "lunch",
+        "difficulty": "simple",
+        "description": "Spiced grilled chicken over cucumber tomato salad, pickled onions, and garlic herb tahini.",
+        "image_url": "/static/images/chicken-shawarma-herb-tahini-bowl.jpg",
+        "tags": "heart_healthy,user_safe,high_protein,simple",
+        "calories": 520,
+        "protein_g": 44,
+        "carbs_g": 38,
+        "fats_g": 20,
+        "core_base": [
+            {
+                "name": "200g Grilled Chicken Thighs (shawarma spice)",
+                "category": "Protein",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "1 cup Cucumber & Tomato Salad",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "2 tbsp Herb Garlic Tahini",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 Warm Whole Wheat Pita",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1/2 cup Roasted Cauliflower florets",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Marinate chicken in cumin, coriander, paprika, garlic, and lemon juice; grill thoroughly.",
+            "Assemble bowl with salad, sliced chicken, and drizzled tahini dressing.",
+        ],
+        "cooking_tips": "Tahini provides healthy fats and minerals without dairy.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Pan-Seared Salmon & Quinoa Grain Bowl",
+        "meal_type": "lunch",
+        "difficulty": "simple",
+        "description": "Crispy pan-seared salmon over fluffy quinoa, steamed edamame, and sesame oil dressing.",
+        "image_url": "/static/images/salmon-quinoa-grain-bowl.jpg",
+        "tags": "heart_healthy,user_safe,high_protein,simple",
+        "calories": 560,
+        "protein_g": 42,
+        "carbs_g": 40,
+        "fats_g": 24,
+        "core_base": [
+            {
+                "name": "180g Atlantic Salmon Fillet",
+                "category": "Protein",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 cup Cooked White Quinoa",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1/2 cup Shelled Edamame",
+                "category": "Produce",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "1 tbsp Toasted Sesame Oil",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1/4 cup Teriyaki Glaze",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1 tbsp Toasted Sesame Seeds & Lime",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Sear salmon skin-side down in sesame oil for 4 mins, flip and cook 3 mins.",
+            "Serve over warm quinoa and shelled edamame.",
+        ],
+        "cooking_tips": "Quinoa is a complete plant protein containing all 9 essential amino acids.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Chickpea & Roasted Mediterranean Veggie Salad",
+        "meal_type": "lunch",
+        "difficulty": "simple",
+        "description": "Fiber-packed chickpea bowl with roasted red peppers, artichoke hearts, and lemon vinaigrette.",
+        "image_url": "/static/images/chickpea-roasted-mediterranean-veggie-salad.jpg",
+        "tags": "heart_healthy,low_sodium,user_safe,simple",
+        "calories": 430,
+        "protein_g": 16,
+        "carbs_g": 58,
+        "fats_g": 16,
+        "core_base": [
+            {
+                "name": "1.5 cups Cooked Chickpeas",
+                "category": "Protein",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1/2 cup Roasted Red Peppers",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1/2 cup Artichoke Hearts",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1.5 tbsp Olive Oil Lemon Dressing",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "50g Crumbled Feta Cheese",
+                "category": "Dairy/Fats",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1/4 cup Kalamata Olives",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Combine chickpeas, roasted peppers, and chopped artichoke hearts.",
+            "Toss with olive oil and lemon vinaigrette.",
+        ],
+        "cooking_tips": "Rinse canned chickpeas under cold water to reduce sodium.",
+        "is_carnivore": False,
+        "is_high_protein": False,
+        "is_kid_friendly": False,
+    },
+    # DINNERS (8)
     {
         "name": "Herb Roasted Salmon & Lemon Asparagus",
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Premium wild salmon roasted with extra virgin olive oil and tender asparagus spears.",
-        "image_url": "https://images.unsplash.com/photo-1467003909585-2f8a72700288",
+        "image_url": "/static/images/herb-roasted-salmon-lemon-asparagus.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
+        "calories": 510,
+        "protein_g": 44,
+        "carbs_g": 10,
+        "fats_g": 32,
         "core_base": [
             {
                 "name": "200g Wild Salmon Fillet",
@@ -610,11 +981,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Flaky white cod baked with fresh garlic, herbs, olive oil, and vibrant steamed broccoli.",
-        # TODO: this had the same image_url as "Mediterranean Grilled Shrimp & Zucchini
-        # Salad" below - cleared rather than guessed. Add a self-hosted image at
-        # /static/images/lemon-garlic-cod.jpg and set image_url to that path (see README).
-        "image_url": None,
+        "image_url": "/static/images/lemon-garlic-baked-cod-steamed-broccoli.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
+        "calories": 380,
+        "protein_g": 42,
+        "carbs_g": 12,
+        "fats_g": 18,
         "core_base": [
             {
                 "name": "200g Fresh Cod Fillet",
@@ -667,8 +1039,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Juicy skinless chicken thighs pan-roasted with fresh rosemary and crispy Brussels sprouts.",
-        "image_url": "https://images.unsplash.com/photo-1604503468506-a8da13d82791",
+        "image_url": "/static/images/rosemary-chicken-thighs-roasted-brussels-sprouts.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
+        "calories": 520,
+        "protein_g": 46,
+        "carbs_g": 14,
+        "fats_g": 30,
         "core_base": [
             {
                 "name": "2 Skinless Chicken Thighs",
@@ -720,8 +1096,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Lean sirloin steak seared in olive oil with garlic-infused tender green beans.",
-        "image_url": "https://images.unsplash.com/photo-1558030006-450675393462",
+        "image_url": "/static/images/grass-fed-sirloin-steak-sauteed-green-beans.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
+        "calories": 540,
+        "protein_g": 50,
+        "carbs_g": 10,
+        "fats_g": 32,
         "core_base": [
             {
                 "name": "200g Grass-Fed Sirloin Steak",
@@ -774,8 +1154,12 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Pan-seared firm tofu over colorful roasted eggplant, zucchini, and bell peppers.",
-        "image_url": "https://images.unsplash.com/photo-1550547660-d9450f859349",
+        "image_url": "/static/images/mediterranean-tofu-steak-roasted-ratatouille.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
+        "calories": 390,
+        "protein_g": 26,
+        "carbs_g": 22,
+        "fats_g": 22,
         "core_base": [
             {
                 "name": "200g Firm Tofu (sliced)",
@@ -827,6 +1211,171 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_high_protein": True,
         "is_kid_friendly": False,
     },
+    {
+        "name": "Asian Beef & Broccoli Skillet",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Tender sirloin strips sautéed with broccoli, ginger, garlic, and coconut aminos.",
+        "image_url": "/static/images/asian-beef-broccoli-skillet.jpg",
+        "tags": "low_carb,heart_healthy,high_protein,full_meal",
+        "calories": 540,
+        "protein_g": 46,
+        "carbs_g": 22,
+        "fats_g": 28,
+        "core_base": [
+            {
+                "name": "220g Sirloin Beef Strips",
+                "category": "Protein",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "2 cups Broccoli Florets",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 tbsp Ginger & Garlic (minced)",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1 tbsp Sesame Oil & Coconut Aminos",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 cup Steamed White Rice",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1 cup Cauliflower Rice",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Stir-fry beef strips in hot sesame oil until browned, set aside.",
+            "Sauté ginger, garlic, and broccoli until crisp-tender.",
+            "Return beef to pan with coconut aminos sauce and toss.",
+        ],
+        "cooking_tips": "Coconut aminos provide rich savory flavor with less sodium than soy sauce.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Herbed Pork Tenderloin & Roasted Apples",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Lean pork tenderloin roasted with fresh thyme, garlic, and caramelized apple slices.",
+        "image_url": "/static/images/herbed-pork-tenderloin-roasted-apples.jpg",
+        "tags": "heart_healthy,high_protein,full_meal",
+        "calories": 510,
+        "protein_g": 42,
+        "carbs_g": 32,
+        "fats_g": 22,
+        "core_base": [
+            {
+                "name": "200g Lean Pork Tenderloin",
+                "category": "Protein",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "1 Green Apple (sliced)",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 tbsp Fresh Thyme & Garlic",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1 tbsp Olive Oil",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 cup Roasted Sweet Potato Wedges",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1 cup Steamed Green Beans",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Sear pork tenderloin on all sides in an oven-safe skillet.",
+            "Arrange apple slices around pork and roast at 200°C for 18 minutes.",
+        ],
+        "cooking_tips": "Pork tenderloin is as lean as skinless chicken breast.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Crispy Baked Lemon Herb Turkey Cutlets & Green Beans",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Golden baked turkey cutlets with herbs de Provence and garlic butter green beans.",
+        "image_url": "/static/images/baked-turkey-cutlets-green-beans.jpg",
+        "tags": "low_carb,heart_healthy,high_protein,full_meal",
+        "calories": 480,
+        "protein_g": 48,
+        "carbs_g": 18,
+        "fats_g": 22,
+        "core_base": [
+            {
+                "name": "220g Turkey Breast Cutlets",
+                "category": "Protein",
+                "tags": ["user_safe", "high_protein"],
+            },
+            {
+                "name": "1.5 cups Fresh Green Beans",
+                "category": "Produce",
+                "tags": ["user_safe", "heart_healthy"],
+            },
+            {
+                "name": "1 tbsp Olive Oil & Lemon Zest",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "1 cup Garlic Mashed Potatoes",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "1 cup Roasted Yellow Squash",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Season turkey cutlets with lemon zest, rosemary, and olive oil.",
+            "Bake at 200°C for 14 minutes.",
+            "Sauté green beans in skillet with minced garlic.",
+        ],
+        "cooking_tips": "Turkey cutlets cook quickly and stay tender when baked with olive oil.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
 ]
 
 
@@ -835,13 +1384,16 @@ def _seed_if_empty(db: Session) -> None:
         meals_count = db.query(Meal).count()
         if meals_count > 0:
             first_meal = db.query(Meal).first()
-            if first_meal and getattr(first_meal, "core_base", "[]") != "[]":
+            if (
+                first_meal
+                and getattr(first_meal, "calories", 0) > 0
+                and meals_count >= 24
+            ):
                 return
             db.query(Meal).delete()
             db.commit()
     except Exception:
         db.rollback()
-        # Drop and recreate tables if schema missing columns
         bind = db.get_bind()
         Base.metadata.drop_all(bind=bind)
         Base.metadata.create_all(bind=bind)

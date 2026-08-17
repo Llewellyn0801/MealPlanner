@@ -75,6 +75,10 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
             "name": "No meal available",
             "description": "",
             "image_url": None,
+            "calories": 0,
+            "protein_g": 0,
+            "carbs_g": 0,
+            "fats_g": 0,
             "core_base": [],
             "family_additions": [],
             "user_alternatives": [],
@@ -106,6 +110,10 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
         "name": meal.name,
         "description": meal.description,
         "image_url": meal.image_url,
+        "calories": getattr(meal, "calories", 0) or 0,
+        "protein_g": getattr(meal, "protein_g", 0) or 0,
+        "carbs_g": getattr(meal, "carbs_g", 0) or 0,
+        "fats_g": getattr(meal, "fats_g", 0) or 0,
         "core_base": core_base,
         "family_additions": family_additions,
         "user_alternatives": user_alternatives,
@@ -116,10 +124,34 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
     }
 
 
-def _score_meal(meal: Meal, meal_type: str) -> int:
-    """Scores a meal based on desired tags."""
+def calculate_total_macros(plan: dict[str, dict[str, Any]]) -> dict[str, int]:
+    """Calculates aggregated macro totals across all meals in the plan."""
+    totals = {"calories": 0, "protein_g": 0, "carbs_g": 0, "fats_g": 0}
+    for m in plan.values():
+        if isinstance(m, dict) and m.get("name") != "No meal available":
+            totals["calories"] += int(m.get("calories", 0) or 0)
+            totals["protein_g"] += int(m.get("protein_g", 0) or 0)
+            totals["carbs_g"] += int(m.get("carbs_g", 0) or 0)
+            totals["fats_g"] += int(m.get("fats_g", 0) or 0)
+    return totals
+
+
+def _meal_contains_dislikes(meal: Meal, dislikes: list[str]) -> bool:
+    if not dislikes:
+        return False
+    text = f"{meal.name} {meal.tags} {meal.ingredients}".lower()
+    for d in dislikes:
+        term = d.strip().lower()
+        if term and term in text:
+            return True
+    return False
+
+
+def _score_meal(meal: Meal, meal_type: str, likes: list[str] | None = None) -> int:
+    """Scores a meal based on desired tags and user liked preferences."""
     score = 0
-    tags = meal.tags.split(",")
+    tags = [t.strip().lower() for t in meal.tags.split(",") if t.strip()]
+
     if "low_carb" in tags:
         score += 1
     if "heart_healthy" in tags:
@@ -128,6 +160,14 @@ def _score_meal(meal: Meal, meal_type: str) -> int:
         score += 1
     if meal_type == "dinner" and "kid_friendly" in tags:
         score += 1
+
+    if likes:
+        meal_name_lower = meal.name.lower()
+        for like in likes:
+            term = like.strip().lower()
+            if term and (term in tags or term in meal_name_lower):
+                score += 3  # Strong boost for user explicit likes
+
     return score
 
 
@@ -135,30 +175,33 @@ def _pick_meal(
     meals: list[Meal],
     meal_type: str,
     recent_meal_names: set[str],
+    dislikes: list[str] | None = None,
+    likes: list[str] | None = None,
 ) -> Meal | None:
     if not meals:
         return None
 
-    # Primary pool: unseen meals if possible.
+    # Filter out meals with disliked ingredients if alternatives exist
+    if dislikes:
+        non_disliked = [m for m in meals if not _meal_contains_dislikes(m, dislikes)]
+        if non_disliked:
+            meals = non_disliked
+
+    # Primary pool: unseen meals if possible
     unseen_meals = [m for m in meals if m.name not in recent_meal_names]
+    selection_pool = unseen_meals if unseen_meals else meals
 
-    if unseen_meals:
-        selection_pool = unseen_meals
-    else:
-        # Fallback: if we've seen everything, we have to repeat.
-        selection_pool = meals
-
-    # Score and sort the meals
-    scored_meals = [(_score_meal(m, meal_type), m) for m in selection_pool]
+    # Score and sort meals
+    scored_meals = [(_score_meal(m, meal_type, likes), m) for m in selection_pool]
     scored_meals.sort(key=lambda x: x[0], reverse=True)
 
-    # Take the top 5 (or fewer if not enough meals)
     top_meals = [m for score, m in scored_meals[:5]]
-
     return random.choice(top_meals) if top_meals else None
 
 
-def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
+def generate_meal_plan(
+    db: Session, dislikes: list[str] | None = None, likes: list[str] | None = None
+) -> dict[str, dict[str, Any]]:
     all_meals = db.query(Meal).all()
     cutoff_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
         hours=48
@@ -192,7 +235,7 @@ def generate_meal_plan(db: Session) -> dict[str, dict[str, Any]]:
             return format_meal(None), set()
 
         recent_names = recent_meals_by_type.get(meal_type, set())
-        chosen = _pick_meal(candidates, meal_type, recent_names)
+        chosen = _pick_meal(candidates, meal_type, recent_names, dislikes, likes)
 
         c_dict = format_meal(chosen)
         c_words = get_base_words(c_dict["ingredients"])

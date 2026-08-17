@@ -93,6 +93,26 @@
             margin: 0 0 8px;
             font-size: 20px;
         }
+        .macro-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .macro-chip {
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .macro-cal { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .macro-prot { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+        .macro-carb { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .macro-fat { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+
         .recipe-details {
             margin-top: 12px;
             padding-top: 12px;
@@ -132,6 +152,12 @@
                 {% endif %}
                 <div class="meal-content">
                     <h2 class="meal-title">{{ meal.name }}</h2>
+                    <div class="macro-row">
+                        <span class="macro-chip macro-cal">🔥 {{ meal.calories }} kcal</span>
+                        <span class="macro-chip macro-prot">💪 {{ meal.protein_g }}g P</span>
+                        <span class="macro-chip macro-carb">🌾 {{ meal.carbs_g }}g C</span>
+                        <span class="macro-chip macro-fat">🥑 {{ meal.fats_g }}g F</span>
+                    </div>
                     <button class="btn toggle-recipe-btn" type="button">View Recipe</button>
                     <div class="recipe-details hidden">
                         <h4>Ingredients</h4>
