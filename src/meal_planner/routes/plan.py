@@ -2,6 +2,7 @@ import json
 import random
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -33,6 +34,9 @@ def home(
     request: Request,
     dislikes: str | None = None,
     likes: str | None = None,
+    q: str | None = None,
+    saved_plan_id: int | None = None,
+    day: str = "Day 1",
     db: Session = Depends(get_db),
 ):
     dislikes_list = (
@@ -42,9 +46,39 @@ def home(
         [item.strip() for item in likes.split(",") if item.strip()] if likes else []
     )
 
-    plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
+    saved_plan = None
+    if saved_plan_id is not None:
+        saved_plan = db.query(SavedPlan).filter(SavedPlan.id == saved_plan_id).first()
+
+    if saved_plan:
+        saved_plan_data = json.loads(saved_plan.plan_json)
+        if isinstance(saved_plan_data.get("plan"), dict):
+            saved_plan_data = saved_plan_data["plan"]
+        plan = saved_plan_data.get(day, saved_plan_data.get("Day 1", {}))
+    else:
+        plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
     total_macros = calculate_total_macros(plan)
     grocery_data = generate_grocery_list(plan)
+    search_query = q.strip() if q else ""
+    search_results: list[dict[str, Any]] = []
+    if search_query:
+        term = f"%{search_query}%"
+        for meal in (
+            db.query(Meal)
+            .filter(
+                or_(
+                    Meal.name.ilike(term),
+                    Meal.tags.ilike(term),
+                    Meal.description.ilike(term),
+                    Meal.ingredients.ilike(term),
+                )
+            )
+            .all()
+        ):
+            result = format_meal(meal)
+            result["meal_type"] = meal.meal_type
+            search_results.append(result)
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -55,7 +89,20 @@ def home(
             "grocery_data": grocery_data,
             "dislikes": dislikes or "",
             "likes": likes or "",
+            "search_query": search_query,
+            "search_results": search_results,
+            "saved_plan_id": saved_plan_id if saved_plan else None,
+            "selected_day": day if saved_plan else None,
         },
+    )
+
+
+@router.get("/weekly", response_class=HTMLResponse)
+def weekly_workspace(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="weekly.html",
+        context={"request": request},
     )
 
 
@@ -78,10 +125,19 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
 
     if days > 1:
         plan = generate_multi_day_plan(
-            db, days=days, dislikes=dislikes_list, likes=likes_list, dietary_preset=dietary_preset
+            db,
+            days=days,
+            dislikes=dislikes_list,
+            likes=likes_list,
+            dietary_preset=dietary_preset,
         )
         macros = calculate_multi_day_macros(plan)
-        return {"plan": plan, "total_macros": macros["average"], "multi_day_macros": macros, "days": days}
+        return {
+            "plan": plan,
+            "total_macros": macros["average"],
+            "multi_day_macros": macros,
+            "days": days,
+        }
     else:
         plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
         total_macros = calculate_total_macros(plan)
@@ -136,9 +192,7 @@ def reroll_meal(
 
 
 @router.post("/swap-candidates")
-def swap_candidates(
-    payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)
-):
+def swap_candidates(payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)):
     meal_type = payload.get("meal_type", "")
     current_names = payload.get("current_meal_names", [])
     dislikes_raw = payload.get("dislikes", [])
@@ -155,7 +209,11 @@ def swap_candidates(
 def save_plan(payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)):
     name = str(payload.get("name", "My Plan")).strip()
     plan = payload.get("plan", {})
-    saved = SavedPlan(name=name, plan_json=json.dumps(plan))
+    metadata = payload.get("metadata")
+    saved_payload: Any = plan
+    if isinstance(metadata, dict):
+        saved_payload = {"plan": plan, "metadata": metadata}
+    saved = SavedPlan(name=name, plan_json=json.dumps(saved_payload))
     db.add(saved)
     db.commit()
     return {"id": saved.id, "name": saved.name}
@@ -165,8 +223,7 @@ def save_plan(payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)
 def list_saved_plans(db: Session = Depends(get_db)):
     plans = db.query(SavedPlan).order_by(SavedPlan.created_at.desc()).all()
     return [
-        {"id": p.id, "name": p.name, "created_at": str(p.created_at)}
-        for p in plans
+        {"id": p.id, "name": p.name, "created_at": str(p.created_at)} for p in plans
     ]
 
 
@@ -192,16 +249,4 @@ def search_meals(request: Request, q: str | None = None, db: Session = Depends(g
     if not q or not q.strip():
         return RedirectResponse(url="/")
 
-    search_results = (
-        db.query(Meal)
-        .filter(or_(Meal.name.ilike(f"%{q}%"), Meal.tags.ilike(f"%{q}%")))
-        .all()
-    )
-
-    formatted_results = [format_meal(meal) for meal in search_results]
-
-    return templates.TemplateResponse(
-        request=request,
-        name="search.html",
-        context={"request": request, "results": formatted_results, "query": q},
-    )
+    return RedirectResponse(url=f"/?q={quote(q.strip())}", status_code=303)

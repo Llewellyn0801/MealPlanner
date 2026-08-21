@@ -291,11 +291,19 @@ def _apply_dietary_preset(meals: list[Meal], preset: str | None) -> list[Meal]:
     if p == "keto":
         filtered = [m for m in meals if "low_carb" in (m.tags or "").lower()]
     elif p == "high_protein":
-        filtered = [m for m in meals if m.is_high_protein or "high_protein" in (m.tags or "").lower()]
+        filtered = [
+            m
+            for m in meals
+            if m.is_high_protein or "high_protein" in (m.tags or "").lower()
+        ]
     elif p == "vegetarian":
         filtered = [m for m in meals if not m.is_carnivore]
     elif p == "kid_friendly":
-        filtered = [m for m in meals if m.is_kid_friendly or "kid_friendly" in (m.tags or "").lower()]
+        filtered = [
+            m
+            for m in meals
+            if m.is_kid_friendly or "kid_friendly" in (m.tags or "").lower()
+        ]
     else:
         return meals
     return filtered if filtered else meals
@@ -316,27 +324,44 @@ def generate_multi_day_plan(
     all_meals = _apply_dietary_preset(all_meals, dietary_preset)
 
     cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=48)
-    recent_history = db.query(MealHistory).filter(MealHistory.created_at >= cutoff).all()
+    recent_history = (
+        db.query(MealHistory).filter(MealHistory.created_at >= cutoff).all()
+    )
 
     used_names: set[str] = set()
     multi_plan: dict[str, dict[str, dict[str, Any]]] = {}
 
     for day_num in range(1, days + 1):
         recent_by_type: dict[str, set[str]] = {
-            mt: {cast(str, h.meal_name) for h in recent_history if h.meal_type == mt} | used_names
+            mt: {cast(str, h.meal_name) for h in recent_history if h.meal_type == mt}
+            | used_names
             for mt in ["breakfast", "lunch", "dinner"]
         }
 
         day_plan: dict[str, dict[str, Any]] = {}
-        for meal_type, difficulty in [("breakfast", "simple"), ("lunch", "simple"), ("dinner", "full_meal")]:
-            candidates = [m for m in all_meals if m.meal_type == meal_type and m.difficulty == difficulty]
+        for meal_type, difficulty in [
+            ("breakfast", "simple"),
+            ("lunch", "simple"),
+            ("dinner", "full_meal"),
+        ]:
+            candidates = [
+                m
+                for m in all_meals
+                if m.meal_type == meal_type and m.difficulty == difficulty
+            ]
             if not candidates:
                 candidates = [m for m in all_meals if m.meal_type == meal_type]
             if not candidates:
                 day_plan[meal_type] = format_meal(None)
                 continue
 
-            chosen = _pick_meal(candidates, meal_type, recent_by_type.get(meal_type, set()), dislikes, likes)
+            chosen = _pick_meal(
+                candidates,
+                meal_type,
+                recent_by_type.get(meal_type, set()),
+                dislikes,
+                likes,
+            )
             day_plan[meal_type] = format_meal(chosen)
             if chosen:
                 used_names.add(chosen.name)
@@ -385,7 +410,9 @@ def get_swap_candidates(
         candidates = all_type
 
     if dislikes:
-        non_disliked = [m for m in candidates if not _meal_contains_dislikes(m, dislikes)]
+        non_disliked = [
+            m for m in candidates if not _meal_contains_dislikes(m, dislikes)
+        ]
         if non_disliked:
             candidates = non_disliked
 
@@ -393,4 +420,3 @@ def get_swap_candidates(
     scored.sort(key=lambda x: x[0], reverse=True)
     top = scored[:count]
     return [format_meal(m) for _, m in top]
-

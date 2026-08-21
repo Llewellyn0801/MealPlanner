@@ -3,6 +3,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from meal_planner.database.seed import SEED_MEALS, _seed_if_empty
 from meal_planner.database.session import Base
 from meal_planner.models.meal import Meal
 from meal_planner.services.grocery import generate_grocery_list
@@ -60,6 +61,24 @@ def test_generate_meal_plan_returns_fallback_when_no_meals():
         "lunch": fallback,
         "dinner": fallback,
     }
+
+
+def test_seed_if_empty_serializes_list_fields_for_sqlite():
+    db = _make_session()
+    try:
+        _seed_if_empty(db)
+        saved = db.query(Meal).first()
+
+        assert saved is not None
+        assert isinstance(saved.core_base, str)
+        assert isinstance(saved.family_additions, str)
+        assert isinstance(saved.user_alternatives, str)
+        assert isinstance(saved.ingredients, str)
+        assert isinstance(saved.instructions, str)
+        assert isinstance(saved.prep_detail_steps, str)
+        assert json.loads(saved.prep_detail_steps)[0]["detail"]
+    finally:
+        db.close()
 
 
 def test_generate_meal_plan_returns_structured_components(monkeypatch):
@@ -213,9 +232,45 @@ def test_generate_meal_plan_returns_structured_components(monkeypatch):
 
     assert any(i["name"] == "3 Eggs" for i in g_list["Protein"]["core"])
     assert any(i["name"] == "200g Salmon" for i in g_list["Protein"]["core"])
-    assert any(i["name"] == "2 Toast Slices" for i in g_list["Pantry/Grains"]["family_only"])
-    assert any(i["name"] == "1 cup Brown Rice" for i in g_list["Pantry/Grains"]["family_only"])
+    assert any(
+        i["name"] == "2 Toast Slices" for i in g_list["Pantry/Grains"]["family_only"]
+    )
+    assert any(
+        i["name"] == "1 cup Brown Rice" for i in g_list["Pantry/Grains"]["family_only"]
+    )
     assert any(i["name"] == "1/2 cup Zucchini" for i in g_list["Produce"]["user_only"])
+
+
+def test_seed_meals_include_indian_curry_recipes():
+    meal_names = {meal["name"].lower() for meal in SEED_MEALS}
+
+    assert any("chana masala" in name for name in meal_names)
+    assert any("paneer butter masala" in name for name in meal_names)
+    assert any("chicken tikka masala" in name for name in meal_names)
+
+    curry_meals = [meal for meal in SEED_MEALS if "masala" in meal["name"].lower()]
+    assert curry_meals
+    for meal in curry_meals:
+        assert meal["prep_time_mins"] > 0
+        assert meal["cook_time_mins"] > 0
+        assert meal["prep_detail_steps"]
+
+
+def test_all_seed_meals_include_restaurant_style_metadata():
+    assert len(SEED_MEALS) >= 20
+
+    for meal in SEED_MEALS:
+        assert meal["prep_time_mins"] > 0
+        assert meal["cook_time_mins"] > 0
+        assert meal["servings_default"] > 0
+        assert 0 < meal["rating"] <= 5
+        assert meal["ratings_count"] > 0
+        assert meal["prep_detail_steps"]
+        assert all(
+            step["title"] and not step["title"].startswith("Step ")
+            for step in meal["prep_detail_steps"]
+        )
+        assert all(step["detail"] for step in meal["prep_detail_steps"])
 
 
 def test_generate_meal_plan_dislikes_filtering():

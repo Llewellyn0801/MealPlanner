@@ -63,6 +63,16 @@ def manage_recipes(
     )
 
 
+@router.get("/{recipe_id}")
+def get_recipe(recipe_id: int, db: Session = Depends(get_db)):
+    meal = db.query(Meal).filter(Meal.id == recipe_id).first()
+    if not meal:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    recipe = format_meal(meal)
+    recipe["meal_type"] = meal.meal_type
+    return recipe
+
+
 @router.post("/create")
 def create_recipe(
     name: str = Form(...),
@@ -98,6 +108,10 @@ def create_recipe(
 
     ingredients = [i.strip() for i in ingredients_raw.split("\n") if i.strip()]
     instructions = [i.strip() for i in instructions_raw.split("\n") if i.strip()]
+    prep_detail_steps = [
+        {"step": idx, "title": f"Step {idx}", "detail": instruction}
+        for idx, instruction in enumerate(instructions, start=1)
+    ]
 
     core_base = [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
 
@@ -117,6 +131,7 @@ def create_recipe(
         tags=tags.strip(),
         ingredients=json.dumps(ingredients),
         instructions=json.dumps(instructions),
+        prep_detail_steps=json.dumps(prep_detail_steps),
         core_base=json.dumps(core_base),
         family_additions=json.dumps([]),
         user_alternatives=json.dumps([]),
@@ -172,9 +187,16 @@ def update_recipe(
 
     ingredients = [i.strip() for i in ingredients_raw.split("\n") if i.strip()]
     instructions = [i.strip() for i in instructions_raw.split("\n") if i.strip()]
+    prep_detail_steps = [
+        {"step": idx, "title": f"Step {idx}", "detail": instruction}
+        for idx, instruction in enumerate(instructions, start=1)
+    ]
     meal.ingredients = json.dumps(ingredients)
     meal.instructions = json.dumps(instructions)
-    meal.core_base = json.dumps([{"name": ing, "category": "Pantry/Grains"} for ing in ingredients])
+    meal.prep_detail_steps = json.dumps(prep_detail_steps)
+    meal.core_base = json.dumps(
+        [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
+    )
 
     db.commit()
     return RedirectResponse(url="/recipes/manage", status_code=303)

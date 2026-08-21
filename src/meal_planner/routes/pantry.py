@@ -25,9 +25,7 @@ def get_pantry_items(db: Session = Depends(get_db)):
 
 
 @router.post("/add")
-def add_pantry_item(
-    payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)
-):
+def add_pantry_item(payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)):
     name = str(payload.get("name", "")).strip()
     if not name:
         raise HTTPException(status_code=400, detail="Name is required")
@@ -39,12 +37,21 @@ def add_pantry_item(
     if existing:
         existing.is_in_stock = is_in_stock
         db.commit()
-        return {"id": existing.id, "name": existing.name, "is_in_stock": existing.is_in_stock}
+        return {
+            "id": existing.id,
+            "name": existing.name,
+            "is_in_stock": existing.is_in_stock,
+        }
 
     item = PantryItem(name=name, category=category, is_in_stock=is_in_stock)
     db.add(item)
     db.commit()
-    return {"id": item.id, "name": item.name, "category": item.category, "is_in_stock": item.is_in_stock}
+    return {
+        "id": item.id,
+        "name": item.name,
+        "category": item.category,
+        "is_in_stock": item.is_in_stock,
+    }
 
 
 @router.post("/toggle")
@@ -58,7 +65,11 @@ def toggle_pantry_item(
     if item_id:
         item = db.query(PantryItem).filter(PantryItem.id == item_id).first()
     elif name:
-        item = db.query(PantryItem).filter(PantryItem.name.ilike(str(name).strip())).first()
+        item = (
+            db.query(PantryItem)
+            .filter(PantryItem.name.ilike(str(name).strip()))
+            .first()
+        )
 
     if not item and name:
         category = categorize_ingredient(str(name))
