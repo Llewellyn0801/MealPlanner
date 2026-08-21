@@ -72,6 +72,7 @@ def get_base_words(ingredients: list[str]) -> set[str]:
 def format_meal(meal: Meal | None) -> dict[str, Any]:
     if not meal:
         return {
+            "meal_id": None,
             "name": "No meal available",
             "description": "",
             "image_url": None,
@@ -86,6 +87,15 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
             "instructions": [],
             "cooking_tips": "",
             "tags": "",
+            "prep_time_mins": 0,
+            "cook_time_mins": 0,
+            "total_time_mins": 0,
+            "servings_default": 4,
+            "difficulty": "simple",
+            "rating": 0.0,
+            "ratings_count": 0,
+            "is_favorite": False,
+            "prep_detail_steps": [],
         }
 
     meal_ingredients = cast(str, meal.ingredients)
@@ -106,7 +116,12 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
             if isinstance(item, dict) and "name" in item
         ]
 
+    prep_time = getattr(meal, "prep_time_mins", 0) or 0
+    cook_time = getattr(meal, "cook_time_mins", 0) or 0
+    prep_detail_raw = cast(str, getattr(meal, "prep_detail_steps", "[]"))
+
     return {
+        "meal_id": meal.id,
         "name": meal.name,
         "description": meal.description,
         "image_url": meal.image_url,
@@ -121,6 +136,15 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
         "instructions": parse_json_list(meal_instructions),
         "cooking_tips": meal.cooking_tips or "",
         "tags": meal.tags or "",
+        "prep_time_mins": prep_time,
+        "cook_time_mins": cook_time,
+        "total_time_mins": prep_time + cook_time,
+        "servings_default": getattr(meal, "servings_default", 4) or 4,
+        "difficulty": getattr(meal, "difficulty", "simple") or "simple",
+        "rating": getattr(meal, "rating", 0.0) or 0.0,
+        "ratings_count": getattr(meal, "ratings_count", 0) or 0,
+        "is_favorite": bool(getattr(meal, "is_favorite", False)),
+        "prep_detail_steps": parse_json_dict_list(prep_detail_raw),
     }
 
 
@@ -257,3 +281,116 @@ def generate_meal_plan(
     db.commit()
 
     return plan
+
+
+def _apply_dietary_preset(meals: list[Meal], preset: str | None) -> list[Meal]:
+    """Filter meals by dietary preset."""
+    if not preset:
+        return meals
+    p = preset.lower()
+    if p == "keto":
+        filtered = [m for m in meals if "low_carb" in (m.tags or "").lower()]
+    elif p == "high_protein":
+        filtered = [m for m in meals if m.is_high_protein or "high_protein" in (m.tags or "").lower()]
+    elif p == "vegetarian":
+        filtered = [m for m in meals if not m.is_carnivore]
+    elif p == "kid_friendly":
+        filtered = [m for m in meals if m.is_kid_friendly or "kid_friendly" in (m.tags or "").lower()]
+    else:
+        return meals
+    return filtered if filtered else meals
+
+
+def generate_multi_day_plan(
+    db: Session,
+    days: int = 1,
+    dislikes: list[str] | None = None,
+    likes: list[str] | None = None,
+    dietary_preset: str | None = None,
+) -> dict[str, Any]:
+    """Generate a plan for 1, 3, or 7 days."""
+    if days <= 1:
+        return generate_meal_plan(db, dislikes=dislikes, likes=likes)
+
+    all_meals = db.query(Meal).all()
+    all_meals = _apply_dietary_preset(all_meals, dietary_preset)
+
+    cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=48)
+    recent_history = db.query(MealHistory).filter(MealHistory.created_at >= cutoff).all()
+
+    used_names: set[str] = set()
+    multi_plan: dict[str, dict[str, dict[str, Any]]] = {}
+
+    for day_num in range(1, days + 1):
+        recent_by_type: dict[str, set[str]] = {
+            mt: {cast(str, h.meal_name) for h in recent_history if h.meal_type == mt} | used_names
+            for mt in ["breakfast", "lunch", "dinner"]
+        }
+
+        day_plan: dict[str, dict[str, Any]] = {}
+        for meal_type, difficulty in [("breakfast", "simple"), ("lunch", "simple"), ("dinner", "full_meal")]:
+            candidates = [m for m in all_meals if m.meal_type == meal_type and m.difficulty == difficulty]
+            if not candidates:
+                candidates = [m for m in all_meals if m.meal_type == meal_type]
+            if not candidates:
+                day_plan[meal_type] = format_meal(None)
+                continue
+
+            chosen = _pick_meal(candidates, meal_type, recent_by_type.get(meal_type, set()), dislikes, likes)
+            day_plan[meal_type] = format_meal(chosen)
+            if chosen:
+                used_names.add(chosen.name)
+
+        multi_plan[f"Day {day_num}"] = day_plan
+
+    return multi_plan
+
+
+def calculate_multi_day_macros(
+    multi_plan: dict[str, Any],
+) -> dict[str, Any]:
+    """Calculate per-day and average macros for a multi-day plan."""
+    if "breakfast" in multi_plan:
+        # Single-day plan
+        totals = calculate_total_macros(multi_plan)
+        return {"days": {"Day 1": totals}, "average": totals}
+
+    per_day: dict[str, dict[str, int]] = {}
+    for day_key, day_data in multi_plan.items():
+        if isinstance(day_data, dict):
+            per_day[day_key] = calculate_total_macros(day_data)
+
+    num_days = len(per_day) or 1
+    avg = {"calories": 0, "protein_g": 0, "carbs_g": 0, "fats_g": 0}
+    for d in per_day.values():
+        for k in avg:
+            avg[k] += d.get(k, 0)
+    for k in avg:
+        avg[k] = round(avg[k] / num_days)
+
+    return {"days": per_day, "average": avg}
+
+
+def get_swap_candidates(
+    db: Session,
+    meal_type: str,
+    current_meal_names: list[str],
+    dislikes: list[str] | None = None,
+    count: int = 5,
+) -> list[dict[str, Any]]:
+    """Return top alternative meals for swapping."""
+    all_type = db.query(Meal).filter(Meal.meal_type == meal_type).all()
+    candidates = [m for m in all_type if m.name not in current_meal_names]
+    if not candidates:
+        candidates = all_type
+
+    if dislikes:
+        non_disliked = [m for m in candidates if not _meal_contains_dislikes(m, dislikes)]
+        if non_disliked:
+            candidates = non_disliked
+
+    scored = [(_score_meal(m, meal_type), m) for m in candidates]
+    scored.sort(key=lambda x: x[0], reverse=True)
+    top = scored[:count]
+    return [format_meal(m) for _, m in top]
+

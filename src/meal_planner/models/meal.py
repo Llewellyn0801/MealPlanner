@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String, Text
 
 from meal_planner.database.session import Base
 
@@ -28,6 +28,13 @@ class Meal(Base):
     protein_g = Column(Integer, nullable=False, default=0)
     carbs_g = Column(Integer, nullable=False, default=0)
     fats_g = Column(Integer, nullable=False, default=0)
+    prep_time_mins = Column(Integer, nullable=False, default=10)
+    cook_time_mins = Column(Integer, nullable=False, default=15)
+    servings_default = Column(Integer, nullable=False, default=4)
+    rating = Column(Float, nullable=False, default=0.0)
+    ratings_count = Column(Integer, nullable=False, default=0)
+    is_favorite = Column(Boolean, nullable=False, default=False)
+    prep_detail_steps = Column(Text, nullable=False, default="[]")
 
 
 class MealHistory(Base):
@@ -36,6 +43,26 @@ class MealHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     meal_name = Column(String, nullable=False, index=True)
     meal_type = Column(String, nullable=False, index=True)
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
+
+
+class PantryItem(Base):
+    __tablename__ = "pantry_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=False, index=True)
+    category = Column(String, nullable=False, default="Pantry/Grains")
+    is_in_stock = Column(Boolean, nullable=False, default=True)
+
+
+class SavedPlan(Base):
+    __tablename__ = "saved_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    plan_json = Column(Text, nullable=False, default="{}")
     created_at = Column(
         DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
     )
