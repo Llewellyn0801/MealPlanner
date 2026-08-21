@@ -28,55 +28,37 @@ def test_generate_meal_plan_returns_fallback_when_no_meals():
     finally:
         db.close()
 
+    fallback = {
+        "meal_id": None,
+        "name": "No meal available",
+        "description": "",
+        "image_url": None,
+        "calories": 0,
+        "protein_g": 0,
+        "carbs_g": 0,
+        "fats_g": 0,
+        "core_base": [],
+        "family_additions": [],
+        "user_alternatives": [],
+        "ingredients": [],
+        "instructions": [],
+        "cooking_tips": "",
+        "tags": "",
+        "prep_time_mins": 0,
+        "cook_time_mins": 0,
+        "total_time_mins": 0,
+        "servings_default": 4,
+        "difficulty": "simple",
+        "rating": 0.0,
+        "ratings_count": 0,
+        "is_favorite": False,
+        "prep_detail_steps": [],
+    }
+
     assert plan == {
-        "breakfast": {
-            "name": "No meal available",
-            "description": "",
-            "image_url": None,
-            "calories": 0,
-            "protein_g": 0,
-            "carbs_g": 0,
-            "fats_g": 0,
-            "core_base": [],
-            "family_additions": [],
-            "user_alternatives": [],
-            "ingredients": [],
-            "instructions": [],
-            "cooking_tips": "",
-            "tags": "",
-        },
-        "lunch": {
-            "name": "No meal available",
-            "description": "",
-            "image_url": None,
-            "calories": 0,
-            "protein_g": 0,
-            "carbs_g": 0,
-            "fats_g": 0,
-            "core_base": [],
-            "family_additions": [],
-            "user_alternatives": [],
-            "ingredients": [],
-            "instructions": [],
-            "cooking_tips": "",
-            "tags": "",
-        },
-        "dinner": {
-            "name": "No meal available",
-            "description": "",
-            "image_url": None,
-            "calories": 0,
-            "protein_g": 0,
-            "carbs_g": 0,
-            "fats_g": 0,
-            "core_base": [],
-            "family_additions": [],
-            "user_alternatives": [],
-            "ingredients": [],
-            "instructions": [],
-            "cooking_tips": "",
-            "tags": "",
-        },
+        "breakfast": fallback,
+        "lunch": fallback,
+        "dinner": fallback,
     }
 
 
@@ -229,11 +211,11 @@ def test_generate_meal_plan_returns_structured_components(monkeypatch):
     grocery_res = generate_grocery_list(plan)
     g_list = grocery_res["grocery_list"]
 
-    assert "3 Eggs" in g_list["Protein"]["core"]
-    assert "200g Salmon" in g_list["Protein"]["core"]
-    assert "2 Toast Slices" in g_list["Pantry/Grains"]["family_only"]
-    assert "1 cup Brown Rice" in g_list["Pantry/Grains"]["family_only"]
-    assert "1/2 cup Zucchini" in g_list["Produce"]["user_only"]
+    assert any(i["name"] == "3 Eggs" for i in g_list["Protein"]["core"])
+    assert any(i["name"] == "200g Salmon" for i in g_list["Protein"]["core"])
+    assert any(i["name"] == "2 Toast Slices" for i in g_list["Pantry/Grains"]["family_only"])
+    assert any(i["name"] == "1 cup Brown Rice" for i in g_list["Pantry/Grains"]["family_only"])
+    assert any(i["name"] == "1/2 cup Zucchini" for i in g_list["Produce"]["user_only"])
 
 
 def test_generate_meal_plan_dislikes_filtering():

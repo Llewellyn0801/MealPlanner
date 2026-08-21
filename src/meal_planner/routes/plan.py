@@ -1,21 +1,25 @@
+import json
 import random
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, Request
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from meal_planner.database.session import get_db
-from meal_planner.models.meal import Meal
+from meal_planner.models.meal import Meal, SavedPlan
 from meal_planner.services.grocery import generate_grocery_list
 from meal_planner.services.meal_engine import (
     _meal_contains_dislikes,
+    calculate_multi_day_macros,
     calculate_total_macros,
     format_meal,
     generate_meal_plan,
+    generate_multi_day_plan,
+    get_swap_candidates,
 )
 
 router = APIRouter()
@@ -59,6 +63,8 @@ def home(
 def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(get_db)):
     dislikes_raw = payload.get("dislikes", [])
     likes_raw = payload.get("likes", [])
+    days = int(payload.get("days", 1))
+    dietary_preset = payload.get("dietary_preset") or None
 
     if isinstance(dislikes_raw, str):
         dislikes_list = [d.strip() for d in dislikes_raw.split(",") if d.strip()]
@@ -70,15 +76,23 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
     else:
         likes_list = [str(item).strip() for item in likes_raw if str(item).strip()]
 
-    plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
-    total_macros = calculate_total_macros(plan)
-    return {"plan": plan, "total_macros": total_macros}
+    if days > 1:
+        plan = generate_multi_day_plan(
+            db, days=days, dislikes=dislikes_list, likes=likes_list, dietary_preset=dietary_preset
+        )
+        macros = calculate_multi_day_macros(plan)
+        return {"plan": plan, "total_macros": macros["average"], "multi_day_macros": macros, "days": days}
+    else:
+        plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
+        total_macros = calculate_total_macros(plan)
+        return {"plan": plan, "total_macros": total_macros, "days": 1}
 
 
 @router.post("/grocery-list")
 def create_grocery_list(plan_data: dict[str, Any] = Body(...)):
     raw_plan = plan_data.get("plan", plan_data)
-    res = generate_grocery_list(raw_plan)
+    in_stock = plan_data.get("in_stock_pantry", [])
+    res = generate_grocery_list(raw_plan, in_stock_pantry=in_stock)
     return res
 
 
@@ -119,6 +133,58 @@ def reroll_meal(
         else (all_type_meals[0] if all_type_meals else None)
     )
     return format_meal(new_meal)
+
+
+@router.post("/swap-candidates")
+def swap_candidates(
+    payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)
+):
+    meal_type = payload.get("meal_type", "")
+    current_names = payload.get("current_meal_names", [])
+    dislikes_raw = payload.get("dislikes", [])
+    if isinstance(dislikes_raw, str):
+        dislikes = [d.strip() for d in dislikes_raw.split(",") if d.strip()]
+    else:
+        dislikes = [str(d).strip() for d in dislikes_raw if str(d).strip()]
+
+    candidates = get_swap_candidates(db, meal_type, current_names, dislikes)
+    return {"candidates": candidates}
+
+
+@router.post("/plan/save")
+def save_plan(payload: dict[str, Any] = Body(...), db: Session = Depends(get_db)):
+    name = str(payload.get("name", "My Plan")).strip()
+    plan = payload.get("plan", {})
+    saved = SavedPlan(name=name, plan_json=json.dumps(plan))
+    db.add(saved)
+    db.commit()
+    return {"id": saved.id, "name": saved.name}
+
+
+@router.get("/plan/saved")
+def list_saved_plans(db: Session = Depends(get_db)):
+    plans = db.query(SavedPlan).order_by(SavedPlan.created_at.desc()).all()
+    return [
+        {"id": p.id, "name": p.name, "created_at": str(p.created_at)}
+        for p in plans
+    ]
+
+
+@router.get("/plan/saved/{plan_id}")
+def load_saved_plan(plan_id: int, db: Session = Depends(get_db)):
+    p = db.query(SavedPlan).filter(SavedPlan.id == plan_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    return {"id": p.id, "name": p.name, "plan": json.loads(p.plan_json)}
+
+
+@router.delete("/plan/saved/{plan_id}")
+def delete_saved_plan(plan_id: int, db: Session = Depends(get_db)):
+    p = db.query(SavedPlan).filter(SavedPlan.id == plan_id).first()
+    if p:
+        db.delete(p)
+        db.commit()
+    return {"success": True}
 
 
 @router.get("/search", response_class=HTMLResponse)

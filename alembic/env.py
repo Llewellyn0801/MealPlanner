@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context  # type: ignore[attr-defined]
 from meal_planner.database.session import DATABASE_URL, Base
-from meal_planner.models.meal import MealHistory  # noqa: F401
+from meal_planner.models.meal import Meal, MealHistory, PantryItem, SavedPlan  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
