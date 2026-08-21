@@ -257,6 +257,16 @@ def test_seed_meals_include_indian_curry_recipes():
         assert meal["prep_detail_steps"]
 
 
+def test_seed_meals_include_international_cuisines():
+    for cuisine in ("thai", "chinese", "german"):
+        cuisine_meals = [
+            meal for meal in SEED_MEALS if cuisine in meal["tags"].split(",")
+        ]
+
+        assert len(cuisine_meals) >= 2
+        assert all(meal["instructions"] for meal in cuisine_meals)
+
+
 def test_all_seed_meals_include_restaurant_style_metadata():
     assert len(SEED_MEALS) >= 20
 

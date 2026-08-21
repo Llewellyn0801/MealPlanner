@@ -1612,6 +1612,360 @@ SEED_MEALS: list[dict[str, Any]] = [
 ]
 
 
+SEED_MEALS.extend(
+    [
+        {
+            "name": "Thai Basil Chicken & Green Beans",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Fragrant Thai basil chicken with crisp green beans, chili, garlic, and a light tamari glaze.",
+            "image_url": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?auto=format&fit=crop&w=1200&q=80",
+            "tags": "thai,high_protein,low_carb,heart_healthy,user_safe,spicy",
+            "calories": 430,
+            "protein_g": 42,
+            "carbs_g": 18,
+            "fats_g": 20,
+            "core_base": [
+                {
+                    "name": "200g Chicken Breast",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Green Beans",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/2 cup Thai Basil & Bell Pepper",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Jasmine Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Cauliflower Rice",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear chicken with garlic and chili until lightly caramelized.",
+                "Add green beans and bell pepper; toss until crisp-tender.",
+                "Fold through Thai basil and tamari, then finish with lime.",
+                "Serve with jasmine rice or cauliflower rice.",
+            ],
+            "cooking_tips": "Add the basil off the heat so its aroma stays bright and fresh.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": False,
+        },
+        {
+            "name": "Thai Green Curry Tofu & Vegetables",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Silky green curry with seared tofu, zucchini, spinach, and aromatic Thai herbs.",
+            "image_url": "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1200&q=80",
+            "tags": "thai,vegetarian,low_carb,heart_healthy,user_safe,spicy",
+            "calories": 390,
+            "protein_g": 22,
+            "carbs_g": 20,
+            "fats_g": 25,
+            "core_base": [
+                {
+                    "name": "200g Firm Tofu",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Zucchini & Spinach",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/2 cup Light Coconut Curry Sauce",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Thai Green Curry Paste",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Steamed Jasmine Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "Extra Steamed Greens",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear tofu until golden on two sides and set aside.",
+                "Bloom green curry paste, then loosen with light coconut sauce.",
+                "Simmer zucchini and spinach until just tender; return tofu to the pan.",
+                "Finish with lime and cilantro; serve with rice or extra greens.",
+            ],
+            "cooking_tips": "Keep the curry at a gentle simmer so the coconut sauce stays smooth.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": False,
+        },
+        {
+            "name": "Chinese Ginger Scallion Salmon",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Silky roasted salmon finished with ginger, scallions, sesame, and a bright low-sodium glaze.",
+            "image_url": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=80",
+            "tags": "chinese,high_protein,heart_healthy,low_sodium,user_safe",
+            "calories": 470,
+            "protein_g": 40,
+            "carbs_g": 12,
+            "fats_g": 29,
+            "core_base": [
+                {
+                    "name": "200g Salmon Fillet",
+                    "category": "Protein",
+                    "tags": ["user_safe", "heart_healthy"],
+                },
+                {
+                    "name": "1 tbsp Fresh Ginger & Scallions",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tsp Toasted Sesame Oil",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Brown Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Steamed Bok Choy",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Roast salmon until just cooked and still glossy in the center.",
+                "Warm ginger, scallions, sesame oil, and tamari in a small pan.",
+                "Spoon the aromatic glaze over the salmon and rest briefly.",
+                "Serve with brown rice or steamed bok choy.",
+            ],
+            "cooking_tips": "Pull the salmon from the oven just before it is fully opaque; carryover heat finishes it gently.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "Chinese Beef & Broccoli with Garlic",
+            "meal_type": "lunch",
+            "difficulty": "simple",
+            "description": "Tender beef and vivid broccoli tossed in a glossy garlic, ginger, and tamari sauce.",
+            "image_url": "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1200&q=80",
+            "tags": "chinese,high_protein,low_carb,user_safe,quick_meal",
+            "calories": 450,
+            "protein_g": 38,
+            "carbs_g": 22,
+            "fats_g": 25,
+            "core_base": [
+                {
+                    "name": "180g Lean Beef Strips",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1.5 cups Broccoli Florets",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Garlic & Ginger",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Brown Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Cauliflower Rice",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear beef in a hot wok until browned at the edges; set aside.",
+                "Steam-fry broccoli with garlic and ginger until bright green.",
+                "Return beef and toss with tamari until the sauce clings.",
+                "Serve with brown rice or cauliflower rice.",
+            ],
+            "cooking_tips": "Cook in batches if needed; a crowded pan steams the beef instead of searing it.",
+            "is_carnivore": True,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "German Herb Chicken Schnitzel",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Oven-crisp chicken schnitzel with lemon, parsley, and a fresh cucumber herb salad.",
+            "image_url": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=1200&q=80",
+            "tags": "german,high_protein,kid_friendly,user_safe,comfort_food",
+            "calories": 490,
+            "protein_g": 44,
+            "carbs_g": 30,
+            "fats_g": 22,
+            "core_base": [
+                {
+                    "name": "200g Chicken Breast",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/3 cup Whole-Grain Breadcrumbs",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Cucumber & Parsley Salad",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tsp Olive Oil & Lemon",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Herb Roasted Potatoes",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Steamed Green Beans",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Pound chicken evenly and season with parsley, pepper, and lemon zest.",
+                "Coat in whole-grain crumbs and bake until golden and crisp.",
+                "Dress cucumber salad with lemon and olive oil.",
+                "Serve with roasted potatoes for the family or green beans for the health profile.",
+            ],
+            "cooking_tips": "Pound the chicken to an even thickness so the crust browns before the center dries out.",
+            "is_carnivore": True,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "German Lentil & Roasted Vegetable Bowl",
+            "meal_type": "lunch",
+            "difficulty": "simple",
+            "description": "Earthy lentils with roasted root vegetables, mustard vinaigrette, and fresh herbs.",
+            "image_url": "/static/images/heart-healthy-lentil-spinach-bowl.jpg",
+            "tags": "german,vegetarian,heart_healthy,high_fiber,user_safe",
+            "calories": 380,
+            "protein_g": 19,
+            "carbs_g": 48,
+            "fats_g": 13,
+            "core_base": [
+                {
+                    "name": "1 cup Cooked Brown Lentils",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Roasted Carrots & Cabbage",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Olive Oil & Mustard Vinaigrette",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Fresh Dill",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 slice Whole-Grain Rye Bread",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "Extra Roasted Cabbage",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Roast carrots and cabbage until caramelized at the edges.",
+                "Warm lentils with dill and a spoon of mustard vinaigrette.",
+                "Layer lentils and vegetables in a bowl, then dress while warm.",
+                "Serve with rye bread or extra roasted cabbage.",
+            ],
+            "cooking_tips": "Dress the lentils while warm so they absorb the mustard vinaigrette evenly.",
+            "is_carnivore": False,
+            "is_high_protein": False,
+            "is_kid_friendly": True,
+        },
+    ]
+)
+
+
 MEAL_TIMING_DEFAULTS = {
     "breakfast": (10, 12),
     "lunch": (15, 20),
