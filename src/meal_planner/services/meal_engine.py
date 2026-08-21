@@ -328,13 +328,14 @@ def generate_multi_day_plan(
         db.query(MealHistory).filter(MealHistory.created_at >= cutoff).all()
     )
 
-    used_names: set[str] = set()
+    used_names_by_type: dict[str, set[str]] = {
+        meal_type: set() for meal_type in ["breakfast", "lunch", "dinner"]
+    }
     multi_plan: dict[str, dict[str, dict[str, Any]]] = {}
 
     for day_num in range(1, days + 1):
         recent_by_type: dict[str, set[str]] = {
             mt: {cast(str, h.meal_name) for h in recent_history if h.meal_type == mt}
-            | used_names
             for mt in ["breakfast", "lunch", "dinner"]
         }
 
@@ -355,16 +356,26 @@ def generate_multi_day_plan(
                 day_plan[meal_type] = format_meal(None)
                 continue
 
+            unused_candidates = [
+                meal
+                for meal in candidates
+                if meal.name not in used_names_by_type[meal_type]
+            ]
+            selection_candidates = unused_candidates or candidates
+            recent_names = recent_by_type[meal_type] & {
+                meal.name for meal in selection_candidates
+            }
+
             chosen = _pick_meal(
-                candidates,
+                selection_candidates,
                 meal_type,
-                recent_by_type.get(meal_type, set()),
+                recent_names,
                 dislikes,
                 likes,
             )
             day_plan[meal_type] = format_meal(chosen)
             if chosen:
-                used_names.add(chosen.name)
+                used_names_by_type[meal_type].add(chosen.name)
 
         multi_plan[f"Day {day_num}"] = day_plan
 

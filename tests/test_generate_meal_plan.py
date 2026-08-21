@@ -10,6 +10,7 @@ from meal_planner.services.grocery import generate_grocery_list
 from meal_planner.services.meal_engine import (
     calculate_total_macros,
     generate_meal_plan,
+    generate_multi_day_plan,
 )
 
 
@@ -271,6 +272,19 @@ def test_all_seed_meals_include_restaurant_style_metadata():
             for step in meal["prep_detail_steps"]
         )
         assert all(step["detail"] for step in meal["prep_detail_steps"])
+
+
+def test_multi_day_plan_avoids_repeating_meals_by_slot():
+    db = _make_session()
+    try:
+        _seed_if_empty(db)
+        plan = generate_multi_day_plan(db, days=7)
+
+        for meal_type in ("breakfast", "lunch", "dinner"):
+            names = [day[meal_type]["name"] for day in plan.values()]
+            assert len(names) == len(set(names))
+    finally:
+        db.close()
 
 
 def test_generate_meal_plan_dislikes_filtering():
