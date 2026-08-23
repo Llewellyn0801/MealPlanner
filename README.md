@@ -1,19 +1,26 @@
 # Meal Planner
 
-A FastAPI app that generates a random daily meal plan (breakfast, lunch, and dinner) from a seeded SQLite database, with a modular "core base / family side / user alternative" structure for each meal and an aggregated grocery list.
+A FastAPI meal-planning app that generates daily or multi-day plans, supports recipe management, pantry-aware groceries, and keeps a small collection of restaurant-style meal entries and Indian curry recipes seeded into SQLite.
 
 ## Features
 
-- FastAPI backend with server-rendered HTML
-- Random meal plan generation with 48-hour repeat avoidance
-- Reroll individual meals without regenerating the whole plan
-- Search meals by name or tag
-- Aggregated, categorized grocery list generation
-- Light/dark mode with system-preference detection and persistence
-- SQLite + SQLAlchemy data layer
-- Alembic-managed schema migrations
-- Self-hosted image support (in addition to external URLs)
-- Docker support
+- FastAPI backend with server-rendered Jinja templates
+- Random 1-day meal plans plus multi-day generation for 1, 3, and 7 days
+- Dedicated weekly workspace at `/weekly` for generating and naming a 7-day plan
+- Choose the start date for a weekly plan, with the date range restored when it is reopened
+- Open any saved day from the weekly workspace in the main planner UI
+- Drag meals between days, swap recipes within a meal slot, and build one weekly grocery list
+- Meal rerolls and swap-candidate matching for a specific meal slot
+- Search by recipe name or tag
+- Recipe manager UI for creating, updating, favoriting, rating, and deleting meals
+- Pantry inventory tracking with stock-aware grocery subtraction
+- Aggregated, categorized grocery list export and WhatsApp text generation
+- Saved plans support for later retrieval
+- Light/dark mode with browser persistence
+- SQLite + SQLAlchemy + Alembic based data layer
+- Support for external image URLs and self-hosted images in the static assets folder
+- Restaurant-style metadata such as prep/cook time, servings, ratings, and prep-step detail
+- CI workflow for linting + tests on pull requests and pushes
 
 ## Tech Stack
 
@@ -21,49 +28,60 @@ A FastAPI app that generates a random daily meal plan (breakfast, lunch, and din
 - FastAPI
 - SQLAlchemy
 - Alembic
-- Jinja2 templates
+- Jinja2
 - Uvicorn
 - uv
+- pytest / black / flake8 / ruff / mypy / pre-commit
 
 ## Project Structure
 
-```
+```text
 .
 ├── src/
 │   └── meal_planner/
 │       ├── main.py
-│       ├── routes/
-│       │   └── plan.py
 │       ├── models/
 │       │   └── meal.py
+│       ├── routes/
+│       │   ├── pantry.py
+│       │   ├── plan.py
+│       │   └── recipes.py
 │       ├── services/
-│       │   ├── meal_engine.py
-│       │   └── grocery.py
+│       │   ├── grocery.py
+│       │   └── meal_engine.py
 │       ├── database/
-│       │   ├── session.py
 │       │   ├── base.py
+│       │   ├── session.py
 │       │   └── seed.py
 │       ├── static/
-│       │   └── images/        # place self-hosted meal photos here
+│       │   └── images/
 │       └── templates/
 │           ├── index.html
+│           ├── manage_recipes.html
 │           └── search.html
 ├── alembic/
 │   ├── env.py
 │   └── versions/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── alembic.ini
 ├── Dockerfile
 ├── docker-compose.yml
+├── Makefile
 ├── pyproject.toml
 ├── uv.lock
-└── README.md
+├── README.md
+├── tests/
+│   └── test_generate_meal_plan.py
+└── meal_planner.db
 ```
 
 ## Prerequisites
 
 - Python 3.12+
 - uv
-- (Optional) Docker + Docker Compose
+- Docker + Docker Compose (optional)
 
 ## Local Setup
 
@@ -85,12 +103,22 @@ A FastAPI app that generates a random daily meal plan (breakfast, lunch, and din
    uv run python -m uvicorn meal_planner.main:app --app-dir src --reload
    ```
 
-4. Open in your browser:
+4. Open the app:
 
-- App UI: [http://localhost:8000](http://localhost:8000)
-- Search: [http://localhost:8000/search?q=chicken](http://localhost:8000/search?q=chicken)
-- JSON endpoint: [http://localhost:8000/plan](http://localhost:8000/plan)
-- OpenAPI docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Home planner: http://localhost:8000
+- Recipe manager: http://localhost:8000/recipes/manage
+- Search: http://localhost:8000/search?q=chicken
+- OpenAPI docs: http://localhost:8000/docs
+
+## Useful Commands
+
+```bash
+make test
+make lint
+make typecheck
+make precommit-run
+make check
+```
 
 ## Run With Docker
 
@@ -98,52 +126,61 @@ A FastAPI app that generates a random daily meal plan (breakfast, lunch, and din
 docker compose up --build
 ```
 
-Then open [http://localhost:8000](http://localhost:8000). The container runs `alembic upgrade head` automatically before starting the server.
+Then open http://localhost:8000.
 
 ## Database Migrations
 
-Schema changes are managed with Alembic — the app no longer creates or alters tables on startup.
-
-Whenever you change a model in `src/meal_planner/models/`:
+Schema changes are managed with Alembic and should be reviewed before applying:
 
 ```bash
 uv run alembic revision --autogenerate -m "describe the change"
-# review the generated file in alembic/versions/ before applying
 uv run alembic upgrade head
 ```
 
-To roll back the most recent migration: `uv run alembic downgrade -1`
+To roll back the most recent migration:
 
-## Meal Images
+```bash
+uv run alembic downgrade -1
+```
 
-Each meal can use either an external `image_url` (e.g. a hotlinked Unsplash photo) or a self-hosted image:
+## Recipe and Image Notes
 
-1. Download a photo that actually matches the meal (see recommended sources below)
-2. Save it to `src/meal_planner/static/images/`
-3. Set that meal's `image_url` in `src/meal_planner/database/seed.py` to `/static/images/your-file.jpg`
-4. Delete `meal_planner.db` and restart so the seed data reloads
+Each meal can use either an external image URL or a file in `src/meal_planner/static/images/`.
 
-**Recommended free-stock sources** (search for the specific dish, don't grab generic "healthy food" shots):
-- [Unsplash](https://unsplash.com)
-- [Pexels](https://www.pexels.com)
-- [Pixabay](https://pixabay.com)
+1. Save a photo that matches the actual recipe.
+2. Put it in `src/meal_planner/static/images/`.
+3. Set the `image_url` in `src/meal_planner/database/seed.py` to the matching file path.
+4. Restart the app so seed data is reloaded.
 
-Avoid pulling images from recipe blogs or general image search — those are typically copyrighted and not reliably hotlinkable.
+Recommended free-stock sources:
 
-## Dark Mode
+- Unsplash
+- Pexels
+- Pixabay
 
-Toggle via the 🌙/☀️ button in the header on both the home and search pages. The choice is saved in the browser (`localStorage`) and defaults to your OS-level light/dark preference on first visit.
+## Pantry and Grocery Flow
+
+The pantry API stores stock levels and categories. The grocery generator subtracts pantry-owned items from the shopping list and creates a categorized export for the week or selected plan.
+
+## CI
+
+The repository includes a GitHub Actions workflow in `.github/workflows/ci.yml` that runs the same repo checks on pull requests and pushes to `main`/`master`:
+
+- pre-commit hooks
+- mypy / lint checks
+- pytest suite
 
 ## How It Works
 
-- On startup, the app seeds meals into the database if none exist (idempotent — safe to restart repeatedly).
-- The root route (`/`) renders a random meal plan in `src/meal_planner/templates/index.html`, structured into a shared core base, a family-only side, and a user-only alternative per meal.
-- **Generate New Daily Plan** calls `/plan` for a fresh plan; recently-served meals (last 48h) are deprioritized to reduce repeats.
-- **Next** on an individual meal card calls `/reroll-meal` to swap just that meal.
-- **Generate Aggregated Grocery List** calls `/grocery-list`, which categorizes and deduplicates ingredients across all three meals.
-- `/search?q=...` finds meals by name or tag.
+- On startup, the app seeds meals into SQLite if the DB is empty or missing enough seeded records.
+- The planner selects breakfast, lunch, and dinner meals while de-prioritizing recent meals.
+- Each meal can include core ingredients, family additions, and user alternatives.
+- Grocery generation consolidates them by category and strips already-owned pantry items.
+- `/recipes/manage` provides CRUD for recipe data and is the place to manage favorites, tags, and meal metadata.
+- `/weekly` generates a named 7-day workspace plan; saving it lets users open any selected day in the main planner UI.
+- Saved plans can also be stored and retrieved via the plan routes.
 
 ## Notes
 
-- The database file is stored locally as `meal_planner.db` and is not committed to version control.
-- For production, mount a persistent volume for `meal_planner.db` (or move to Postgres) so meal history survives container restarts — see the Docker/production notes in project discussions for details.
+- `meal_planner.db` is local state and not intended for version control.
+- For production, use a persistent volume or move the app to a managed database.

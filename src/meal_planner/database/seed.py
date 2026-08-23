@@ -60,7 +60,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Spoon Greek yogurt into a bowl.",
             "Top with fresh berries, chia seeds, and chopped walnuts.",
             "Family addition: sprinkle honey granola over family portion.",
-            "User alternative: sprinkle cinnamon over user portion.",
+            "Health profile alternative: finish the profile-friendly portion with cinnamon.",
         ],
         "cooking_tips": "Use unsweetened Greek yogurt to maintain low glycemic impact.",
         "is_carnivore": False,
@@ -119,7 +119,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Heat extra virgin olive oil in a skillet and wilt spinach for 1 minute.",
             "Pour in eggs and scramble over medium-low heat until soft curds form.",
             "Fold in diced avocado.",
-            "Serve family portion with toasted whole grain bread, and user portion with extra zucchini.",
+            "Serve the family portion with toasted whole grain bread, and the health-profile portion with extra zucchini.",
         ],
         "cooking_tips": "Keep heat low to preserve smooth egg texture and healthy olive oil properties.",
         "is_carnivore": False,
@@ -172,7 +172,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Arrange smoked salmon slices on plates with cucumber rounds.",
             "Drizzle olive oil and sprinkle fresh dill and lemon juice.",
-            "Toast bagel for family addition; slice avocado for user side.",
+            "Toast the bagel for the family addition; slice avocado for the health-profile side.",
         ],
         "cooking_tips": "Wild salmon provides optimal omega-3 fatty acid profile for cholesterol management.",
         "is_carnivore": False,
@@ -287,7 +287,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Whisk chia seeds, almond milk, and almond butter in jars; chill overnight.",
             "Top with fresh blueberries.",
-            "Add sliced banana for family members, and extra flaxseed meal for user.",
+            "Add sliced banana for family members, and extra flaxseed meal for the health-profile portion.",
         ],
         "cooking_tips": "Soluble chia fiber helps smooth out post-meal glucose response.",
         "is_carnivore": False,
@@ -515,7 +515,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Slice grilled chicken breast.",
             "Toss mixed greens, cucumber, and cherry tomatoes with olive oil and fresh lemon juice.",
             "Top salad with sliced chicken.",
-            "Serve brown rice for family, and roasted cauliflower for user.",
+            "Serve brown rice for the family, and roasted cauliflower for the health-profile portion.",
         ],
         "cooking_tips": "Marinate chicken in lemon juice and oregano for tenderness without added sodium.",
         "is_carnivore": False,
@@ -572,7 +572,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Mix tuna, mashed avocado, diced celery, and olive oil mayo with lemon juice.",
             "For family: toss mixture with cooked whole wheat penne.",
-            "For user: spoon tuna avocado mixture into crisp romaine lettuce boats.",
+            "For the health profile: spoon the tuna avocado mixture into crisp romaine lettuce boats.",
         ],
         "cooking_tips": "Avocado acts as a nutrient-dense substitute for traditional heavy mayonnaise.",
         "is_carnivore": False,
@@ -635,7 +635,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Heat sesame oil in a wok and brown turkey thoroughly.",
             "Add broccoli florets and bell peppers; stir-fry for 4 minutes until crisp-tender.",
             "Stir in low-sodium tamari.",
-            "Serve family portion over brown rice and user portion over cauliflower rice.",
+            "Serve the family portion over brown rice and the health-profile portion over cauliflower rice.",
         ],
         "cooking_tips": "Steaming broccoli lightly preserves its cardiovascular glucosinolates.",
         "is_carnivore": False,
@@ -745,7 +745,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Warm brown lentils with carrots and wilted baby spinach.",
             "Drizzle with cold-pressed olive oil and herbs.",
-            "Serve bread for family and sliced avocado for user.",
+            "Serve bread for the family and sliced avocado for the health-profile side.",
         ],
         "cooking_tips": "Lentil soluble fiber assists in lowering LDL cholesterol levels.",
         "is_carnivore": False,
@@ -969,7 +969,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Drizzle generously with extra virgin olive oil, cracked black pepper, and dill.",
             "Bake for 12-14 minutes until salmon flakes easily.",
             "Squeeze fresh lemon before serving.",
-            "Serve family portion with Garlic Butter Brown Rice, and user portion with Cauliflower Rice.",
+            "Serve the family portion with Garlic Butter Brown Rice, and the health-profile portion with Cauliflower Rice.",
         ],
         "cooking_tips": "Wild salmon provides rich EPA and DHA omega-3s essential for heart health.",
         "is_carnivore": False,
@@ -1084,7 +1084,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Toss Brussels sprouts in olive oil and roast at 200°C for 20 minutes.",
             "Sear chicken thighs with rosemary in oven-safe skillet until golden and cooked through.",
-            "Serve wild rice blend for family and steamed green beans for user.",
+            "Serve wild rice blend for the family and steamed green beans for the health-profile portion.",
         ],
         "cooking_tips": "Brussels sprouts offer potent antioxidants and high dietary fiber.",
         "is_carnivore": False,
@@ -1142,7 +1142,7 @@ SEED_MEALS: list[dict[str, Any]] = [
             "Pan-sear sirloin steak in olive oil over medium-high heat for 3-4 mins per side.",
             "Rest steak 5 minutes before slicing.",
             "Sauté green beans with garlic powder in skillet.",
-            "Serve baked sweet potato for family and sautéed mushrooms for user.",
+            "Serve baked sweet potato for the family and sautéed mushrooms for the health-profile portion.",
         ],
         "cooking_tips": "Grass-fed beef has a favorable omega-3 to omega-6 ratio compared to conventional beef.",
         "is_carnivore": False,
@@ -1204,7 +1204,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "instructions": [
             "Roast eggplant, zucchini, and bell pepper with olive oil and Herbs de Provence at 200°C for 20 mins.",
             "Sear tofu slices in olive oil until golden on both sides.",
-            "Serve cooked quinoa for family, and extra ratatouille for user.",
+            "Serve cooked quinoa for the family, and extra ratatouille for the health-profile portion.",
         ],
         "cooking_tips": "Soy protein and extra virgin olive oil promote healthy blood lipid balances.",
         "is_carnivore": False,
@@ -1325,7 +1325,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_kid_friendly": True,
     },
     {
-        "name": "Crispy Baked Lemon Herb Turkey Cutlets & Green Beans",
+        "name": "Baked Turkey Cutlets & Green Beans",
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Golden baked turkey cutlets with herbs de Provence and garlic butter green beans.",
@@ -1376,7 +1376,642 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_high_protein": True,
         "is_kid_friendly": True,
     },
+    {
+        "name": "Chana Masala",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Hearty chickpea curry simmered with onion, tomato, garlic, and warming Indian spices.",
+        "image_url": "/static/images/chana-masala.jpg",
+        "tags": "vegetarian,high_protein,comfort_food,curry,user_safe,spicy",
+        "calories": 420,
+        "protein_g": 20,
+        "carbs_g": 36,
+        "fats_g": 16,
+        "prep_time_mins": 15,
+        "cook_time_mins": 25,
+        "servings_default": 4,
+        "rating": 4.8,
+        "ratings_count": 14,
+        "is_favorite": True,
+        "prep_detail_steps": [
+            {
+                "step": 1,
+                "title": "Bloom the aromatics",
+                "detail": "Sauté onion and garlic in ghee until soft and fragrant.",
+            },
+            {
+                "step": 2,
+                "title": "Build the masala",
+                "detail": "Add tomatoes, cumin, garam masala, turmeric, and a pinch of salt; simmer until glossy.",
+            },
+            {
+                "step": 3,
+                "title": "Finish the curry",
+                "detail": "Fold in chickpeas and cook until the sauce thickens and clings to the beans.",
+            },
+            {
+                "step": 4,
+                "title": "Serve with style",
+                "detail": "Plate over basmati rice and finish with cilantro and a squeeze of lemon.",
+            },
+        ],
+        "core_base": [
+            {"name": "1 cup Chickpeas", "category": "Protein", "tags": ["user_safe"]},
+            {"name": "1 cup Tomato Base", "category": "Produce", "tags": ["user_safe"]},
+            {"name": "1/2 cup Onion", "category": "Produce", "tags": ["user_safe"]},
+            {"name": "1 tbsp Ghee", "category": "Dairy/Fats", "tags": ["user_safe"]},
+            {
+                "name": "1 tsp Garam Masala",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "Basmati Rice",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {"name": "Cauliflower Rice", "category": "Produce", "tags": ["user_safe"]}
+        ],
+        "instructions": [
+            "Sauté onion and garlic in ghee until fragrant.",
+            "Add tomatoes, cumin, garam masala, and turmeric; simmer until glossy.",
+            "Fold in chickpeas and cook until thickened.",
+            "Serve with basmati rice or cauliflower rice.",
+        ],
+        "cooking_tips": "A squeeze of lemon at the end brightens the curry and balances the richness.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": False,
+    },
+    {
+        "name": "Paneer Butter Masala",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Soft paneer cubes in a silky tomato and cashew butter curry with warming spices.",
+        "image_url": "/static/images/paneer-butter-masala.jpg",
+        "tags": "vegetarian,comfort_food,curry,user_safe,high_protein",
+        "calories": 470,
+        "protein_g": 24,
+        "carbs_g": 28,
+        "fats_g": 29,
+        "prep_time_mins": 20,
+        "cook_time_mins": 30,
+        "servings_default": 3,
+        "rating": 4.9,
+        "ratings_count": 18,
+        "is_favorite": True,
+        "prep_detail_steps": [
+            {
+                "step": 1,
+                "title": "Create the base",
+                "detail": "Bloom ginger, garlic, and Kashmiri chili in butter until fragrant.",
+            },
+            {
+                "step": 2,
+                "title": "Slow the sauce",
+                "detail": "Add tomato sauce and allow it to reduce into a glossy, rich curry.",
+            },
+            {
+                "step": 3,
+                "title": "Add the paneer",
+                "detail": "Stir in cashew cream and gently fold in paneer so it stays tender.",
+            },
+            {
+                "step": 4,
+                "title": "Finish the plate",
+                "detail": "Serve with naan and a spoon of extra sauce for a restaurant-style finish.",
+            },
+        ],
+        "core_base": [
+            {"name": "200g Paneer", "category": "Protein", "tags": ["user_safe"]},
+            {
+                "name": "1 cup Tomato Sauce",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "2 tbsp Cashew Cream",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+            {"name": "1 tbsp Butter", "category": "Dairy/Fats", "tags": ["user_safe"]},
+            {
+                "name": "1 tsp Kashmiri Chili",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {"name": "Naan Bread", "category": "Pantry/Grains", "tags": ["family_side"]}
+        ],
+        "user_alternatives": [
+            {"name": "Steamed Spinach", "category": "Produce", "tags": ["user_safe"]}
+        ],
+        "instructions": [
+            "Bloom ginger, garlic, and chili in butter.",
+            "Add tomato sauce and simmer until slightly thickened.",
+            "Stir in cashew cream and paneer cubes.",
+            "Serve with naan or a side of spinach.",
+        ],
+        "cooking_tips": "Soak cashews for a smoother sauce and a gentler texture.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": True,
+    },
+    {
+        "name": "Chicken Tikka Masala",
+        "meal_type": "dinner",
+        "difficulty": "full_meal",
+        "description": "Charred chicken in a rich tomato-onion curry finished with cream and cilantro.",
+        "image_url": "/static/images/chicken-tikka-masala.jpg",
+        "tags": "high_protein,comfort_food,curry,user_safe,spicy",
+        "calories": 520,
+        "protein_g": 42,
+        "carbs_g": 22,
+        "fats_g": 28,
+        "prep_time_mins": 25,
+        "cook_time_mins": 35,
+        "servings_default": 4,
+        "rating": 4.7,
+        "ratings_count": 22,
+        "is_favorite": True,
+        "prep_detail_steps": [
+            {
+                "step": 1,
+                "title": "Marinate the chicken",
+                "detail": "Coat chicken in yogurt, garlic, ginger, and tikka spices for a deep, layered flavor.",
+            },
+            {
+                "step": 2,
+                "title": "Char the protein",
+                "detail": "Sear until lightly charred for smoky edges and juicy centers.",
+            },
+            {
+                "step": 3,
+                "title": "Build the sauce",
+                "detail": "Simmer tomato sauce with onions, curry powder, and butter until deeply savory and glossy.",
+            },
+            {
+                "step": 4,
+                "title": "Plate elegantly",
+                "detail": "Return the chicken to the sauce, finish with cream, and serve with garlic naan.",
+            },
+        ],
+        "core_base": [
+            {
+                "name": "200g Chicken Breast",
+                "category": "Protein",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1 cup Tomato Curry Sauce",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            },
+            {
+                "name": "1/4 cup Greek Yogurt",
+                "category": "Dairy/Fats",
+                "tags": ["user_safe"],
+            },
+            {"name": "1 tbsp Butter", "category": "Dairy/Fats", "tags": ["user_safe"]},
+            {
+                "name": "1 tsp Curry Powder",
+                "category": "Pantry/Grains",
+                "tags": ["user_safe"],
+            },
+        ],
+        "family_additions": [
+            {
+                "name": "Garlic Naan",
+                "category": "Pantry/Grains",
+                "tags": ["family_side"],
+            }
+        ],
+        "user_alternatives": [
+            {
+                "name": "Steamed Cauliflower",
+                "category": "Produce",
+                "tags": ["user_safe"],
+            }
+        ],
+        "instructions": [
+            "Marinate chicken with yogurt and spices, then sear until lightly charred.",
+            "Simmer tomato sauce with onion, garlic, and curry powder until reduced.",
+            "Return chicken to the sauce and finish with a touch of cream.",
+            "Serve with garlic naan or steamed cauliflower.",
+        ],
+        "cooking_tips": "Short marination keeps the chicken juicy while still absorbing spices.",
+        "is_carnivore": False,
+        "is_high_protein": True,
+        "is_kid_friendly": False,
+    },
 ]
+
+
+SEED_MEALS.extend(
+    [
+        {
+            "name": "Thai Basil Chicken & Green Beans",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Fragrant Thai basil chicken with crisp green beans, chili, garlic, and a light tamari glaze.",
+            "image_url": "/static/images/thai-basil-chicken-green-beans.jpg",
+            "tags": "thai,high_protein,low_carb,heart_healthy,user_safe,spicy",
+            "calories": 430,
+            "protein_g": 42,
+            "carbs_g": 18,
+            "fats_g": 20,
+            "core_base": [
+                {
+                    "name": "200g Chicken Breast",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Green Beans",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/2 cup Thai Basil & Bell Pepper",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Jasmine Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Cauliflower Rice",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear chicken with garlic and chili until lightly caramelized.",
+                "Add green beans and bell pepper; toss until crisp-tender.",
+                "Fold through Thai basil and tamari, then finish with lime.",
+                "Serve with jasmine rice or cauliflower rice.",
+            ],
+            "cooking_tips": "Add the basil off the heat so its aroma stays bright and fresh.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": False,
+        },
+        {
+            "name": "Thai Green Curry Tofu & Vegetables",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Silky green curry with seared tofu, zucchini, spinach, and aromatic Thai herbs.",
+            "image_url": "/static/images/thai-green-curry-tofu-vegetables.jpg",
+            "tags": "thai,vegetarian,low_carb,heart_healthy,user_safe,spicy",
+            "calories": 390,
+            "protein_g": 22,
+            "carbs_g": 20,
+            "fats_g": 25,
+            "core_base": [
+                {
+                    "name": "200g Firm Tofu",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Zucchini & Spinach",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/2 cup Light Coconut Curry Sauce",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Thai Green Curry Paste",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Steamed Jasmine Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "Extra Steamed Greens",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear tofu until golden on two sides and set aside.",
+                "Bloom green curry paste, then loosen with light coconut sauce.",
+                "Simmer zucchini and spinach until just tender; return tofu to the pan.",
+                "Finish with lime and cilantro; serve with rice or extra greens.",
+            ],
+            "cooking_tips": "Keep the curry at a gentle simmer so the coconut sauce stays smooth.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": False,
+        },
+        {
+            "name": "Chinese Ginger Scallion Salmon",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Silky roasted salmon finished with ginger, scallions, sesame, and a bright low-sodium glaze.",
+            "image_url": "/static/images/chinese-ginger-scallion-salmon.jpg",
+            "tags": "chinese,high_protein,heart_healthy,low_sodium,user_safe",
+            "calories": 470,
+            "protein_g": 40,
+            "carbs_g": 12,
+            "fats_g": 29,
+            "core_base": [
+                {
+                    "name": "200g Salmon Fillet",
+                    "category": "Protein",
+                    "tags": ["user_safe", "heart_healthy"],
+                },
+                {
+                    "name": "1 tbsp Fresh Ginger & Scallions",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tsp Toasted Sesame Oil",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Brown Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Steamed Bok Choy",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Roast salmon until just cooked and still glossy in the center.",
+                "Warm ginger, scallions, sesame oil, and tamari in a small pan.",
+                "Spoon the aromatic glaze over the salmon and rest briefly.",
+                "Serve with brown rice or steamed bok choy.",
+            ],
+            "cooking_tips": "Pull the salmon from the oven just before it is fully opaque; carryover heat finishes it gently.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "Chinese Beef & Broccoli with Garlic",
+            "meal_type": "lunch",
+            "difficulty": "simple",
+            "description": "Tender beef and vivid broccoli tossed in a glossy garlic, ginger, and tamari sauce.",
+            "image_url": "/static/images/chinese-beef-broccoli-garlic.jpg",
+            "tags": "chinese,high_protein,low_carb,user_safe,quick_meal",
+            "calories": 450,
+            "protein_g": 38,
+            "carbs_g": 22,
+            "fats_g": 25,
+            "core_base": [
+                {
+                    "name": "180g Lean Beef Strips",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1.5 cups Broccoli Florets",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Garlic & Ginger",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Low-Sodium Tamari",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Brown Rice",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Cauliflower Rice",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Sear beef in a hot wok until browned at the edges; set aside.",
+                "Steam-fry broccoli with garlic and ginger until bright green.",
+                "Return beef and toss with tamari until the sauce clings.",
+                "Serve with brown rice or cauliflower rice.",
+            ],
+            "cooking_tips": "Cook in batches if needed; a crowded pan steams the beef instead of searing it.",
+            "is_carnivore": True,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "German Herb Chicken Schnitzel",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Oven-crisp chicken schnitzel with lemon, parsley, and a fresh cucumber herb salad.",
+            "image_url": "/static/images/german-herb-chicken-schnitzel.jpg",
+            "tags": "german,high_protein,kid_friendly,user_safe,comfort_food",
+            "calories": 490,
+            "protein_g": 44,
+            "carbs_g": 30,
+            "fats_g": 22,
+            "core_base": [
+                {
+                    "name": "200g Chicken Breast",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1/3 cup Whole-Grain Breadcrumbs",
+                    "category": "Pantry/Grains",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Cucumber & Parsley Salad",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tsp Olive Oil & Lemon",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 cup Herb Roasted Potatoes",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "1 cup Steamed Green Beans",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Pound chicken evenly and season with parsley, pepper, and lemon zest.",
+                "Coat in whole-grain crumbs and bake until golden and crisp.",
+                "Dress cucumber salad with lemon and olive oil.",
+                "Serve with roasted potatoes for the family or green beans for the health profile.",
+            ],
+            "cooking_tips": "Pound the chicken to an even thickness so the crust browns before the center dries out.",
+            "is_carnivore": True,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "German Lentil & Roasted Vegetable Bowl",
+            "meal_type": "lunch",
+            "difficulty": "simple",
+            "description": "Earthy lentils with roasted root vegetables, mustard vinaigrette, and fresh herbs.",
+            "image_url": "/static/images/heart-healthy-lentil-spinach-bowl.jpg",
+            "tags": "german,vegetarian,heart_healthy,high_fiber,user_safe",
+            "calories": 380,
+            "protein_g": 19,
+            "carbs_g": 48,
+            "fats_g": 13,
+            "core_base": [
+                {
+                    "name": "1 cup Cooked Brown Lentils",
+                    "category": "Protein",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 cup Roasted Carrots & Cabbage",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Olive Oil & Mustard Vinaigrette",
+                    "category": "Dairy/Fats",
+                    "tags": ["user_safe"],
+                },
+                {
+                    "name": "1 tbsp Fresh Dill",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                },
+            ],
+            "family_additions": [
+                {
+                    "name": "1 slice Whole-Grain Rye Bread",
+                    "category": "Pantry/Grains",
+                    "tags": ["family_side"],
+                }
+            ],
+            "user_alternatives": [
+                {
+                    "name": "Extra Roasted Cabbage",
+                    "category": "Produce",
+                    "tags": ["user_safe"],
+                }
+            ],
+            "instructions": [
+                "Roast carrots and cabbage until caramelized at the edges.",
+                "Warm lentils with dill and a spoon of mustard vinaigrette.",
+                "Layer lentils and vegetables in a bowl, then dress while warm.",
+                "Serve with rye bread or extra roasted cabbage.",
+            ],
+            "cooking_tips": "Dress the lentils while warm so they absorb the mustard vinaigrette evenly.",
+            "is_carnivore": False,
+            "is_high_protein": False,
+            "is_kid_friendly": True,
+        },
+    ]
+)
+
+
+MEAL_TIMING_DEFAULTS = {
+    "breakfast": (10, 12),
+    "lunch": (15, 20),
+    "dinner": (20, 30),
+}
+
+
+def _prep_step_title(index: int, total_steps: int) -> str:
+    if index == 1:
+        return "Prepare the ingredients"
+    if index == total_steps:
+        return "Finish and plate"
+    if index == 2:
+        return "Build the dish"
+    return "Bring the flavors together"
+
+
+def _enrich_seed_meal(meal: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(meal)
+
+    prep_time, cook_time = MEAL_TIMING_DEFAULTS.get(
+        enriched.get("meal_type", ""), (15, 20)
+    )
+    enriched.setdefault("prep_time_mins", prep_time)
+    enriched.setdefault("cook_time_mins", cook_time)
+    enriched.setdefault("servings_default", 4)
+    enriched.setdefault("rating", 4.5)
+    enriched.setdefault("ratings_count", 12)
+    enriched.setdefault("is_favorite", False)
+
+    if not enriched.get("prep_detail_steps"):
+        instructions = enriched.get("instructions") or []
+        enriched["prep_detail_steps"] = [
+            {
+                "step": index,
+                "title": _prep_step_title(index, len(instructions)),
+                "detail": instruction,
+            }
+            for index, instruction in enumerate(instructions, start=1)
+        ]
+
+    return enriched
+
+
+for index, meal in enumerate(SEED_MEALS):
+    SEED_MEALS[index] = _enrich_seed_meal(meal)
 
 
 def _seed_if_empty(db: Session) -> None:
@@ -1387,7 +2022,7 @@ def _seed_if_empty(db: Session) -> None:
             if (
                 first_meal
                 and getattr(first_meal, "calories", 0) > 0
-                and meals_count >= 24
+                and meals_count >= len(SEED_MEALS)
             ):
                 return
             db.query(Meal).delete()
@@ -1399,11 +2034,13 @@ def _seed_if_empty(db: Session) -> None:
         Base.metadata.create_all(bind=bind)
 
     for meal_data in SEED_MEALS:
-        meal_payload = dict(meal_data)
+        meal_payload = _enrich_seed_meal(dict(meal_data))
 
         core_base_list = cast(list, meal_payload["core_base"])
         family_additions_list = cast(list, meal_payload["family_additions"])
         user_alternatives_list = cast(list, meal_payload["user_alternatives"])
+        instructions_list = meal_payload.get("instructions") or []
+        prep_detail_steps = meal_payload.get("prep_detail_steps") or []
 
         flat_ingredients = [
             item["name"]
@@ -1414,7 +2051,8 @@ def _seed_if_empty(db: Session) -> None:
         meal_payload["family_additions"] = json.dumps(family_additions_list)
         meal_payload["user_alternatives"] = json.dumps(user_alternatives_list)
         meal_payload["ingredients"] = json.dumps(flat_ingredients)
-        meal_payload["instructions"] = json.dumps(meal_payload["instructions"])
+        meal_payload["instructions"] = json.dumps(instructions_list)
+        meal_payload["prep_detail_steps"] = json.dumps(prep_detail_steps)
 
         db.add(Meal(**meal_payload))
     db.commit()

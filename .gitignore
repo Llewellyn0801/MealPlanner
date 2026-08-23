@@ -6,3 +6,4 @@ meal_planner.db
 .idea/
 .DS_Store
 *.egg-info/
+test-ai.py

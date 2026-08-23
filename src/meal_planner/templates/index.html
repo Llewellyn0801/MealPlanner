@@ -17,21 +17,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0284c7;
-            --primary-hover: #0369a1;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            --body-bg: #f8fafc;
+            --primary: #2f6f4e;
+            --primary-hover: #24583d;
+            --bg-gradient: #1f3d32;
+            --body-bg: #f4f6f1;
             --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --text-subtle: #475569;
-            --text-body: #334155;
-            --border-color: #e2e8f0;
-            --input-bg: #ffffff;
-            --hover-surface: #f1f5f9;
-            --muted-surface: #f8fafc;
-            --muted-surface-border: #e2e8f0;
-            --image-placeholder-bg: #e2e8f0;
+            --text-main: #203027;
+            --text-muted: #68776d;
+            --text-subtle: #526158;
+            --text-body: #34463b;
+            --border-color: #dbe3da;
+            --input-bg: #fbfcfa;
+            --hover-surface: #edf3ed;
+            --muted-surface: #f6f8f4;
+            --muted-surface-border: #dbe3da;
+            --image-placeholder-bg: #e3ebe2;
             --tip-bg: #fffbe6;
             --tip-border: #ffe58f;
             --tip-text: #8c6b00;
@@ -47,28 +47,28 @@
             --core-badge-bg: #fef3c7;
             --core-badge-color: #b45309;
             --core-badge-border: #fde68a;
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --radius-lg: 16px;
-            --radius-md: 10px;
+            --shadow-sm: 0 5px 16px rgba(32, 48, 39, 0.07);
+            --shadow-lg: 0 16px 32px rgba(32, 48, 39, 0.12);
+            --radius-lg: 12px;
+            --radius-md: 8px;
         }
 
         html[data-theme="dark"] {
-            --primary: #38bdf8;
-            --primary-hover: #0ea5e9;
-            --bg-gradient: linear-gradient(135deg, #05070f 0%, #0f172a 50%, #05070f 100%);
-            --body-bg: #0b1220;
-            --card-bg: #131c2e;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --text-subtle: #cbd5e1;
-            --text-body: #cbd5e1;
-            --border-color: #253248;
-            --input-bg: #182338;
-            --hover-surface: #1c2a42;
-            --muted-surface: #182338;
-            --muted-surface-border: #253248;
-            --image-placeholder-bg: #1c2a42;
+            --primary: #8bc69a;
+            --primary-hover: #a6d8b0;
+            --bg-gradient: #12291f;
+            --body-bg: #101b15;
+            --card-bg: #17271e;
+            --text-main: #edf5ee;
+            --text-muted: #aabcae;
+            --text-subtle: #d2e2d5;
+            --text-body: #d2e2d5;
+            --border-color: #2b4433;
+            --input-bg: #1d3024;
+            --hover-surface: #243b2b;
+            --muted-surface: #1d3024;
+            --muted-surface-border: #2b4433;
+            --image-placeholder-bg: #243b2b;
             --tip-bg: #2a2410;
             --tip-border: #4d3f10;
             --tip-text: #fbbf24;
@@ -84,8 +84,8 @@
             --core-badge-bg: rgba(245, 158, 11, 0.15);
             --core-badge-color: #fbbf24;
             --core-badge-border: rgba(245, 158, 11, 0.35);
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            --shadow-sm: 0 5px 16px rgba(0, 0, 0, 0.22);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.32);
         }
 
         * {
@@ -109,8 +109,8 @@
         .hero-header {
             background: var(--bg-gradient);
             color: #ffffff;
-            padding: 32px 20px 48px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 28px 20px 38px;
+            box-shadow: 0 8px 24px rgba(21, 45, 34, 0.2);
             position: relative;
             overflow: hidden;
         }
@@ -122,13 +122,13 @@
             right: -10%;
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(255,255,255,0) 70%);
+            background: radial-gradient(circle, rgba(169, 214, 166, 0.14) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             pointer-events: none;
         }
 
         .header-container {
-            max-width: 1080px;
+            max-width: 1160px;
             margin: 0 auto;
         }
 
@@ -138,18 +138,71 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
+        }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 21px;
+        }
+
+        .brand-kicker {
+            margin: 0 0 3px;
+            color: #bae6fd;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .primary-nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .primary-nav a {
+            padding: 7px 10px;
+            border-radius: 7px;
+            color: #d7ead9;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .primary-nav a:hover,
+        .primary-nav a[aria-current="page"] {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
         }
 
         h1 {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -0.02em;
-            background: linear-gradient(to right, #ffffff, #93c5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #f4fbf4;
         }
 
         /* MEDICAL BADGES BAR */
@@ -158,7 +211,7 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-md);
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             gap: 20px;
@@ -171,6 +224,12 @@
             letter-spacing: 0.08em;
             color: #94a3b8;
             font-weight: 600;
+        }
+
+        .profile-copy {
+            margin: 0 0 8px;
+            color: #cbd5e1;
+            font-size: 12px;
         }
 
         .badge-group {
@@ -203,21 +262,46 @@
 
         /* MAIN CONTAINER */
         .main-container {
-            max-width: 1080px;
-            margin: -24px auto 40px;
+            max-width: 1160px;
+            margin: -16px auto 40px;
             padding: 0 20px;
             position: relative;
             z-index: 10;
         }
 
-        /* PREFERENCE & DISLIKES CONTROL PANEL */
-        .preference-panel {
-            background: var(--card-bg);
+        .planning-deck {
+            margin-bottom: 24px;
+            padding: 18px 20px 20px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 20px 24px;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 24px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .planning-deck-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .planning-deck-title {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+        }
+
+        .planning-deck-note {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* PREFERENCE & DISLIKES CONTROL PANEL */
+        .preference-panel {
+            padding: 16px 0 0;
+            border-top: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -231,6 +315,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .preference-title::first-letter {
+            color: var(--primary);
         }
 
         .pref-row {
@@ -348,7 +436,7 @@
 
         /* SEARCH FORM */
         .search-form {
-            margin-bottom: 20px;
+            margin-bottom: 0;
             display: flex;
             gap: 8px;
         }
@@ -361,6 +449,94 @@
             font-size: 15px;
             background: var(--input-bg);
             color: var(--text-main);
+        }
+
+        .search-panel {
+            margin-bottom: 24px;
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            background: var(--card-bg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-panel-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .search-panel-title {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 20px;
+        }
+
+        .search-panel-meta {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .search-result-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .search-result {
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--muted-surface);
+        }
+
+        .search-result h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .search-result p {
+            margin: 0 0 8px;
+            color: var(--text-body);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .search-result-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .use-search-result-btn {
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 8px 10px;
+            background: var(--primary);
+            color: #ffffff;
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .use-search-result-btn:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .search-result-meta {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .search-empty {
+            margin: 0;
+            color: var(--text-muted);
         }
 
         .action-bar {
@@ -562,6 +738,23 @@
             font-weight: 500;
         }
 
+        .recipe-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .recipe-meta span {
+            padding: 5px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: var(--muted-surface);
+        }
+
         .card-button-group {
             display: flex;
             gap: 8px;
@@ -725,6 +918,11 @@
             h1 { font-size: 24px; }
             .hero-header { padding: 24px 16px 36px; }
             .health-profile-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .primary-nav { width: 100%; overflow-x: auto; }
+            .planning-deck { padding: 16px; }
+            .planning-deck-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+            .search-form { flex-direction: column; }
+            .search-form .btn { width: 100%; }
             .macro-summary-banner { flex-direction: column; align-items: flex-start; }
             .macro-summary-stats { width: 100%; justify-content: space-between; }
         }
@@ -735,15 +933,32 @@
     <header class="hero-header">
         <div class="header-container">
             <div class="title-area">
-                <h1>Modular Family Meal Planner</h1>
-                <button type="button" id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle dark mode">
-                    <span id="theme-toggle-icon">🌙</span>
-                    <span id="theme-toggle-label">Dark Mode</span>
-                </button>
+                <div class="brand-lockup">
+                    <span class="brand-mark" aria-hidden="true">🍽</span>
+                    <div>
+                        <p class="brand-kicker">Healthy planning, made simple</p>
+                        <h1>Modular Family Meal Planner</h1>
+                    </div>
+                </div>
+                <nav class="primary-nav" aria-label="Primary navigation">
+                    <a href="/" aria-current="page">Today</a>
+                    <a href="/weekly">This Week</a>
+                    <a href="/recipes/manage">Recipes</a>
+                </nav>
+                <div class="header-actions">
+                    <a class="btn btn-secondary" href="/weekly">📅 Weekly Planner</a>
+                    <button type="button" id="theme-toggle-btn" class="btn btn-secondary" aria-label="Toggle dark mode">
+                        <span id="theme-toggle-icon">🌙</span>
+                        <span id="theme-toggle-label">Dark Mode</span>
+                    </button>
+                </div>
             </div>
 
             <div class="health-profile-card">
-                <span class="profile-label">🩺 Medical Profile:</span>
+                <div>
+                    <span class="profile-label">🩺 Health profile</span>
+                    <p class="profile-copy">Your plan is tuned for steady energy and heart health.</p>
+                </div>
                 <div class="badge-group">
                     <span class="med-badge med-badge-danger">Type 2 Diabetes</span>
                     <span class="med-badge med-badge-danger">High Cholesterol</span>
@@ -757,18 +972,58 @@
 
     <main class="main-container">
 
-        <form action="/search" method="get" class="search-form">
-            <input
-                type="search"
-                name="q"
-                class="search-input"
-                placeholder="Search 24+ meals by name or tag..."
-            />
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+        <section class="planning-deck">
+            <div class="planning-deck-heading">
+                <h2 class="planning-deck-title">Plan today’s table</h2>
+                <p class="planning-deck-note">Search a recipe or tune the plan to your household.</p>
+            </div>
 
-        <!-- PREFERENCES & DISLIKES PANEL -->
-        <section class="preference-panel">
+            <form action="/search" method="get" class="search-form">
+                <input
+                    type="search"
+                    name="q"
+                    class="search-input"
+                    placeholder="Search recipes, ingredients, or tags..."
+                    value="{{ search_query }}"
+                />
+                <button type="submit" class="btn btn-primary">Search recipes</button>
+            </form>
+
+            {% if search_query %}
+            <section class="search-panel" aria-live="polite">
+            <div class="search-panel-header">
+                <h2 class="search-panel-title">Results for “{{ search_query }}”</h2>
+                {% if search_results %}
+                <span class="search-panel-meta">{{ search_results|length }} recipe{% if search_results|length != 1 %}s{% endif %}</span>
+                {% endif %}
+            </div>
+            {% if search_results %}
+            <div class="search-result-list">
+                {% for meal in search_results %}
+                <article class="search-result">
+                    <h3>{{ meal.name }}</h3>
+                    <p>{{ meal.description }}</p>
+                    <span class="search-result-meta">{{ meal.meal_type|capitalize }} · {{ meal.total_time_mins }} min · {{ meal.calories }} kcal</span>
+                    <div class="search-result-actions">
+                        <span class="search-result-meta">Replace today’s {{ meal.meal_type }}</span>
+                        <button
+                            type="button"
+                            class="use-search-result-btn"
+                            data-recipe-id="{{ meal.meal_id }}"
+                            data-meal-type="{{ meal.meal_type }}"
+                        >Use for today</button>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="search-empty">No matching recipes yet. Try a dish name, ingredient, or tag.</p>
+            {% endif %}
+            </section>
+            {% endif %}
+
+            <!-- PREFERENCES & DISLIKES PANEL -->
+            <section class="preference-panel">
             <div class="preference-title">⚙️ Plan Personalization & Ingredient Filters</div>
             <div class="pref-row">
                 <div class="pref-group">
@@ -804,6 +1059,7 @@
                     🎯 Apply Preferences & Generate Custom Plan
                 </button>
             </div>
+            </section>
         </section>
 
         <!-- DAILY MACRO SUMMARY BANNER -->
@@ -844,6 +1100,12 @@
                     <h2 class="meal-title">{{ meal.name }}</h2>
                     <p class="meal-description">{{ meal.description }}</p>
 
+                    <div class="recipe-meta" aria-label="Recipe details">
+                        <span class="recipe-time">⏱ {{ meal.total_time_mins }} min</span>
+                        <span class="recipe-servings">🍽 {{ meal.servings_default }} servings</span>
+                        <span class="recipe-rating">★ {{ "%.1f"|format(meal.rating) }} ({{ meal.ratings_count }})</span>
+                    </div>
+
                     <!-- CARD MACROS BADGES -->
                     <div class="card-macro-row">
                         <span class="macro-badge badge-cal">🔥 <span class="m-cal">{{ meal.calories }}</span> kcal</span>
@@ -875,12 +1137,12 @@
                             </span>
                         </div>
                         <div class="component-item">
-                            <span class="comp-badge comp-user">User Side</span>
-                            <span class="comp-text user-text">
+                            <span class="comp-badge comp-user">Health Profile Side</span>
+                                <span class="comp-text user-text">
                                 {% if meal.user_alternatives %}
                                     {{ meal.user_alternatives | map(attribute='name') | join(', ') }}
                                 {% else %}
-                                    Low-Carb Alternative
+                                    Health Profile Alternative
                                 {% endif %}
                             </span>
                         </div>
@@ -892,6 +1154,15 @@
                     </div>
 
                     <div class="recipe-details hidden">
+                        {% if meal.prep_detail_steps %}
+                        <div class="section-subheading">Chef's Method</div>
+                        <ol class="recipe-list prep-detail-list">
+                            {% for step in meal.prep_detail_steps %}
+                            <li><strong>{{ step.title }}:</strong> {{ step.detail }}</li>
+                            {% endfor %}
+                        </ol>
+                        {% endif %}
+
                         <div class="section-subheading">Instructions</div>
                         <ol class="recipe-list instructions-list">
                             {% for step in meal.instructions %}
@@ -974,6 +1245,16 @@
             document.getElementById("sum-fat").textContent = (totals.fats_g || 0) + "g";
         };
 
+        const getIngredientName = (item) => {
+            if (!item) return "";
+            if (typeof item === "string") return item;
+            if (typeof item === "object") {
+                if (typeof item.name === "string") return item.name;
+                if (typeof item.ingredient === "string") return item.ingredient;
+            }
+            return String(item);
+        };
+
         const renderGroceryList = (groceryData) => {
             const container = document.getElementById("grocery-categories-container");
             container.innerHTML = "";
@@ -988,7 +1269,7 @@
 
             let totalItems = 0;
             Object.keys(categories).forEach(cat => {
-                const catData = categories[cat];
+                const catData = categories[cat] || {};
                 const core = catData.core || [];
                 const family = catData.family_only || [];
                 const user = catData.user_only || [];
@@ -1006,6 +1287,9 @@
 
                 const appendItems = (items, badgeClass, badgeLabel) => {
                     items.forEach(item => {
+                        const itemName = getIngredientName(item);
+                        if (!itemName) return;
+
                         totalItems++;
                         const li = document.createElement("li");
                         li.className = "grocery-item-row";
@@ -1013,7 +1297,7 @@
                         li.innerHTML = `
                             <input type="checkbox" id="${checkboxId}" />
                             <span class="comp-badge ${badgeClass}">${badgeLabel}</span>
-                            <label class="grocery-item-label" for="${checkboxId}">${item}</label>
+                            <label class="grocery-item-label" for="${checkboxId}">${itemName}</label>
                         `;
                         ul.appendChild(li);
                     });
@@ -1041,7 +1325,7 @@
         };
 
         const renderMealCard = (mealType, meal) => {
-            const card = document.querySelector(`[data-meal-type="${mealType}"]`);
+            const card = document.querySelector(`.meal-card[data-meal-type="${mealType}"]`);
             if (!card) return;
 
             let image = card.querySelector(".meal-image");
@@ -1050,7 +1334,7 @@
                     const wrap = card.querySelector(".meal-image-wrap");
                     image = document.createElement("img");
                     image.className = "meal-image";
-                    wrap.appendChild(image);
+                    if (wrap) wrap.appendChild(image);
                 }
                 image.src = meal.image_url;
                 image.alt = meal.name;
@@ -1065,6 +1349,9 @@
             card.querySelector(".m-prot").textContent = meal.protein_g || 0;
             card.querySelector(".m-carb").textContent = meal.carbs_g || 0;
             card.querySelector(".m-fat").textContent = meal.fats_g || 0;
+            card.querySelector(".recipe-time").textContent = `⏱ ${meal.total_time_mins || 0} min`;
+            card.querySelector(".recipe-servings").textContent = `🍽 ${meal.servings_default || 4} servings`;
+            card.querySelector(".recipe-rating").textContent = `★ ${Number(meal.rating || 0).toFixed(1)} (${meal.ratings_count || 0})`;
 
             const coreText = card.querySelector(".core-text");
             const familyText = card.querySelector(".family-text");
@@ -1085,7 +1372,7 @@
             if (meal.user_alternatives && meal.user_alternatives.length > 0) {
                 userText.textContent = meal.user_alternatives.map(i => i.name).join(", ");
             } else {
-                userText.textContent = "Low-Carb Alternative";
+                userText.textContent = "Health Profile Alternative";
             }
 
             const instructionsList = card.querySelector(".instructions-list");
@@ -1095,6 +1382,18 @@
                 li.textContent = step;
                 instructionsList.appendChild(li);
             });
+
+            const prepDetailList = card.querySelector(".prep-detail-list");
+            if (prepDetailList) {
+                prepDetailList.innerHTML = "";
+                (meal.prep_detail_steps || []).forEach((step) => {
+                    const li = document.createElement("li");
+                    const title = document.createElement("strong");
+                    title.textContent = `${step.title}: `;
+                    li.append(title, document.createTextNode(step.detail));
+                    prepDetailList.appendChild(li);
+                });
+            }
 
             const tipBox = card.querySelector(".cooking-tip-box");
             if (tipBox) {
@@ -1126,6 +1425,31 @@
             }
         };
 
+        const useSearchRecipe = async (button) => {
+            const mealType = button.dataset.mealType;
+            const recipeId = button.dataset.recipeId;
+            button.disabled = true;
+            button.textContent = "Replacing...";
+
+            try {
+                const response = await fetch(`/recipes/${recipeId}`);
+                if (!response.ok) throw new Error("Recipe lookup failed");
+                const recipe = await response.json();
+                currentPlan[mealType] = recipe;
+                renderMealCard(mealType, recipe);
+                updateMacroSummary();
+                if (!document.getElementById("grocery-section").classList.contains("hidden")) {
+                    await updateGroceryList();
+                }
+                button.textContent = "Added to today";
+            } catch (error) {
+                console.error("Could not replace searched recipe", error);
+                button.textContent = "Try again";
+            } finally {
+                button.disabled = false;
+            }
+        };
+
         const updateGroceryList = async () => {
             const response = await fetch("/grocery-list", {
                 method: "POST",
@@ -1138,6 +1462,10 @@
 
         document.querySelectorAll(".recipe-toggle-btn").forEach((button) => {
             button.addEventListener("click", () => toggleRecipe(button));
+        });
+
+        document.querySelectorAll(".use-search-result-btn").forEach((button) => {
+            button.addEventListener("click", () => useSearchRecipe(button));
         });
 
         document.getElementById("apply-preferences-btn").addEventListener("click", fetchNewPlan);
