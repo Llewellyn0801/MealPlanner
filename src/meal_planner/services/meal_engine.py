@@ -1,6 +1,7 @@
 import datetime
 import json
 import random
+import re
 from typing import Any, cast
 
 from sqlalchemy.orm import Session
@@ -26,6 +27,86 @@ def parse_json_dict_list(payload: str) -> list[dict[str, Any]]:
     except Exception:
         pass
     return []
+
+
+_MEASUREMENT_UNITS = {
+    "mg",
+    "g",
+    "kg",
+    "ml",
+    "l",
+    "tsp",
+    "tbsp",
+    "cup",
+    "cups",
+    "oz",
+    "ounce",
+    "ounces",
+    "lb",
+    "lbs",
+    "pound",
+    "pounds",
+}
+_QUANTITY_PATTERN = re.compile(
+    r"^\s*(?P<quantity>\d+\s+\d+/\d+|\d+/\d+|\d+(?:\.\d+)?)"
+    r"\s*(?:(?P<unit>mg|kg|ml|tbsp|tsp|cups?|ounces?|oz|lbs?|pounds?|g|l)\b\s+)?"
+    r"(?P<name>.+?)\s*$",
+    re.IGNORECASE,
+)
+
+
+def _parse_quantity(value: str) -> float:
+    normalized = value.replace(" ", "")
+    if "/" not in normalized:
+        return float(normalized)
+    fraction_match = re.fullmatch(r"(?:(\d+))?(\d+)/(\d+)", normalized)
+    if not fraction_match:
+        raise ValueError(f"Invalid quantity: {value}")
+    whole, numerator, denominator = fraction_match.groups()
+    return float(whole or 0) + (float(numerator) / float(denominator))
+
+
+def parse_ingredient_measurement(name: str) -> dict[str, Any]:
+    """Parse a leading ingredient quantity while preserving the original text."""
+    match = _QUANTITY_PATTERN.match(name)
+    if not match:
+        return {
+            "name": name,
+            "display_name": name,
+            "quantity": None,
+            "unit": None,
+        }
+
+    raw_unit_text = match.group("unit") or ""
+    raw_unit = raw_unit_text.lower()
+    if raw_unit in _MEASUREMENT_UNITS:
+        ingredient_name = match.group("name")
+        unit = raw_unit
+    else:
+        ingredient_name = " ".join(
+            part for part in [raw_unit_text, match.group("name")] if part
+        )
+        unit = "count"
+
+    return {
+        "name": ingredient_name,
+        "display_name": name.strip(),
+        "quantity": _parse_quantity(match.group("quantity")),
+        "unit": unit,
+    }
+
+
+def normalize_ingredient_item(item: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(item)
+    if normalized.get("quantity") is None or not normalized.get("unit"):
+        parsed = parse_ingredient_measurement(str(normalized.get("name", "")))
+        normalized["quantity"] = parsed["quantity"]
+        normalized["unit"] = parsed["unit"]
+        normalized["display_name"] = parsed["display_name"]
+        normalized["ingredient_name"] = parsed["name"]
+    else:
+        normalized.setdefault("display_name", normalized["name"])
+    return normalized
 
 
 def get_base_words(ingredients: list[str]) -> set[str]:
@@ -80,6 +161,7 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
             "protein_g": 0,
             "carbs_g": 0,
             "fats_g": 0,
+            "nutrition_basis": "per_serving",
             "core_base": [],
             "family_additions": [],
             "user_alternatives": [],
@@ -104,9 +186,17 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
     meal_family_additions = cast(str, getattr(meal, "family_additions", "[]"))
     meal_user_alternatives = cast(str, getattr(meal, "user_alternatives", "[]"))
 
-    core_base = parse_json_dict_list(meal_core_base)
-    family_additions = parse_json_dict_list(meal_family_additions)
-    user_alternatives = parse_json_dict_list(meal_user_alternatives)
+    core_base = [
+        normalize_ingredient_item(item) for item in parse_json_dict_list(meal_core_base)
+    ]
+    family_additions = [
+        normalize_ingredient_item(item)
+        for item in parse_json_dict_list(meal_family_additions)
+    ]
+    user_alternatives = [
+        normalize_ingredient_item(item)
+        for item in parse_json_dict_list(meal_user_alternatives)
+    ]
     ingredients = parse_json_list(meal_ingredients)
 
     if not ingredients and core_base:
@@ -118,6 +208,18 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
 
     prep_time = getattr(meal, "prep_time_mins", 0) or 0
     cook_time = getattr(meal, "cook_time_mins", 0) or 0
+    servings = getattr(meal, "servings_default", 4) or 4
+    nutrition_basis = getattr(meal, "nutrition_basis", "per_serving") or "per_serving"
+    nutrition_values = {
+        "calories": getattr(meal, "calories", 0) or 0,
+        "protein_g": getattr(meal, "protein_g", 0) or 0,
+        "carbs_g": getattr(meal, "carbs_g", 0) or 0,
+        "fats_g": getattr(meal, "fats_g", 0) or 0,
+    }
+    if nutrition_basis == "whole_recipe":
+        nutrition_values = {
+            key: round(value / servings) for key, value in nutrition_values.items()
+        }
     prep_detail_raw = cast(str, getattr(meal, "prep_detail_steps", "[]"))
 
     return {
@@ -125,10 +227,11 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
         "name": meal.name,
         "description": meal.description,
         "image_url": meal.image_url,
-        "calories": getattr(meal, "calories", 0) or 0,
-        "protein_g": getattr(meal, "protein_g", 0) or 0,
-        "carbs_g": getattr(meal, "carbs_g", 0) or 0,
-        "fats_g": getattr(meal, "fats_g", 0) or 0,
+        "calories": nutrition_values["calories"],
+        "protein_g": nutrition_values["protein_g"],
+        "carbs_g": nutrition_values["carbs_g"],
+        "fats_g": nutrition_values["fats_g"],
+        "nutrition_basis": "per_serving",
         "core_base": core_base,
         "family_additions": family_additions,
         "user_alternatives": user_alternatives,
@@ -139,7 +242,7 @@ def format_meal(meal: Meal | None) -> dict[str, Any]:
         "prep_time_mins": prep_time,
         "cook_time_mins": cook_time,
         "total_time_mins": prep_time + cook_time,
-        "servings_default": getattr(meal, "servings_default", 4) or 4,
+        "servings_default": servings,
         "difficulty": getattr(meal, "difficulty", "simple") or "simple",
         "rating": getattr(meal, "rating", 0.0) or 0.0,
         "ratings_count": getattr(meal, "ratings_count", 0) or 0,
@@ -171,8 +274,13 @@ def _meal_contains_dislikes(meal: Meal, dislikes: list[str]) -> bool:
     return False
 
 
-def _score_meal(meal: Meal, meal_type: str, likes: list[str] | None = None) -> int:
-    """Scores a meal based on desired tags and user liked preferences."""
+def _score_meal(
+    meal: Meal,
+    meal_type: str,
+    likes: list[str] | None = None,
+    macro_focus: str | None = None,
+) -> int:
+    """Score a meal using internal tags and the user's selected macro focus."""
     score = 0
     tags = [t.strip().lower() for t in meal.tags.split(",") if t.strip()]
 
@@ -184,6 +292,14 @@ def _score_meal(meal: Meal, meal_type: str, likes: list[str] | None = None) -> i
         score += 1
     if meal_type == "dinner" and "kid_friendly" in tags:
         score += 1
+
+    macro_score = {
+        "protein": getattr(meal, "protein_g", 0) or 0,
+        "carbs": getattr(meal, "carbs_g", 0) or 0,
+        "fats": getattr(meal, "fats_g", 0) or 0,
+    }.get((macro_focus or "").lower())
+    if macro_score is not None:
+        score += min(int(macro_score) // 5, 20)
 
     if likes:
         meal_name_lower = meal.name.lower()
@@ -201,6 +317,7 @@ def _pick_meal(
     recent_meal_names: set[str],
     dislikes: list[str] | None = None,
     likes: list[str] | None = None,
+    macro_focus: str | None = None,
 ) -> Meal | None:
     if not meals:
         return None
@@ -216,7 +333,9 @@ def _pick_meal(
     selection_pool = unseen_meals if unseen_meals else meals
 
     # Score and sort meals
-    scored_meals = [(_score_meal(m, meal_type, likes), m) for m in selection_pool]
+    scored_meals = [
+        (_score_meal(m, meal_type, likes, macro_focus), m) for m in selection_pool
+    ]
     scored_meals.sort(key=lambda x: x[0], reverse=True)
 
     top_meals = [m for score, m in scored_meals[:5]]
@@ -224,9 +343,13 @@ def _pick_meal(
 
 
 def generate_meal_plan(
-    db: Session, dislikes: list[str] | None = None, likes: list[str] | None = None
+    db: Session,
+    dislikes: list[str] | None = None,
+    likes: list[str] | None = None,
+    dietary_preset: str | None = None,
+    macro_focus: str | None = None,
 ) -> dict[str, dict[str, Any]]:
-    all_meals = db.query(Meal).all()
+    all_meals = _apply_dietary_preset(db.query(Meal).all(), dietary_preset)
     cutoff_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
         hours=48
     )
@@ -259,7 +382,14 @@ def generate_meal_plan(
             return format_meal(None), set()
 
         recent_names = recent_meals_by_type.get(meal_type, set())
-        chosen = _pick_meal(candidates, meal_type, recent_names, dislikes, likes)
+        chosen = _pick_meal(
+            candidates,
+            meal_type,
+            recent_names,
+            dislikes,
+            likes,
+            macro_focus,
+        )
 
         c_dict = format_meal(chosen)
         c_words = get_base_words(c_dict["ingredients"])
@@ -315,10 +445,17 @@ def generate_multi_day_plan(
     dislikes: list[str] | None = None,
     likes: list[str] | None = None,
     dietary_preset: str | None = None,
+    macro_focus: str | None = None,
 ) -> dict[str, Any]:
     """Generate a plan for 1, 3, or 7 days."""
     if days <= 1:
-        return generate_meal_plan(db, dislikes=dislikes, likes=likes)
+        return generate_meal_plan(
+            db,
+            dislikes=dislikes,
+            likes=likes,
+            dietary_preset=dietary_preset,
+            macro_focus=macro_focus,
+        )
 
     all_meals = db.query(Meal).all()
     all_meals = _apply_dietary_preset(all_meals, dietary_preset)
@@ -372,6 +509,7 @@ def generate_multi_day_plan(
                 recent_names,
                 dislikes,
                 likes,
+                macro_focus,
             )
             day_plan[meal_type] = format_meal(chosen)
             if chosen:

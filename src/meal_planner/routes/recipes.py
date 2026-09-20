@@ -1,5 +1,4 @@
 import json
-import os
 import shutil
 from pathlib import Path
 from typing import Any
@@ -21,13 +20,31 @@ from sqlalchemy.orm import Session
 
 from meal_planner.database.session import get_db
 from meal_planner.models.meal import Meal
-from meal_planner.services.meal_engine import format_meal
+from meal_planner.services.images import (
+    STATIC_IMAGES_DIR,
+    is_available_local_image,
+    safe_image_filename,
+)
+from meal_planner.services.meal_engine import format_meal, parse_ingredient_measurement
 
 router = APIRouter(prefix="/recipes")
+
+
+@router.get("/image-audit")
+def image_audit(db: Session = Depends(get_db)):
+    missing = []
+    for meal in db.query(Meal).all():
+        image_url = meal.image_url or ""
+        if image_url.startswith("/static/images/") and not is_available_local_image(
+            image_url
+        ):
+            missing.append({"id": meal.id, "name": meal.name, "image_url": image_url})
+    return {"missing": missing, "missing_count": len(missing)}
+
+
 templates = Jinja2Templates(
     directory=str(Path(__file__).resolve().parents[1] / "templates")
 )
-STATIC_IMAGES_DIR = Path(__file__).resolve().parents[1] / "static" / "images"
 
 
 @router.get("/manage", response_class=HTMLResponse)
@@ -83,6 +100,7 @@ def create_recipe(
     protein_g: int = Form(0),
     carbs_g: int = Form(0),
     fats_g: int = Form(0),
+    nutrition_basis: str = Form("per_serving"),
     prep_time_mins: int = Form(10),
     cook_time_mins: int = Form(15),
     servings_default: int = Form(4),
@@ -94,17 +112,22 @@ def create_recipe(
     image_file: UploadFile | None = File(None),
     db: Session = Depends(get_db),
 ):
-    image_url = "/static/images/greek-yogurt-berry-&-chia-bowl.png"
+    image_url = None
 
     if image_file and image_file.filename:
-        filename = image_file.filename.replace(" ", "-").lower()
+        try:
+            filename = safe_image_filename(image_file.filename)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
         save_path = STATIC_IMAGES_DIR / filename
-        os.makedirs(STATIC_IMAGES_DIR, exist_ok=True)
+        STATIC_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
         with open(save_path, "wb") as buffer:
             shutil.copyfileobj(image_file.file, buffer)
         image_url = f"/static/images/{filename}"
     elif image_url_input and image_url_input.strip():
         image_url = image_url_input.strip()
+        if not is_available_local_image(image_url):
+            raise HTTPException(status_code=400, detail="Local image does not exist")
 
     ingredients = [i.strip() for i in ingredients_raw.split("\n") if i.strip()]
     instructions = [i.strip() for i in instructions_raw.split("\n") if i.strip()]
@@ -113,7 +136,13 @@ def create_recipe(
         for idx, instruction in enumerate(instructions, start=1)
     ]
 
-    core_base = [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
+    core_base = [
+        {
+            **parse_ingredient_measurement(ingredient),
+            "category": "Pantry/Grains",
+        }
+        for ingredient in ingredients
+    ]
 
     new_meal = Meal(
         name=name.strip(),
@@ -125,6 +154,7 @@ def create_recipe(
         protein_g=protein_g,
         carbs_g=carbs_g,
         fats_g=fats_g,
+        nutrition_basis=nutrition_basis.strip(),
         prep_time_mins=prep_time_mins,
         cook_time_mins=cook_time_mins,
         servings_default=servings_default,
@@ -154,6 +184,7 @@ def update_recipe(
     protein_g: int = Form(0),
     carbs_g: int = Form(0),
     fats_g: int = Form(0),
+    nutrition_basis: str = Form("per_serving"),
     prep_time_mins: int = Form(10),
     cook_time_mins: int = Form(15),
     servings_default: int = Form(4),
@@ -162,6 +193,7 @@ def update_recipe(
     instructions_raw: str = Form(""),
     cooking_tips: str = Form(""),
     image_url_input: str | None = Form(None),
+    image_file: UploadFile | None = File(None),
     db: Session = Depends(get_db),
 ):
     meal = db.query(Meal).filter(Meal.id == recipe_id).first()
@@ -176,14 +208,27 @@ def update_recipe(
     meal.protein_g = protein_g
     meal.carbs_g = carbs_g
     meal.fats_g = fats_g
+    meal.nutrition_basis = nutrition_basis.strip()
     meal.prep_time_mins = prep_time_mins
     meal.cook_time_mins = cook_time_mins
     meal.servings_default = servings_default
     meal.tags = tags.strip()
     meal.cooking_tips = cooking_tips.strip()
 
-    if image_url_input and image_url_input.strip():
+    if image_file and image_file.filename:
+        try:
+            filename = safe_image_filename(image_file.filename)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        save_path = STATIC_IMAGES_DIR / filename
+        STATIC_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+        with open(save_path, "wb") as buffer:
+            shutil.copyfileobj(image_file.file, buffer)
+        meal.image_url = f"/static/images/{filename}"
+    elif image_url_input and image_url_input.strip():
         meal.image_url = image_url_input.strip()
+        if not is_available_local_image(meal.image_url):
+            raise HTTPException(status_code=400, detail="Local image does not exist")
 
     ingredients = [i.strip() for i in ingredients_raw.split("\n") if i.strip()]
     instructions = [i.strip() for i in instructions_raw.split("\n") if i.strip()]
@@ -195,7 +240,13 @@ def update_recipe(
     meal.instructions = json.dumps(instructions)
     meal.prep_detail_steps = json.dumps(prep_detail_steps)
     meal.core_base = json.dumps(
-        [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
+        [
+            {
+                **parse_ingredient_measurement(ingredient),
+                "category": "Pantry/Grains",
+            }
+            for ingredient in ingredients
+        ]
     )
 
     db.commit()

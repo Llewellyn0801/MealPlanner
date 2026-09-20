@@ -128,6 +128,27 @@ docker compose up --build
 
 Then open http://localhost:8000.
 
+### Raspberry Pi household setup
+
+For the complete installation and maintenance guide, see
+[RASPBERRY_PI.md](RASPBERRY_PI.md).
+
+Run the same Docker Compose command on a Raspberry Pi connected to the home
+network. Find the Pi's local address with `hostname -I`, then open
+`http://PI_IP_ADDRESS:8000` from a phone or laptop on the same Wi-Fi network.
+
+The SQLite database is stored in the `meal_planner_data` Docker volume and will
+survive container restarts and rebuilds. Create a backup from a local checkout
+with:
+
+```bash
+make backup
+```
+
+For the current passwordless household profiles, keep the app on your trusted
+home network. Do not expose port 8000 to the public internet until account
+authentication and HTTPS are added.
+
 ## Database Migrations
 
 Schema changes are managed with Alembic and should be reviewed before applying:

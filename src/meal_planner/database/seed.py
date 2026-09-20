@@ -647,7 +647,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Succulent grilled wild shrimp with tender zucchini ribbons and olive oil lemon dressing.",
-        "image_url": "/static/images/mediterranean-grilled-shrimp-zucchini-salad.jpg",
+        "image_url": None,
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
         "calories": 360,
         "protein_g": 34,
@@ -757,7 +757,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Spiced grilled chicken over cucumber tomato salad, pickled onions, and garlic herb tahini.",
-        "image_url": "/static/images/chicken-shawarma-herb-tahini-bowl.jpg",
+        "image_url": None,
         "tags": "heart_healthy,user_safe,high_protein,simple",
         "calories": 520,
         "protein_g": 44,
@@ -808,7 +808,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Crispy pan-seared salmon over fluffy quinoa, steamed edamame, and sesame oil dressing.",
-        "image_url": "/static/images/salmon-quinoa-grain-bowl.jpg",
+        "image_url": None,
         "tags": "heart_healthy,user_safe,high_protein,simple",
         "calories": 560,
         "protein_g": 42,
@@ -1039,7 +1039,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Juicy skinless chicken thighs pan-roasted with fresh rosemary and crispy Brussels sprouts.",
-        "image_url": "/static/images/rosemary-chicken-thighs-roasted-brussels-sprouts.jpg",
+        "image_url": None,
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
         "calories": 520,
         "protein_g": 46,
@@ -1096,7 +1096,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Lean sirloin steak seared in olive oil with garlic-infused tender green beans.",
-        "image_url": "/static/images/grass-fed-sirloin-steak-sauteed-green-beans.jpg",
+        "image_url": None,
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
         "calories": 540,
         "protein_g": 50,
@@ -1154,7 +1154,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Pan-seared firm tofu over colorful roasted eggplant, zucchini, and bell peppers.",
-        "image_url": "/static/images/mediterranean-tofu-steak-roasted-ratatouille.jpg",
+        "image_url": None,
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
         "calories": 390,
         "protein_g": 26,
@@ -1793,7 +1793,7 @@ SEED_MEALS.extend(
             "meal_type": "lunch",
             "difficulty": "simple",
             "description": "Tender beef and vivid broccoli tossed in a glossy garlic, ginger, and tamari sauce.",
-            "image_url": "/static/images/chinese-beef-broccoli-garlic.jpg",
+            "image_url": "/static/images/asian-beef-broccoli-skillet.jpg",
             "tags": "chinese,high_protein,low_carb,user_safe,quick_meal",
             "calories": 450,
             "protein_g": 38,
@@ -1995,6 +1995,7 @@ def _enrich_seed_meal(meal: dict[str, Any]) -> dict[str, Any]:
     enriched.setdefault("rating", 4.5)
     enriched.setdefault("ratings_count", 12)
     enriched.setdefault("is_favorite", False)
+    enriched.setdefault("nutrition_basis", "per_serving")
 
     if not enriched.get("prep_detail_steps"):
         instructions = enriched.get("instructions") or []

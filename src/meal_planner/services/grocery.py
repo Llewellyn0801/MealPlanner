@@ -118,6 +118,19 @@ def is_in_pantry_stock(ingredient_name: str, in_stock_names: set[str]) -> bool:
     return False
 
 
+def ingredient_display_name(item: dict[str, Any]) -> str:
+    display_name = item.get("display_name")
+    if isinstance(display_name, str) and display_name.strip():
+        return display_name.strip()
+
+    name = str(item.get("name", "")).strip()
+    quantity = item.get("quantity")
+    unit = item.get("unit")
+    if quantity is not None and unit:
+        return f"{quantity:g} {unit} {name}"
+    return name
+
+
 def generate_grocery_list(
     plan: dict[str, Any], in_stock_pantry: set[str] | list[str] | None = None
 ) -> dict[str, Any]:
@@ -140,7 +153,7 @@ def generate_grocery_list(
         if isinstance(core_base, list) and core_base:
             for item in core_base:
                 if isinstance(item, dict) and "name" in item:
-                    name = item["name"]
+                    name = ingredient_display_name(item)
                     category = item.get("category") or categorize_ingredient(name)
                     if category not in structured_grocery:
                         category = "Pantry/Grains"
@@ -156,7 +169,7 @@ def generate_grocery_list(
         if isinstance(family_additions, list) and family_additions:
             for item in family_additions:
                 if isinstance(item, dict) and "name" in item:
-                    name = item["name"]
+                    name = ingredient_display_name(item)
                     category = item.get("category") or categorize_ingredient(name)
                     if category not in structured_grocery:
                         category = "Pantry/Grains"
@@ -172,7 +185,7 @@ def generate_grocery_list(
         if isinstance(user_alternatives, list) and user_alternatives:
             for item in user_alternatives:
                 if isinstance(item, dict) and "name" in item:
-                    name = item["name"]
+                    name = ingredient_display_name(item)
                     category = item.get("category") or categorize_ingredient(name)
                     if category not in structured_grocery:
                         category = "Pantry/Grains"

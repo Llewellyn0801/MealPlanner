@@ -28,6 +28,7 @@ class Meal(Base):
     protein_g = Column(Integer, nullable=False, default=0)
     carbs_g = Column(Integer, nullable=False, default=0)
     fats_g = Column(Integer, nullable=False, default=0)
+    nutrition_basis = Column(String, nullable=False, default="per_serving")
     prep_time_mins = Column(Integer, nullable=False, default=10)
     cook_time_mins = Column(Integer, nullable=False, default=15)
     servings_default = Column(Integer, nullable=False, default=4)
@@ -63,6 +64,34 @@ class SavedPlan(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     plan_json = Column(Text, nullable=False, default="{}")
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
+
+
+class Household(Base):
+    __tablename__ = "households"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False, unique=True, index=True)
+    created_at = Column(
+        DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
+
+
+class HouseholdMember(Base):
+    __tablename__ = "household_members"
+
+    id = Column(Integer, primary_key=True, index=True)
+    household_id = Column(Integer, nullable=False, index=True)
+    name = Column(String, nullable=False)
+    role = Column(String, nullable=False, default="member")
+    profile = Column(String, nullable=False, default="general")
+    household_size = Column(Integer, nullable=False, default=1)
+    activity_level = Column(String, nullable=False, default="sedentary")
+    maintenance_calories = Column(Integer, nullable=True)
+    target_calories = Column(Integer, nullable=True)
+    macro_focus = Column(String, nullable=False, default="balanced")
     created_at = Column(
         DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc)
     )

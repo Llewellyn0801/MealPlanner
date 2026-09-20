@@ -11,10 +11,11 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from meal_planner.database.session import get_db
-from meal_planner.models.meal import Meal, SavedPlan
+from meal_planner.models.meal import HouseholdMember, Meal, SavedPlan
 from meal_planner.services.grocery import generate_grocery_list
 from meal_planner.services.meal_engine import (
     _meal_contains_dislikes,
+    _score_meal,
     calculate_multi_day_macros,
     calculate_total_macros,
     format_meal,
@@ -39,6 +40,14 @@ def home(
     day: str = "Day 1",
     db: Session = Depends(get_db),
 ):
+    selected_member = None
+    selected_member_id = request.cookies.get("meal_planner_member_id")
+    if selected_member_id and selected_member_id.isdigit():
+        selected_member = (
+            db.query(HouseholdMember)
+            .filter(HouseholdMember.id == int(selected_member_id))
+            .first()
+        )
     dislikes_list = (
         [d.strip() for d in dislikes.split(",") if d.strip()] if dislikes else []
     )
@@ -93,6 +102,26 @@ def home(
             "search_results": search_results,
             "saved_plan_id": saved_plan_id if saved_plan else None,
             "selected_day": day if saved_plan else None,
+            "selected_member": selected_member,
+            "selected_profile": {
+                "name": selected_member.name if selected_member else "",
+                "profile": selected_member.profile if selected_member else "general",
+                "household_size": (
+                    selected_member.household_size if selected_member else 1
+                ),
+                "activity_level": (
+                    selected_member.activity_level if selected_member else "sedentary"
+                ),
+                "maintenance_calories": (
+                    selected_member.maintenance_calories if selected_member else None
+                ),
+                "target_calories": (
+                    selected_member.target_calories if selected_member else None
+                ),
+                "macro_focus": (
+                    selected_member.macro_focus if selected_member else "balanced"
+                ),
+            },
         },
     )
 
@@ -112,6 +141,7 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
     likes_raw = payload.get("likes", [])
     days = int(payload.get("days", 1))
     dietary_preset = payload.get("dietary_preset") or None
+    macro_focus = payload.get("macro_focus") or None
 
     if isinstance(dislikes_raw, str):
         dislikes_list = [d.strip() for d in dislikes_raw.split(",") if d.strip()]
@@ -130,6 +160,7 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
             dislikes=dislikes_list,
             likes=likes_list,
             dietary_preset=dietary_preset,
+            macro_focus=macro_focus,
         )
         macros = calculate_multi_day_macros(plan)
         return {
@@ -139,7 +170,13 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
             "days": days,
         }
     else:
-        plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
+        plan = generate_meal_plan(
+            db,
+            dislikes=dislikes_list,
+            likes=likes_list,
+            dietary_preset=dietary_preset,
+            macro_focus=macro_focus,
+        )
         total_macros = calculate_total_macros(plan)
         return {"plan": plan, "total_macros": total_macros, "days": 1}
 
@@ -157,11 +194,14 @@ def reroll_meal(
     current_plan: dict[str, Any] = Body(...), db: Session = Depends(get_db)
 ):
     meal_type_to_reroll = current_plan.get("meal_type")
+    if not isinstance(meal_type_to_reroll, str) or not meal_type_to_reroll:
+        return format_meal(None)
     dislikes_raw = current_plan.get("dislikes", [])
     if isinstance(dislikes_raw, str):
         dislikes = [d.strip() for d in dislikes_raw.split(",") if d.strip()]
     else:
         dislikes = [str(d).strip() for d in dislikes_raw if str(d).strip()]
+    macro_focus = current_plan.get("macro_focus") or None
 
     meals_dict = current_plan.get("meals", {})
     existing_meal_names = [
@@ -183,9 +223,16 @@ def reroll_meal(
         if non_disliked:
             candidates = non_disliked
 
+    scored_candidates = sorted(
+        candidates,
+        key=lambda meal: _score_meal(
+            meal, meal_type_to_reroll, macro_focus=macro_focus
+        ),
+        reverse=True,
+    )
     new_meal = (
-        random.choice(candidates)
-        if candidates
+        random.choice(scored_candidates[:5])
+        if scored_candidates
         else (all_type_meals[0] if all_type_meals else None)
     )
     return format_meal(new_meal)

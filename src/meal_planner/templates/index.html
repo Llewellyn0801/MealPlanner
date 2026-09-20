@@ -374,6 +374,36 @@
             cursor: pointer;
         }
 
+        .calorie-input {
+            max-width: 180px;
+        }
+
+        .calorie-help {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .calorie-status {
+            margin: 0;
+            color: var(--text-body);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .profile-settings {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .profile-settings-title {
+            margin: 0 0 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
         /* DAILY MACRO SUMMARY BANNER */
         .macro-summary-banner {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(14, 165, 233, 0.03) 100%);
@@ -944,6 +974,7 @@
                     <a href="/" aria-current="page">Today</a>
                     <a href="/weekly">This Week</a>
                     <a href="/recipes/manage">Recipes</a>
+                    <a href="/profile">Profiles</a>
                 </nav>
                 <div class="header-actions">
                     <a class="btn btn-secondary" href="/weekly">📅 Weekly Planner</a>
@@ -956,15 +987,11 @@
 
             <div class="health-profile-card">
                 <div>
-                    <span class="profile-label">🩺 Health profile</span>
-                    <p class="profile-copy">Your plan is tuned for steady energy and heart health.</p>
+                    <span id="profile-label" class="profile-label">🧭 Planning profile</span>
+                    <p id="profile-copy" class="profile-copy">A flexible meal plan for your household and nutrition preferences.</p>
                 </div>
-                <div class="badge-group">
-                    <span class="med-badge med-badge-danger">Type 2 Diabetes</span>
-                    <span class="med-badge med-badge-danger">High Cholesterol</span>
-                    <span class="med-badge med-badge-danger">Hypertension</span>
-                    <span class="med-badge med-badge-success">🥗 Low-Carb Mediterranean</span>
-                    <span class="med-badge med-badge-success">❤️ Heart-Healthy & Low Sodium</span>
+                <div id="profile-badges" class="badge-group">
+                    <span class="med-badge med-badge-success">🌿 General Wellness</span>
                 </div>
             </div>
         </div>
@@ -1027,6 +1054,17 @@
             <div class="preference-title">⚙️ Plan Personalization & Ingredient Filters</div>
             <div class="pref-row">
                 <div class="pref-group">
+                    <label class="pref-label" for="health-profile-input">🧭 Choose a planning profile</label>
+                    <select id="health-profile-input" class="input-text">
+                        <option value="general">General wellness</option>
+                        <option value="higher_protein">Higher protein</option>
+                        <option value="calorie_aware">Calorie-aware</option>
+                        <option value="heart_friendly">Heart-friendly</option>
+                        <option value="lower_carb">Lower carbohydrate</option>
+                    </select>
+                    <p class="calorie-help">This changes planning preferences, not medical advice.</p>
+                </div>
+                <div class="pref-group">
                     <label class="pref-label" for="dislikes-input">🚫 Disliked Ingredients / Exclusions (comma separated):</label>
                     <input
                         type="text"
@@ -1037,21 +1075,23 @@
                     />
                 </div>
                 <div class="pref-group">
-                    <label class="pref-label">🌟 Preferred Diet Boosts:</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="likes" value="high_protein" checked /> 💪 High Protein
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="likes" value="low_carb" /> 🥦 Low Carb
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="likes" value="heart_healthy" checked /> ❤️ Heart Healthy
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="likes" value="kid_friendly" /> 👶 Kid Friendly
-                        </label>
-                    </div>
+                    <label class="pref-label" for="macro-focus-input">📊 Select macro focus</label>
+                    <select id="macro-focus-input" class="input-text">
+                        <option value="balanced">Balanced macros</option>
+                        <option value="protein">Prioritize protein</option>
+                        <option value="carbs">Prioritize carbohydrates</option>
+                        <option value="fats">Prioritize fats</option>
+                    </select>
+                </div>
+                <div class="pref-group">
+                    <label class="pref-label" for="maintenance-calories-input">⚖️ Maintenance calories</label>
+                    <input id="maintenance-calories-input" class="input-text calorie-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 2400" />
+                    <p class="calorie-help">Optional estimate of calories needed to maintain your weight.</p>
+                </div>
+                <div class="pref-group">
+                    <label class="pref-label" for="target-calories-input">🎯 Daily intake target</label>
+                    <input id="target-calories-input" class="input-text calorie-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 2000" />
+                    <p class="calorie-help">Recipe calories are estimates; serving basis will be made explicit next.</p>
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
@@ -1059,12 +1099,38 @@
                     🎯 Apply Preferences & Generate Custom Plan
                 </button>
             </div>
+            <section class="profile-settings" aria-labelledby="profile-settings-title">
+                <h3 id="profile-settings-title" class="profile-settings-title">Your profile</h3>
+                <div class="pref-row">
+                    <div class="pref-group">
+                        <label class="pref-label" for="profile-name-input">Profile name</label>
+                        <input id="profile-name-input" class="input-text" type="text" maxlength="50" placeholder="e.g. Alex" />
+                    </div>
+                    <div class="pref-group">
+                        <label class="pref-label" for="household-size-input">Household size</label>
+                        <input id="household-size-input" class="input-text" type="number" min="1" max="20" step="1" value="1" />
+                    </div>
+                    <div class="pref-group">
+                        <label class="pref-label" for="activity-level-input">Activity level</label>
+                        <select id="activity-level-input" class="input-text">
+                            <option value="sedentary">Mostly sedentary</option>
+                            <option value="light">Lightly active</option>
+                            <option value="moderate">Moderately active</option>
+                            <option value="high">Very active</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="calorie-help">Profile details stay in this browser until account support is added.</p>
+            </section>
             </section>
         </section>
 
         <!-- DAILY MACRO SUMMARY BANNER -->
         <section class="macro-summary-banner">
-            <h2 class="macro-summary-title">📊 Aggregated Daily Macro Summary</h2>
+            <div>
+                <h2 class="macro-summary-title">📊 Aggregated Daily Macro Summary</h2>
+                <p id="calorie-status" class="calorie-status" aria-live="polite"></p>
+            </div>
             <div class="macro-summary-stats">
                 <div class="macro-stat-box">
                     <span class="macro-stat-value stat-cal" id="sum-cal">{{ total_macros.calories }}</span>
@@ -1120,7 +1186,7 @@
                             <span class="comp-badge comp-core">Core Base</span>
                             <span class="comp-text core-text">
                                 {% if meal.core_base %}
-                                    {{ meal.core_base | map(attribute='name') | join(', ') }}
+                                    {{ meal.core_base | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     {{ meal.ingredients | join(', ') }}
                                 {% endif %}
@@ -1130,7 +1196,7 @@
                             <span class="comp-badge comp-family">Family Side</span>
                             <span class="comp-text family-text">
                                 {% if meal.family_additions %}
-                                    {{ meal.family_additions | map(attribute='name') | join(', ') }}
+                                    {{ meal.family_additions | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     Carb Extension Side
                                 {% endif %}
@@ -1140,7 +1206,7 @@
                             <span class="comp-badge comp-user">Health Profile Side</span>
                                 <span class="comp-text user-text">
                                 {% if meal.user_alternatives %}
-                                    {{ meal.user_alternatives | map(attribute='name') | join(', ') }}
+                                    {{ meal.user_alternatives | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     Health Profile Alternative
                                 {% endif %}
@@ -1220,11 +1286,119 @@
 
         let currentPlan = {{ plan | tojson | safe }};
         let initialGroceryData = {{ grocery_data | tojson | safe }};
+        const selectedProfile = {{ selected_profile | tojson | safe }};
+
+        const profileInput = document.getElementById("health-profile-input");
+        const profileLabel = document.getElementById("profile-label");
+        const profileCopy = document.getElementById("profile-copy");
+        const profileBadges = document.getElementById("profile-badges");
+        const profileNameInput = document.getElementById("profile-name-input");
+        const householdSizeInput = document.getElementById("household-size-input");
+        const activityLevelInput = document.getElementById("activity-level-input");
+        const maintenanceCaloriesInput = document.getElementById("maintenance-calories-input");
+        const targetCaloriesInput = document.getElementById("target-calories-input");
+        let storedUserProfile = {};
+        try {
+            storedUserProfile = JSON.parse(localStorage.getItem("userProfile") || "{}");
+        } catch (error) {
+            storedUserProfile = {};
+        }
+        profileNameInput.value = selectedProfile.name || storedUserProfile.name || "";
+        householdSizeInput.value = selectedProfile.household_size || storedUserProfile.household_size || 1;
+        activityLevelInput.value = selectedProfile.activity_level || storedUserProfile.activity_level || "sedentary";
+        maintenanceCaloriesInput.value = selectedProfile.maintenance_calories || storedUserProfile.maintenance_calories || localStorage.getItem("maintenanceCalories") || "";
+        targetCaloriesInput.value = selectedProfile.target_calories || storedUserProfile.target_calories || localStorage.getItem("targetCalories") || "";
+
+        const profilePresets = {
+            general: {
+                copy: "A flexible meal plan for your household and nutrition preferences.",
+                badges: ["🌿 General Wellness"],
+                macro_focus: "balanced",
+                likes: [],
+            },
+            higher_protein: {
+                copy: "Meals selected with extra emphasis on protein-rich choices.",
+                badges: ["💪 Higher Protein"],
+                macro_focus: "protein",
+                likes: [],
+                dietary_preset: "high_protein",
+            },
+            calorie_aware: {
+                copy: "A calorie-conscious plan that keeps protein and satisfying ingredients visible.",
+                badges: ["🎯 Calorie-aware", "💪 Protein focus"],
+                macro_focus: "protein",
+                likes: ["heart_healthy"],
+            },
+            heart_friendly: {
+                copy: "A plan emphasizing recipes tagged for heart-friendly ingredients and lower sodium.",
+                badges: ["❤️ Heart-friendly", "🧂 Lower sodium"],
+                macro_focus: "balanced",
+                likes: ["heart_healthy", "low_sodium"],
+            },
+            lower_carb: {
+                copy: "A plan with an emphasis on lower-carbohydrate recipe choices.",
+                badges: ["🥦 Lower carbohydrate"],
+                macro_focus: "carbs",
+                likes: ["low_carb"],
+                dietary_preset: "keto",
+            },
+        };
+
+        const applyProfile = (profileKey) => {
+            const profile = profilePresets[profileKey] || profilePresets.general;
+            profileInput.value = profilePresets[profileKey] ? profileKey : "general";
+            const profileName = profileNameInput.value.trim();
+            profileLabel.textContent = profileName
+                ? `🧭 ${profileName}'s planning profile`
+                : "🧭 Planning profile";
+            profileCopy.textContent = profile.copy;
+            profileBadges.innerHTML = "";
+            profile.badges.forEach((badgeText) => {
+                const badge = document.createElement("span");
+                badge.className = "med-badge med-badge-success";
+                badge.textContent = badgeText;
+                profileBadges.appendChild(badge);
+            });
+            document.getElementById("macro-focus-input").value = profile.macro_focus;
+            localStorage.setItem("healthProfile", profileInput.value);
+        };
+
+        applyProfile(selectedProfile.profile || localStorage.getItem("healthProfile") || "general");
+
+        const saveUserProfile = () => {
+            const profileData = {
+                name: profileNameInput.value.trim(),
+                profile: profileInput.value,
+                household_size: Number(householdSizeInput.value) || 1,
+                activity_level: activityLevelInput.value,
+                maintenance_calories: Number(maintenanceCaloriesInput.value) || null,
+                target_calories: Number(targetCaloriesInput.value) || null,
+            };
+            localStorage.setItem("userProfile", JSON.stringify(profileData));
+            localStorage.setItem("maintenanceCalories", maintenanceCaloriesInput.value);
+            localStorage.setItem("targetCalories", targetCaloriesInput.value);
+            applyProfile(profileInput.value);
+        };
 
         const getSelectedPreferences = () => {
             const dislikes = document.getElementById("dislikes-input").value;
-            const likes = Array.from(document.querySelectorAll('input[name="likes"]:checked')).map(cb => cb.value);
-            return { dislikes, likes };
+            const macro_focus = document.getElementById("macro-focus-input").value;
+            const profile = profilePresets[profileInput.value] || profilePresets.general;
+            return {
+                dislikes,
+                likes: profile.likes,
+                macro_focus,
+                dietary_preset: profile.dietary_preset || null,
+                profile: profileInput.value,
+                household_size: Number(householdSizeInput.value) || 1,
+                activity_level: activityLevelInput.value,
+            };
+        };
+
+        const refreshForProfile = async () => {
+            applyProfile(profileInput.value);
+            saveUserProfile();
+            await fetchNewPlan();
         };
 
         const updateMacroSummary = (totals) => {
@@ -1243,6 +1417,34 @@
             document.getElementById("sum-prot").textContent = (totals.protein_g || 0) + "g";
             document.getElementById("sum-carb").textContent = (totals.carbs_g || 0) + "g";
             document.getElementById("sum-fat").textContent = (totals.fats_g || 0) + "g";
+
+            const maintenanceCalories = Number(maintenanceCaloriesInput.value);
+            const targetCalories = Number(targetCaloriesInput.value);
+            const calorieNotes = [];
+
+            if (targetCalories > 0) {
+                const targetDifference = Math.round(targetCalories - totals.calories);
+                if (Math.abs(targetDifference) <= 100) {
+                    calorieNotes.push(`Plan is within 100 kcal of your ${targetCalories} kcal intake target`);
+                } else if (targetDifference > 0) {
+                    calorieNotes.push(`${targetDifference} kcal below your intake target`);
+                } else {
+                    calorieNotes.push(`${Math.abs(targetDifference)} kcal above your intake target`);
+                }
+            }
+
+            if (maintenanceCalories > 0) {
+                const estimatedDeficit = Math.round(maintenanceCalories - totals.calories);
+                if (estimatedDeficit > 0) {
+                    calorieNotes.push(`estimated ${estimatedDeficit} kcal deficit vs maintenance`);
+                } else if (estimatedDeficit < 0) {
+                    calorieNotes.push(`estimated ${Math.abs(estimatedDeficit)} kcal surplus vs maintenance`);
+                } else {
+                    calorieNotes.push("estimated maintenance calories matched");
+                }
+            }
+
+            document.getElementById("calorie-status").textContent = calorieNotes.join(" · ");
         };
 
         const getIngredientName = (item) => {
@@ -1358,19 +1560,19 @@
             const userText = card.querySelector(".user-text");
 
             if (meal.core_base && meal.core_base.length > 0) {
-                coreText.textContent = meal.core_base.map(i => i.name).join(", ");
+                coreText.textContent = meal.core_base.map(i => i.display_name || i.name).join(", ");
             } else {
                 coreText.textContent = (meal.ingredients || []).join(", ");
             }
 
             if (meal.family_additions && meal.family_additions.length > 0) {
-                familyText.textContent = meal.family_additions.map(i => i.name).join(", ");
+                familyText.textContent = meal.family_additions.map(i => i.display_name || i.name).join(", ");
             } else {
                 familyText.textContent = "Carb Extension Side";
             }
 
             if (meal.user_alternatives && meal.user_alternatives.length > 0) {
-                userText.textContent = meal.user_alternatives.map(i => i.name).join(", ");
+                userText.textContent = meal.user_alternatives.map(i => i.display_name || i.name).join(", ");
             } else {
                 userText.textContent = "Health Profile Alternative";
             }
@@ -1469,6 +1671,23 @@
         });
 
         document.getElementById("apply-preferences-btn").addEventListener("click", fetchNewPlan);
+        profileInput.addEventListener("change", refreshForProfile);
+
+        [maintenanceCaloriesInput, targetCaloriesInput].forEach((input) => {
+            input.addEventListener("input", () => {
+                const storageKey = input === maintenanceCaloriesInput
+                    ? "maintenanceCalories"
+                    : "targetCalories";
+                localStorage.setItem(storageKey, input.value);
+                saveUserProfile();
+                updateMacroSummary();
+            });
+        });
+
+        [profileNameInput, householdSizeInput, activityLevelInput].forEach((input) => {
+            input.addEventListener("input", saveUserProfile);
+            input.addEventListener("change", saveUserProfile);
+        });
 
         document.querySelectorAll(".reroll-btn").forEach((button) => {
             button.addEventListener("click", async () => {
@@ -1481,6 +1700,7 @@
                         meal_type: mealType,
                         meals: currentPlan,
                         dislikes: prefs.dislikes,
+                        macro_focus: prefs.macro_focus,
                     }),
                 });
                 const newMeal = await response.json();
@@ -1510,6 +1730,7 @@
         });
 
         // Initialize server-rendered grocery list
+        updateMacroSummary();
         renderGroceryList(initialGroceryData);
     </script>
 </body>
