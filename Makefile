@@ -1,7 +1,7 @@
 PYTHON ?= python3
 UV ?= uv
 
-.PHONY: install dev test docker-up docker-down format lint typecheck check precommit-install precommit-run
+.PHONY: install dev test docker-up docker-down docker-build backup format lint typecheck check precommit-install precommit-run
 
 install:
 	$(UV) sync
@@ -17,6 +17,12 @@ docker-up:
 
 docker-down:
 	docker compose down
+
+docker-build:
+	docker compose build
+
+backup:
+	./scripts/backup_database.sh
 
 format:
 	$(UV) run black src tests

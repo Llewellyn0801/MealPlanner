@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from meal_planner.database.seed import seed_meals
@@ -20,6 +21,11 @@ app.include_router(plan_router)
 app.include_router(recipes_router)
 app.include_router(pantry_router)
 app.include_router(profile_router)
+
+
+@app.get("/health")
+def health_check() -> JSONResponse:
+    return JSONResponse({"status": "ok"})
 
 
 @app.on_event("startup")

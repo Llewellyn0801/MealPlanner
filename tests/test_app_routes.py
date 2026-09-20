@@ -7,6 +7,9 @@ from meal_planner.models.meal import Household, HouseholdMember
 
 def test_recipe_and_pantry_routes_are_registered():
     with TestClient(app) as client:
+        health = client.get("/health")
+        assert health.status_code == 200
+        assert health.json() == {"status": "ok"}
         assert client.get("/recipes/manage").status_code == 200
         assert client.get("/recipes/image-audit").status_code == 200
         assert client.get("/pantry/").status_code == 200
