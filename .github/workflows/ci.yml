@@ -33,7 +33,7 @@ jobs:
         run: uv run pytest -q
 
       - name: Validate database migrations
-        run: uv run alembic upgrade head
+        run: DATABASE_URL=sqlite:///./ci_migrations.db uv run alembic upgrade head
 
   docker:
     runs-on: ubuntu-latest
