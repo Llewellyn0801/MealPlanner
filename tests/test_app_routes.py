@@ -19,26 +19,35 @@ def test_default_household_profiles_are_available_and_selectable():
     with TestClient(app) as client:
         response = client.get("/profile")
         assert response.status_code == 200
-        assert response.headers["cache-control"] == "no-store, no-cache, must-revalidate"
+        assert (
+            response.headers["cache-control"] == "no-store, no-cache, must-revalidate"
+        )
         assert "Naickers household" in response.text
-        assert all(name in response.text for name in [
-            "Llewellyn",
-            "Esmerelda",
-            "Sebastian",
-            "Tristan",
-            "Quen",
-        ])
+        assert all(
+            name in response.text
+            for name in [
+                "Llewellyn",
+                "Esmerelda",
+                "Sebastian",
+                "Tristan",
+                "Quen",
+            ]
+        )
 
         db = SessionLocal()
         try:
             member = (
                 db.query(HouseholdMember)
                 .join(Household, Household.id == HouseholdMember.household_id)
-                .filter(Household.name == "Naickers", HouseholdMember.name == "Llewellyn")
+                .filter(
+                    Household.name == "Naickers", HouseholdMember.name == "Llewellyn"
+                )
                 .first()
             )
             assert member is not None
-            selection = client.post(f"/profile/select/{member.id}", follow_redirects=False)
+            selection = client.post(
+                f"/profile/select/{member.id}", follow_redirects=False
+            )
             assert selection.status_code == 303
             assert selection.headers["location"] == "/"
             assert "meal_planner_member_id" in selection.headers["set-cookie"]

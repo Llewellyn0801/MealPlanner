@@ -21,8 +21,7 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.execute(
         sa.text(
-            "UPDATE meals SET image_url = :image_url "
-            "WHERE name = :name"
+            "UPDATE meals SET image_url = :image_url WHERE name = :name"
         ).bindparams(
             image_url="/static/images/mediterranean-tofu-steak-roasted-ratatouille.jpg",
             name="Tofu & Mushroom Garden Scramble",
@@ -33,8 +32,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.execute(
         sa.text(
-            "UPDATE meals SET image_url = :image_url "
-            "WHERE name = :name"
+            "UPDATE meals SET image_url = :image_url WHERE name = :name"
         ).bindparams(
             image_url="/static/images/tofu-mushroom-garden-scramble.jpg",
             name="Tofu & Mushroom Garden Scramble",

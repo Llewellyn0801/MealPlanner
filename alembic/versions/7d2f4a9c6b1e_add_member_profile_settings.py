@@ -25,7 +25,9 @@ def upgrade() -> None:
     )
     op.add_column(
         "household_members",
-        sa.Column("activity_level", sa.String(), nullable=False, server_default="sedentary"),
+        sa.Column(
+            "activity_level", sa.String(), nullable=False, server_default="sedentary"
+        ),
     )
     op.add_column(
         "household_members",
@@ -37,7 +39,9 @@ def upgrade() -> None:
     )
     op.add_column(
         "household_members",
-        sa.Column("macro_focus", sa.String(), nullable=False, server_default="balanced"),
+        sa.Column(
+            "macro_focus", sa.String(), nullable=False, server_default="balanced"
+        ),
     )
 
 

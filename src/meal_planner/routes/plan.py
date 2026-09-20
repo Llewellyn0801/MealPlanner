@@ -106,19 +106,21 @@ def home(
             "selected_profile": {
                 "name": selected_member.name if selected_member else "",
                 "profile": selected_member.profile if selected_member else "general",
-                "household_size": selected_member.household_size if selected_member else 1,
-                "activity_level": selected_member.activity_level
-                if selected_member
-                else "sedentary",
-                "maintenance_calories": selected_member.maintenance_calories
-                if selected_member
-                else None,
-                "target_calories": selected_member.target_calories
-                if selected_member
-                else None,
-                "macro_focus": selected_member.macro_focus
-                if selected_member
-                else "balanced",
+                "household_size": (
+                    selected_member.household_size if selected_member else 1
+                ),
+                "activity_level": (
+                    selected_member.activity_level if selected_member else "sedentary"
+                ),
+                "maintenance_calories": (
+                    selected_member.maintenance_calories if selected_member else None
+                ),
+                "target_calories": (
+                    selected_member.target_calories if selected_member else None
+                ),
+                "macro_focus": (
+                    selected_member.macro_focus if selected_member else "balanced"
+                ),
             },
         },
     )
@@ -192,6 +194,8 @@ def reroll_meal(
     current_plan: dict[str, Any] = Body(...), db: Session = Depends(get_db)
 ):
     meal_type_to_reroll = current_plan.get("meal_type")
+    if not isinstance(meal_type_to_reroll, str) or not meal_type_to_reroll:
+        return format_meal(None)
     dislikes_raw = current_plan.get("dislikes", [])
     if isinstance(dislikes_raw, str):
         dislikes = [d.strip() for d in dislikes_raw.split(",") if d.strip()]
@@ -221,7 +225,9 @@ def reroll_meal(
 
     scored_candidates = sorted(
         candidates,
-        key=lambda meal: _score_meal(meal, meal_type_to_reroll, macro_focus=macro_focus),
+        key=lambda meal: _score_meal(
+            meal, meal_type_to_reroll, macro_focus=macro_focus
+        ),
         reverse=True,
     )
     new_meal = (

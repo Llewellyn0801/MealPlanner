@@ -29,6 +29,7 @@ from meal_planner.services.meal_engine import format_meal, parse_ingredient_meas
 
 router = APIRouter(prefix="/recipes")
 
+
 @router.get("/image-audit")
 def image_audit(db: Session = Depends(get_db)):
     missing = []

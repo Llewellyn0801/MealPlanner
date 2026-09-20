@@ -25,7 +25,8 @@ def get_or_create_default_household(db: Session) -> Household:
         db.flush()
 
     existing_names = {
-        member.name for member in db.query(HouseholdMember).filter(
+        member.name
+        for member in db.query(HouseholdMember).filter(
             HouseholdMember.household_id == household.id
         )
     }

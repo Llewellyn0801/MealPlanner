@@ -59,9 +59,10 @@ def _parse_quantity(value: str) -> float:
     normalized = value.replace(" ", "")
     if "/" not in normalized:
         return float(normalized)
-    whole, numerator, denominator = re.match(
-        r"(?:(\d+))?(\d+)/(\d+)", normalized
-    ).groups()
+    fraction_match = re.fullmatch(r"(?:(\d+))?(\d+)/(\d+)", normalized)
+    if not fraction_match:
+        raise ValueError(f"Invalid quantity: {value}")
+    whole, numerator, denominator = fraction_match.groups()
     return float(whole or 0) + (float(numerator) / float(denominator))
 
 

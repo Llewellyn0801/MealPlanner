@@ -28,9 +28,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("name"),
     )
     op.create_index(op.f("ix_households_id"), "households", ["id"], unique=False)
-    op.create_index(
-        op.f("ix_households_name"), "households", ["name"], unique=True
-    )
+    op.create_index(op.f("ix_households_name"), "households", ["name"], unique=True)
     op.create_table(
         "household_members",
         sa.Column("id", sa.Integer(), nullable=False),

@@ -21,20 +21,14 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     connection = op.get_bind()
     connection.execute(
-        sa.text(
-            "UPDATE meals SET image_url = :image_url "
-            "WHERE name = :name"
-        ),
+        sa.text("UPDATE meals SET image_url = :image_url WHERE name = :name"),
         {
             "image_url": "/static/images/tofu-mushroom-garden-scramble.jpg",
             "name": "Tofu & Mushroom Garden Scramble",
         },
     )
     connection.execute(
-        sa.text(
-            "UPDATE meals SET image_url = :image_url "
-            "WHERE name = :name"
-        ),
+        sa.text("UPDATE meals SET image_url = :image_url WHERE name = :name"),
         {
             "image_url": "/static/images/asian-beef-broccoli-skillet.jpg",
             "name": "Chinese Beef & Broccoli with Garlic",
@@ -46,8 +40,7 @@ def downgrade() -> None:
     connection = op.get_bind()
     connection.execute(
         sa.text(
-            "UPDATE meals SET image_url = NULL "
-            "WHERE name IN (:tofu_name, :beef_name)"
+            "UPDATE meals SET image_url = NULL WHERE name IN (:tofu_name, :beef_name)"
         ),
         {
             "tofu_name": "Tofu & Mushroom Garden Scramble",

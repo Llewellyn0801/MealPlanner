@@ -5,7 +5,9 @@ import pytest
 from meal_planner.database.seed import SEED_MEALS
 from meal_planner.services.images import is_available_local_image, safe_image_filename
 
-IMAGE_DIR = Path(__file__).resolve().parents[1] / "src" / "meal_planner" / "static" / "images"
+IMAGE_DIR = (
+    Path(__file__).resolve().parents[1] / "src" / "meal_planner" / "static" / "images"
+)
 
 
 def test_all_seeded_local_images_exist():
@@ -53,7 +55,9 @@ def test_confirmed_mismatched_recipes_have_no_misleading_image():
     }
     meals = {meal["name"]: meal for meal in SEED_MEALS}
 
-    assert all(meals[name]["image_url"] is None for name in names_without_verified_images)
+    assert all(
+        meals[name]["image_url"] is None for name in names_without_verified_images
+    )
 
 
 def test_chinese_beef_uses_verified_beef_broccoli_image():
