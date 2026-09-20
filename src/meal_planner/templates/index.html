@@ -17,21 +17,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2f6f4e;
-            --primary-hover: #24583d;
-            --bg-gradient: #1f3d32;
-            --body-bg: #f4f6f1;
+            --primary: #d9574f;
+            --primary-hover: #b9433d;
+            --bg-gradient: #17242d;
+            --body-bg: #f7f4ef;
             --card-bg: #ffffff;
-            --text-main: #203027;
-            --text-muted: #68776d;
-            --text-subtle: #526158;
-            --text-body: #34463b;
-            --border-color: #dbe3da;
-            --input-bg: #fbfcfa;
-            --hover-surface: #edf3ed;
-            --muted-surface: #f6f8f4;
-            --muted-surface-border: #dbe3da;
-            --image-placeholder-bg: #e3ebe2;
+            --text-main: #202a33;
+            --text-muted: #69747d;
+            --text-subtle: #53616b;
+            --text-body: #35434d;
+            --border-color: #e4ddd4;
+            --input-bg: #fcfaf7;
+            --hover-surface: #f8ece8;
+            --muted-surface: #f7f4ef;
+            --muted-surface-border: #e4ddd4;
+            --image-placeholder-bg: #ece7df;
             --tip-bg: #fffbe6;
             --tip-border: #ffe58f;
             --tip-text: #8c6b00;
@@ -39,36 +39,37 @@
             --grocery-item-border: #f1f5f9;
             --grocery-checked-text: #94a3b8;
             --user-badge-bg: #ecfdf5;
-            --user-badge-color: #047857;
-            --user-badge-border: #a7f3d0;
+            --user-badge-color: #17756f;
+            --user-badge-border: #a9d8d2;
             --family-badge-bg: #eff6ff;
             --family-badge-color: #1d4ed8;
             --family-badge-border: #bfdbfe;
             --core-badge-bg: #fef3c7;
             --core-badge-color: #b45309;
             --core-badge-border: #fde68a;
-            --shadow-sm: 0 5px 16px rgba(32, 48, 39, 0.07);
-            --shadow-lg: 0 16px 32px rgba(32, 48, 39, 0.12);
+            --shadow-sm: 0 5px 16px rgba(32, 42, 51, 0.07);
+            --shadow-lg: 0 16px 32px rgba(32, 42, 51, 0.12);
             --radius-lg: 12px;
             --radius-md: 8px;
+            --focus-ring: rgba(217, 87, 79, 0.28);
         }
 
         html[data-theme="dark"] {
-            --primary: #8bc69a;
-            --primary-hover: #a6d8b0;
-            --bg-gradient: #12291f;
-            --body-bg: #101b15;
-            --card-bg: #17271e;
-            --text-main: #edf5ee;
-            --text-muted: #aabcae;
-            --text-subtle: #d2e2d5;
-            --text-body: #d2e2d5;
-            --border-color: #2b4433;
-            --input-bg: #1d3024;
-            --hover-surface: #243b2b;
-            --muted-surface: #1d3024;
-            --muted-surface-border: #2b4433;
-            --image-placeholder-bg: #243b2b;
+            --primary: #f07b6e;
+            --primary-hover: #ff9588;
+            --bg-gradient: #101a22;
+            --body-bg: #111a21;
+            --card-bg: #1a2730;
+            --text-main: #f4f1eb;
+            --text-muted: #acb5b8;
+            --text-subtle: #d6d8d3;
+            --text-body: #d6d8d3;
+            --border-color: #33434d;
+            --input-bg: #202f38;
+            --hover-surface: #2d3038;
+            --muted-surface: #202b33;
+            --muted-surface-border: #33434d;
+            --image-placeholder-bg: #2b3740;
             --tip-bg: #2a2410;
             --tip-border: #4d3f10;
             --tip-text: #fbbf24;
@@ -76,8 +77,8 @@
             --grocery-item-border: #253248;
             --grocery-checked-text: #64748b;
             --user-badge-bg: rgba(16, 185, 129, 0.15);
-            --user-badge-color: #6ee7b7;
-            --user-badge-border: rgba(16, 185, 129, 0.35);
+            --user-badge-color: #78d5ca;
+            --user-badge-border: rgba(74, 190, 179, 0.35);
             --family-badge-bg: rgba(59, 130, 246, 0.15);
             --family-badge-color: #93c5fd;
             --family-badge-border: rgba(59, 130, 246, 0.35);
@@ -86,6 +87,7 @@
             --core-badge-border: rgba(245, 158, 11, 0.35);
             --shadow-sm: 0 5px 16px rgba(0, 0, 0, 0.22);
             --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.32);
+            --focus-ring: rgba(240, 123, 110, 0.42);
         }
 
         * {
@@ -103,6 +105,22 @@
             color: var(--text-main);
             min-height: 100vh;
             transition: background 0.2s ease, color 0.2s ease;
+            line-height: 1.5;
+        }
+
+        button,
+        input,
+        select,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 2px;
         }
 
         /* HEADER & HERO */
@@ -110,21 +128,13 @@
             background: var(--bg-gradient);
             color: #ffffff;
             padding: 28px 20px 38px;
-            box-shadow: 0 8px 24px rgba(21, 45, 34, 0.2);
+            box-shadow: 0 8px 24px rgba(16, 26, 34, 0.22);
             position: relative;
             overflow: hidden;
         }
 
         .hero-header::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(169, 214, 166, 0.14) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
+            display: none;
         }
 
         .header-container {
@@ -160,7 +170,7 @@
 
         .brand-kicker {
             margin: 0 0 3px;
-            color: #bae6fd;
+            color: #f3a69d;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.12em;
@@ -184,7 +194,7 @@
         .primary-nav a {
             padding: 7px 10px;
             border-radius: 7px;
-            color: #d7ead9;
+            color: #d9e5e8;
             font-size: 13px;
             font-weight: 700;
             text-decoration: none;
@@ -216,6 +226,10 @@
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
+        }
+
+        .health-profile-card > div:first-child {
+            flex: 1 1 280px;
         }
 
         .profile-label {
@@ -322,10 +336,10 @@
         }
 
         .pref-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px 16px;
+            align-items: start;
         }
 
         .pref-group {
@@ -345,11 +359,16 @@
         .input-text {
             width: 100%;
             padding: 10px 14px;
+            min-height: 44px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             font-size: 14px;
             background: var(--input-bg);
             color: var(--text-main);
+        }
+
+        #dislikes-input {
+            height: 44px;
         }
 
         .checkbox-group {
@@ -367,6 +386,7 @@
             align-items: center;
             gap: 6px;
             cursor: pointer;
+            min-height: 44px;
         }
 
         .checkbox-label input {
@@ -618,6 +638,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
+        }
+
+        .meal-card {
+            min-width: 0;
         }
 
         .meal-card {
