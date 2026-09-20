@@ -8,6 +8,7 @@ from meal_planner.database.session import Base
 from meal_planner.models.meal import Meal
 from meal_planner.services.grocery import generate_grocery_list
 from meal_planner.services.meal_engine import (
+    _score_meal,
     calculate_total_macros,
     generate_meal_plan,
     generate_multi_day_plan,
@@ -371,6 +372,32 @@ def test_format_meal_converts_whole_recipe_nutrition_to_per_serving():
         assert plan["lunch"]["nutrition_basis"] == "per_serving"
     finally:
         db.close()
+
+
+def test_macro_focus_scores_meals_by_selected_macro():
+    high_protein = Meal(
+        name="Chicken Bowl",
+        meal_type="lunch",
+        tags="",
+        protein_g=45,
+        carbs_g=20,
+        fats_g=10,
+    )
+    high_fat = Meal(
+        name="Avocado Bowl",
+        meal_type="lunch",
+        tags="",
+        protein_g=10,
+        carbs_g=20,
+        fats_g=40,
+    )
+
+    assert _score_meal(high_protein, "lunch", macro_focus="protein") > _score_meal(
+        high_fat, "lunch", macro_focus="protein"
+    )
+    assert _score_meal(high_fat, "lunch", macro_focus="fats") > _score_meal(
+        high_protein, "lunch", macro_focus="fats"
+    )
 
 
 def test_generate_meal_plan_applies_dietary_preset_to_one_day_plans():

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naickers Household Profiles</title>
+    <style>
+        :root { --bg: #f4f6f1; --surface: #fff; --text: #203027; --muted: #68776d; --border: #dbe3da; --accent: #2f6f4e; --soft: #e8f1e8; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; }
+        .page { max-width: 900px; margin: 0 auto; padding: 32px 20px 56px; }
+        .topbar { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 28px; }
+        .eyebrow { margin: 0 0 6px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+        h1, h2, p { margin-top: 0; }
+        h1 { margin-bottom: 8px; }
+        .intro { max-width: 620px; color: var(--muted); line-height: 1.55; }
+        .button, button { border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; background: var(--surface); color: var(--text); cursor: pointer; font: inherit; font-weight: 700; text-decoration: none; }
+        button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+        .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel { padding: 22px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: 0 10px 24px rgba(32,48,39,.08); }
+        .member-list { display: grid; gap: 10px; }
+        .member { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px; border: 1px solid var(--border); border-radius: 8px; background: var(--soft); }
+        .member-name { font-weight: 800; }
+        .member-role { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+        label { display: grid; gap: 6px; margin: 15px 0 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+        input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 11px; background: #fbfcfa; color: var(--text); font: inherit; }
+        .note { margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+        @media (max-width: 700px) { .topbar { flex-direction: column; } .layout { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Local household profiles</p>
+                <h1>{{ household.name }} household</h1>
+                <p class="intro">Choose who is using the planner. This is a local profile selector for your family, not a password login yet.</p>
+            </div>
+            <a class="button" href="/">Back to planner</a>
+        </header>
+
+        <div class="layout">
+            <section class="panel">
+                <h2>Who is planning?</h2>
+                <div class="member-list">
+                    {% for member in members %}
+                    <div class="member">
+                        <div>
+                            <span class="member-name">{{ member.name }}</span>
+                            <span class="member-role">{{ member.role|capitalize }}</span>
+                        </div>
+                        <form method="post" action="/profile/select/{{ member.id }}">
+                            <button class="{% if selected_member and selected_member.id == member.id %}primary{% endif %}" type="submit">
+                                {% if selected_member and selected_member.id == member.id %}Selected{% else %}Use profile{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if selected_member %}
+                <form method="post" action="/profile/member/{{ selected_member.id }}">
+                    <h2 style="margin-top: 24px;">{{ selected_member.name }}'s settings</h2>
+                    <label for="profile">Planning profile
+                        <select id="profile" name="profile">
+                            {% for value, label in [("general", "General wellness"), ("higher_protein", "Higher protein"), ("calorie_aware", "Calorie-aware"), ("heart_friendly", "Heart-friendly"), ("lower_carb", "Lower carbohydrate")] %}
+                            <option value="{{ value }}" {% if selected_member.profile == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label for="household_size">Household size
+                        <input id="household_size" name="household_size" type="number" min="1" max="20" value="{{ selected_member.household_size }}" />
+                    </label>
+                    <label for="activity_level">Activity level
+                        <select id="activity_level" name="activity_level">
+                            {% for value, label in [("sedentary", "Mostly sedentary"), ("light", "Lightly active"), ("moderate", "Moderately active"), ("high", "Very active")] %}
+                            <option value="{{ value }}" {% if selected_member.activity_level == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label for="macro_focus">Macro focus
+                        <select id="macro_focus" name="macro_focus">
+                            {% for value, label in [("balanced", "Balanced macros"), ("protein", "Prioritize protein"), ("carbs", "Prioritize carbohydrates"), ("fats", "Prioritize fats")] %}
+                            <option value="{{ value }}" {% if selected_member.macro_focus == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label for="maintenance_calories">Maintenance calories
+                        <input id="maintenance_calories" name="maintenance_calories" type="number" min="800" max="10000" value="{{ selected_member.maintenance_calories or '' }}" />
+                    </label>
+                    <label for="target_calories">Daily target calories
+                        <input id="target_calories" name="target_calories" type="number" min="800" max="10000" value="{{ selected_member.target_calories or '' }}" />
+                    </label>
+                    <button class="primary" type="submit">Save {{ selected_member.name }}'s profile</button>
+                </form>
+                {% endif %}
+            </section>
+
+            <section class="panel">
+                <h2>Add a household</h2>
+                <form method="post" action="/profile/household">
+                    <label for="household_name">Household name
+                        <input id="household_name" name="household_name" value="{{ household.name }}" required />
+                    </label>
+                    <label for="member_names">Member names, separated by commas
+                        <input id="member_names" name="member_names" value="Llewellyn, Esmerelda, Sebastian, Tristan, Quen" required />
+                    </label>
+                    <button class="primary" type="submit">Save household profiles</button>
+                </form>
+                <p class="note">No passwords are stored. The selected profile is kept in a local browser cookie until account security is added.</p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

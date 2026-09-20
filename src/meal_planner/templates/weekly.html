@@ -127,8 +127,13 @@
                 <input id="start-date" type="date" />
                 <label for="dislikes">Leave out ingredients</label>
                 <input id="dislikes" placeholder="e.g. mushrooms, tuna" />
-                <label for="likes">Prioritize tags</label>
-                <input id="likes" value="high_protein, heart_healthy" />
+                <label for="macro-focus">Select macro focus</label>
+                <select id="macro-focus">
+                    <option value="balanced">Balanced macros</option>
+                    <option value="protein">Prioritize protein</option>
+                    <option value="carbs">Prioritize carbohydrates</option>
+                    <option value="fats">Prioritize fats</option>
+                </select>
                 <div class="actions" style="margin-top: 18px;">
                     <button class="primary" id="generate-week" type="button">Generate 7 days</button>
                     <button id="save-week" type="button" disabled>Save week</button>
@@ -160,7 +165,8 @@
             return {
                 days: 7,
                 dislikes: document.getElementById("dislikes").value,
-                likes: document.getElementById("likes").value,
+                likes: [],
+                macro_focus: document.getElementById("macro-focus").value,
             };
         }
 

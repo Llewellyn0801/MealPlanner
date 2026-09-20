@@ -273,8 +273,13 @@ def _meal_contains_dislikes(meal: Meal, dislikes: list[str]) -> bool:
     return False
 
 
-def _score_meal(meal: Meal, meal_type: str, likes: list[str] | None = None) -> int:
-    """Scores a meal based on desired tags and user liked preferences."""
+def _score_meal(
+    meal: Meal,
+    meal_type: str,
+    likes: list[str] | None = None,
+    macro_focus: str | None = None,
+) -> int:
+    """Score a meal using internal tags and the user's selected macro focus."""
     score = 0
     tags = [t.strip().lower() for t in meal.tags.split(",") if t.strip()]
 
@@ -286,6 +291,14 @@ def _score_meal(meal: Meal, meal_type: str, likes: list[str] | None = None) -> i
         score += 1
     if meal_type == "dinner" and "kid_friendly" in tags:
         score += 1
+
+    macro_score = {
+        "protein": getattr(meal, "protein_g", 0) or 0,
+        "carbs": getattr(meal, "carbs_g", 0) or 0,
+        "fats": getattr(meal, "fats_g", 0) or 0,
+    }.get((macro_focus or "").lower())
+    if macro_score is not None:
+        score += min(int(macro_score) // 5, 20)
 
     if likes:
         meal_name_lower = meal.name.lower()
@@ -303,6 +316,7 @@ def _pick_meal(
     recent_meal_names: set[str],
     dislikes: list[str] | None = None,
     likes: list[str] | None = None,
+    macro_focus: str | None = None,
 ) -> Meal | None:
     if not meals:
         return None
@@ -318,7 +332,9 @@ def _pick_meal(
     selection_pool = unseen_meals if unseen_meals else meals
 
     # Score and sort meals
-    scored_meals = [(_score_meal(m, meal_type, likes), m) for m in selection_pool]
+    scored_meals = [
+        (_score_meal(m, meal_type, likes, macro_focus), m) for m in selection_pool
+    ]
     scored_meals.sort(key=lambda x: x[0], reverse=True)
 
     top_meals = [m for score, m in scored_meals[:5]]
@@ -330,6 +346,7 @@ def generate_meal_plan(
     dislikes: list[str] | None = None,
     likes: list[str] | None = None,
     dietary_preset: str | None = None,
+    macro_focus: str | None = None,
 ) -> dict[str, dict[str, Any]]:
     all_meals = _apply_dietary_preset(db.query(Meal).all(), dietary_preset)
     cutoff_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
@@ -364,7 +381,14 @@ def generate_meal_plan(
             return format_meal(None), set()
 
         recent_names = recent_meals_by_type.get(meal_type, set())
-        chosen = _pick_meal(candidates, meal_type, recent_names, dislikes, likes)
+        chosen = _pick_meal(
+            candidates,
+            meal_type,
+            recent_names,
+            dislikes,
+            likes,
+            macro_focus,
+        )
 
         c_dict = format_meal(chosen)
         c_words = get_base_words(c_dict["ingredients"])
@@ -420,6 +444,7 @@ def generate_multi_day_plan(
     dislikes: list[str] | None = None,
     likes: list[str] | None = None,
     dietary_preset: str | None = None,
+    macro_focus: str | None = None,
 ) -> dict[str, Any]:
     """Generate a plan for 1, 3, or 7 days."""
     if days <= 1:
@@ -428,6 +453,7 @@ def generate_multi_day_plan(
             dislikes=dislikes,
             likes=likes,
             dietary_preset=dietary_preset,
+            macro_focus=macro_focus,
         )
 
     all_meals = db.query(Meal).all()
@@ -482,6 +508,7 @@ def generate_multi_day_plan(
                 recent_names,
                 dislikes,
                 likes,
+                macro_focus,
             )
             day_plan[meal_type] = format_meal(chosen)
             if chosen:
