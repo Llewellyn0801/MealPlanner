@@ -28,6 +28,7 @@ class Meal(Base):
     protein_g = Column(Integer, nullable=False, default=0)
     carbs_g = Column(Integer, nullable=False, default=0)
     fats_g = Column(Integer, nullable=False, default=0)
+    nutrition_basis = Column(String, nullable=False, default="per_serving")
     prep_time_mins = Column(Integer, nullable=False, default=10)
     cook_time_mins = Column(Integer, nullable=False, default=15)
     servings_default = Column(Integer, nullable=False, default=4)

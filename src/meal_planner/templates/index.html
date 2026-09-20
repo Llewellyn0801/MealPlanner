@@ -374,6 +374,24 @@
             cursor: pointer;
         }
 
+        .calorie-input {
+            max-width: 180px;
+        }
+
+        .calorie-help {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .calorie-status {
+            margin: 0;
+            color: var(--text-body);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
         /* DAILY MACRO SUMMARY BANNER */
         .macro-summary-banner {
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(14, 165, 233, 0.03) 100%);
@@ -1053,6 +1071,16 @@
                         </label>
                     </div>
                 </div>
+                <div class="pref-group">
+                    <label class="pref-label" for="maintenance-calories-input">⚖️ Maintenance calories</label>
+                    <input id="maintenance-calories-input" class="input-text calorie-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 2400" />
+                    <p class="calorie-help">Optional estimate of calories needed to maintain your weight.</p>
+                </div>
+                <div class="pref-group">
+                    <label class="pref-label" for="target-calories-input">🎯 Daily intake target</label>
+                    <input id="target-calories-input" class="input-text calorie-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 2000" />
+                    <p class="calorie-help">Recipe calories are estimates; serving basis will be made explicit next.</p>
+                </div>
             </div>
             <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
                 <button type="button" id="apply-preferences-btn" class="btn btn-primary">
@@ -1064,7 +1092,10 @@
 
         <!-- DAILY MACRO SUMMARY BANNER -->
         <section class="macro-summary-banner">
-            <h2 class="macro-summary-title">📊 Aggregated Daily Macro Summary</h2>
+            <div>
+                <h2 class="macro-summary-title">📊 Aggregated Daily Macro Summary</h2>
+                <p id="calorie-status" class="calorie-status" aria-live="polite"></p>
+            </div>
             <div class="macro-summary-stats">
                 <div class="macro-stat-box">
                     <span class="macro-stat-value stat-cal" id="sum-cal">{{ total_macros.calories }}</span>
@@ -1120,7 +1151,7 @@
                             <span class="comp-badge comp-core">Core Base</span>
                             <span class="comp-text core-text">
                                 {% if meal.core_base %}
-                                    {{ meal.core_base | map(attribute='name') | join(', ') }}
+                                    {{ meal.core_base | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     {{ meal.ingredients | join(', ') }}
                                 {% endif %}
@@ -1130,7 +1161,7 @@
                             <span class="comp-badge comp-family">Family Side</span>
                             <span class="comp-text family-text">
                                 {% if meal.family_additions %}
-                                    {{ meal.family_additions | map(attribute='name') | join(', ') }}
+                                    {{ meal.family_additions | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     Carb Extension Side
                                 {% endif %}
@@ -1140,7 +1171,7 @@
                             <span class="comp-badge comp-user">Health Profile Side</span>
                                 <span class="comp-text user-text">
                                 {% if meal.user_alternatives %}
-                                    {{ meal.user_alternatives | map(attribute='name') | join(', ') }}
+                                    {{ meal.user_alternatives | map(attribute='display_name') | join(', ') }}
                                 {% else %}
                                     Health Profile Alternative
                                 {% endif %}
@@ -1221,6 +1252,11 @@
         let currentPlan = {{ plan | tojson | safe }};
         let initialGroceryData = {{ grocery_data | tojson | safe }};
 
+        const maintenanceCaloriesInput = document.getElementById("maintenance-calories-input");
+        const targetCaloriesInput = document.getElementById("target-calories-input");
+        maintenanceCaloriesInput.value = localStorage.getItem("maintenanceCalories") || "";
+        targetCaloriesInput.value = localStorage.getItem("targetCalories") || "";
+
         const getSelectedPreferences = () => {
             const dislikes = document.getElementById("dislikes-input").value;
             const likes = Array.from(document.querySelectorAll('input[name="likes"]:checked')).map(cb => cb.value);
@@ -1243,6 +1279,34 @@
             document.getElementById("sum-prot").textContent = (totals.protein_g || 0) + "g";
             document.getElementById("sum-carb").textContent = (totals.carbs_g || 0) + "g";
             document.getElementById("sum-fat").textContent = (totals.fats_g || 0) + "g";
+
+            const maintenanceCalories = Number(maintenanceCaloriesInput.value);
+            const targetCalories = Number(targetCaloriesInput.value);
+            const calorieNotes = [];
+
+            if (targetCalories > 0) {
+                const targetDifference = Math.round(targetCalories - totals.calories);
+                if (Math.abs(targetDifference) <= 100) {
+                    calorieNotes.push(`Plan is within 100 kcal of your ${targetCalories} kcal intake target`);
+                } else if (targetDifference > 0) {
+                    calorieNotes.push(`${targetDifference} kcal below your intake target`);
+                } else {
+                    calorieNotes.push(`${Math.abs(targetDifference)} kcal above your intake target`);
+                }
+            }
+
+            if (maintenanceCalories > 0) {
+                const estimatedDeficit = Math.round(maintenanceCalories - totals.calories);
+                if (estimatedDeficit > 0) {
+                    calorieNotes.push(`estimated ${estimatedDeficit} kcal deficit vs maintenance`);
+                } else if (estimatedDeficit < 0) {
+                    calorieNotes.push(`estimated ${Math.abs(estimatedDeficit)} kcal surplus vs maintenance`);
+                } else {
+                    calorieNotes.push("estimated maintenance calories matched");
+                }
+            }
+
+            document.getElementById("calorie-status").textContent = calorieNotes.join(" · ");
         };
 
         const getIngredientName = (item) => {
@@ -1358,19 +1422,19 @@
             const userText = card.querySelector(".user-text");
 
             if (meal.core_base && meal.core_base.length > 0) {
-                coreText.textContent = meal.core_base.map(i => i.name).join(", ");
+                coreText.textContent = meal.core_base.map(i => i.display_name || i.name).join(", ");
             } else {
                 coreText.textContent = (meal.ingredients || []).join(", ");
             }
 
             if (meal.family_additions && meal.family_additions.length > 0) {
-                familyText.textContent = meal.family_additions.map(i => i.name).join(", ");
+                familyText.textContent = meal.family_additions.map(i => i.display_name || i.name).join(", ");
             } else {
                 familyText.textContent = "Carb Extension Side";
             }
 
             if (meal.user_alternatives && meal.user_alternatives.length > 0) {
-                userText.textContent = meal.user_alternatives.map(i => i.name).join(", ");
+                userText.textContent = meal.user_alternatives.map(i => i.display_name || i.name).join(", ");
             } else {
                 userText.textContent = "Health Profile Alternative";
             }
@@ -1470,6 +1534,16 @@
 
         document.getElementById("apply-preferences-btn").addEventListener("click", fetchNewPlan);
 
+        [maintenanceCaloriesInput, targetCaloriesInput].forEach((input) => {
+            input.addEventListener("input", () => {
+                const storageKey = input === maintenanceCaloriesInput
+                    ? "maintenanceCalories"
+                    : "targetCalories";
+                localStorage.setItem(storageKey, input.value);
+                updateMacroSummary();
+            });
+        });
+
         document.querySelectorAll(".reroll-btn").forEach((button) => {
             button.addEventListener("click", async () => {
                 const mealType = button.closest(".meal-card").dataset.mealType;
@@ -1510,6 +1584,7 @@
         });
 
         // Initialize server-rendered grocery list
+        updateMacroSummary();
         renderGroceryList(initialGroceryData);
     </script>
 </body>

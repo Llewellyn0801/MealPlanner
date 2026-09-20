@@ -1995,6 +1995,7 @@ def _enrich_seed_meal(meal: dict[str, Any]) -> dict[str, Any]:
     enriched.setdefault("rating", 4.5)
     enriched.setdefault("ratings_count", 12)
     enriched.setdefault("is_favorite", False)
+    enriched.setdefault("nutrition_basis", "per_serving")
 
     if not enriched.get("prep_detail_steps"):
         instructions = enriched.get("instructions") or []

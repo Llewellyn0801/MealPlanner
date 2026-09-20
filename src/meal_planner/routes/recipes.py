@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 
 from meal_planner.database.session import get_db
 from meal_planner.models.meal import Meal
-from meal_planner.services.meal_engine import format_meal
+from meal_planner.services.meal_engine import format_meal, parse_ingredient_measurement
 
 router = APIRouter(prefix="/recipes")
 templates = Jinja2Templates(
@@ -83,6 +83,7 @@ def create_recipe(
     protein_g: int = Form(0),
     carbs_g: int = Form(0),
     fats_g: int = Form(0),
+    nutrition_basis: str = Form("per_serving"),
     prep_time_mins: int = Form(10),
     cook_time_mins: int = Form(15),
     servings_default: int = Form(4),
@@ -113,7 +114,13 @@ def create_recipe(
         for idx, instruction in enumerate(instructions, start=1)
     ]
 
-    core_base = [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
+    core_base = [
+        {
+            **parse_ingredient_measurement(ingredient),
+            "category": "Pantry/Grains",
+        }
+        for ingredient in ingredients
+    ]
 
     new_meal = Meal(
         name=name.strip(),
@@ -125,6 +132,7 @@ def create_recipe(
         protein_g=protein_g,
         carbs_g=carbs_g,
         fats_g=fats_g,
+        nutrition_basis=nutrition_basis.strip(),
         prep_time_mins=prep_time_mins,
         cook_time_mins=cook_time_mins,
         servings_default=servings_default,
@@ -154,6 +162,7 @@ def update_recipe(
     protein_g: int = Form(0),
     carbs_g: int = Form(0),
     fats_g: int = Form(0),
+    nutrition_basis: str = Form("per_serving"),
     prep_time_mins: int = Form(10),
     cook_time_mins: int = Form(15),
     servings_default: int = Form(4),
@@ -176,6 +185,7 @@ def update_recipe(
     meal.protein_g = protein_g
     meal.carbs_g = carbs_g
     meal.fats_g = fats_g
+    meal.nutrition_basis = nutrition_basis.strip()
     meal.prep_time_mins = prep_time_mins
     meal.cook_time_mins = cook_time_mins
     meal.servings_default = servings_default
@@ -195,7 +205,13 @@ def update_recipe(
     meal.instructions = json.dumps(instructions)
     meal.prep_detail_steps = json.dumps(prep_detail_steps)
     meal.core_base = json.dumps(
-        [{"name": ing, "category": "Pantry/Grains"} for ing in ingredients]
+        [
+            {
+                **parse_ingredient_measurement(ingredient),
+                "category": "Pantry/Grains",
+            }
+            for ingredient in ingredients
+        ]
     )
 
     db.commit()

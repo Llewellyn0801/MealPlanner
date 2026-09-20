@@ -11,6 +11,7 @@ from meal_planner.services.meal_engine import (
     calculate_total_macros,
     generate_meal_plan,
     generate_multi_day_plan,
+    parse_ingredient_measurement,
 )
 
 
@@ -39,6 +40,7 @@ def test_generate_meal_plan_returns_fallback_when_no_meals():
         "protein_g": 0,
         "carbs_g": 0,
         "fats_g": 0,
+        "nutrition_basis": "per_serving",
         "core_base": [],
         "family_additions": [],
         "user_alternatives": [],
@@ -327,5 +329,77 @@ def test_generate_meal_plan_dislikes_filtering():
         # Generate plan excluding tuna
         plan = generate_meal_plan(db, dislikes=["tuna"])
         assert plan["lunch"]["name"] == "Lemon Chicken Salad"
+    finally:
+        db.close()
+
+
+def test_parse_ingredient_measurement_supports_common_units_and_fractions():
+    assert parse_ingredient_measurement("150g Chicken Breast") == {
+        "name": "Chicken Breast",
+        "display_name": "150g Chicken Breast",
+        "quantity": 150.0,
+        "unit": "g",
+    }
+    assert parse_ingredient_measurement("1/2 cup oats")["quantity"] == 0.5
+    assert parse_ingredient_measurement("1 1/2 cups rice")["quantity"] == 1.5
+    assert parse_ingredient_measurement("3 eggs")["unit"] == "count"
+
+
+def test_format_meal_converts_whole_recipe_nutrition_to_per_serving():
+    db = _make_session()
+    try:
+        meal = Meal(
+            name="Batch Chicken",
+            meal_type="lunch",
+            difficulty="simple",
+            calories=1200,
+            protein_g=120,
+            carbs_g=80,
+            fats_g=40,
+            servings_default=4,
+            nutrition_basis="whole_recipe",
+            ingredients="[]",
+            instructions="[]",
+        )
+        db.add(meal)
+        db.commit()
+
+        plan = generate_meal_plan(db)
+
+        assert plan["lunch"]["calories"] == 300
+        assert plan["lunch"]["protein_g"] == 30
+        assert plan["lunch"]["nutrition_basis"] == "per_serving"
+    finally:
+        db.close()
+
+
+def test_generate_meal_plan_applies_dietary_preset_to_one_day_plans():
+    db = _make_session()
+    try:
+        db.add_all(
+            [
+                Meal(
+                    name="High Protein Breakfast",
+                    meal_type="breakfast",
+                    difficulty="simple",
+                    is_high_protein=True,
+                    tags="high_protein",
+                    ingredients="[]",
+                    instructions="[]",
+                ),
+                Meal(
+                    name="Regular Breakfast",
+                    meal_type="breakfast",
+                    difficulty="simple",
+                    ingredients="[]",
+                    instructions="[]",
+                ),
+            ]
+        )
+        db.commit()
+
+        plan = generate_meal_plan(db, dietary_preset="high_protein")
+
+        assert plan["breakfast"]["name"] == "High Protein Breakfast"
     finally:
         db.close()

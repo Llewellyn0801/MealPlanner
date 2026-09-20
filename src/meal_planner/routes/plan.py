@@ -139,7 +139,12 @@ def get_plan(payload: dict[str, Any] = Body(default={}), db: Session = Depends(g
             "days": days,
         }
     else:
-        plan = generate_meal_plan(db, dislikes=dislikes_list, likes=likes_list)
+        plan = generate_meal_plan(
+            db,
+            dislikes=dislikes_list,
+            likes=likes_list,
+            dietary_preset=dietary_preset,
+        )
         total_macros = calculate_total_macros(plan)
         return {"plan": plan, "total_macros": total_macros, "days": 1}
 
