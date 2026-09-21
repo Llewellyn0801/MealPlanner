@@ -1,0 +1,27 @@
+{# Profile Settings Component #}
+<section class="profile-settings" aria-labelledby="profile-settings-title">
+  <div class="profile-settings-header">
+    <h3 id="profile-settings-title" class="profile-settings-title">👤 Your Profile</h3>
+    <p class="profile-settings-note">Personalize portions and daily targets.</p>
+  </div>
+  <div class="pref-row">
+    <div class="pref-group">
+      <label class="pref-label" for="profile-name-input">Profile name</label>
+      <input id="profile-name-input" class="input-text" type="text" maxlength="50" placeholder="e.g. Alex" />
+    </div>
+    <div class="pref-group">
+      <label class="pref-label" for="household-size-input">Household size</label>
+      <input id="household-size-input" class="input-text" type="number" min="1" max="20" step="1" value="1" />
+    </div>
+    <div class="pref-group">
+      <label class="pref-label" for="activity-level-input">Activity level</label>
+      <select id="activity-level-input" class="input-text">
+        <option value="sedentary">Mostly sedentary</option>
+        <option value="light">Lightly active</option>
+        <option value="moderate">Moderately active</option>
+        <option value="high">Very active</option>
+      </select>
+    </div>
+  </div>
+  <p class="calorie-help">Profile details stay in this browser until account support is added.</p>
+</section>

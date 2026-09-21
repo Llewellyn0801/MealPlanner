@@ -261,12 +261,13 @@ def test_seed_meals_include_indian_curry_recipes():
 
 
 def test_seed_meals_include_international_cuisines():
-    for cuisine in ("thai", "chinese", "german"):
+    expected_counts = {"thai": 1, "chinese": 2, "german": 2}
+    for cuisine, expected_count in expected_counts.items():
         cuisine_meals = [
             meal for meal in SEED_MEALS if cuisine in meal["tags"].split(",")
         ]
 
-        assert len(cuisine_meals) >= 2
+        assert len(cuisine_meals) >= expected_count
         assert all(meal["instructions"] for meal in cuisine_meals)
 
 

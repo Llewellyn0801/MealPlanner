@@ -1,0 +1,25 @@
+<section class="daily-summary sticky-mobile section-gap" aria-labelledby="daily-summary-label">
+    <p id="daily-summary-label" class="daily-summary-label">Today's nutrition</p>
+    <div class="nutrition-metrics" role="group" aria-label="Daily nutrition totals">
+        <div class="nutrition-metric">
+            <span class="nutrition-metric-value macro-cal" id="sum-cal">{{ total_macros.calories }}</span>
+            <span class="nutrition-metric-label">kcal</span>
+        </div>
+        <span class="nutrition-metric-divider" aria-hidden="true"></span>
+        <div class="nutrition-metric">
+            <span class="nutrition-metric-value macro-prot" id="sum-prot">{{ total_macros.protein_g }}g</span>
+            <span class="nutrition-metric-label">protein</span>
+        </div>
+        <span class="nutrition-metric-divider" aria-hidden="true"></span>
+        <div class="nutrition-metric">
+            <span class="nutrition-metric-value macro-carb" id="sum-carb">{{ total_macros.carbs_g }}g</span>
+            <span class="nutrition-metric-label">carbs</span>
+        </div>
+        <span class="nutrition-metric-divider" aria-hidden="true"></span>
+        <div class="nutrition-metric">
+            <span class="nutrition-metric-value macro-fat" id="sum-fat">{{ total_macros.fats_g }}g</span>
+            <span class="nutrition-metric-label">fat</span>
+        </div>
+    </div>
+    <p id="calorie-status" class="calorie-status" aria-live="polite"></p>
+</section>

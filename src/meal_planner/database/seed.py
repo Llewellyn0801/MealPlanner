@@ -180,68 +180,6 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_kid_friendly": False,
     },
     {
-        "name": "Tofu & Mushroom Garden Scramble",
-        "meal_type": "breakfast",
-        "difficulty": "simple",
-        "description": "Plant-based low-glycemic scramble with turmeric and sautéed mushrooms.",
-        "image_url": "/static/images/tofu-mushroom-garden-scramble.jpg",
-        "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,simple",
-        "calories": 280,
-        "protein_g": 22,
-        "carbs_g": 10,
-        "fats_g": 18,
-        "core_base": [
-            {
-                "name": "200g Firm Tofu (crumbled)",
-                "category": "Protein",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1 cup Sliced Mushrooms",
-                "category": "Produce",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1/2 cup Bell Peppers (diced)",
-                "category": "Produce",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1 tbsp Extra Virgin Olive Oil",
-                "category": "Dairy/Fats",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1/4 tsp Turmeric & Black Pepper",
-                "category": "Pantry/Grains",
-                "tags": ["user_safe", "low_sodium"],
-            },
-        ],
-        "family_additions": [
-            {
-                "name": "1 Whole Wheat English Muffin",
-                "category": "Pantry/Grains",
-                "tags": ["family_side"],
-            }
-        ],
-        "user_alternatives": [
-            {
-                "name": "1 cup Steamed Baby Kale",
-                "category": "Produce",
-                "tags": ["user_safe"],
-            }
-        ],
-        "instructions": [
-            "Heat olive oil in a skillet and sauté mushrooms and peppers for 3 minutes.",
-            "Add crumbled tofu, turmeric, and black pepper; cook for 4-5 minutes until warm.",
-            "Serve family with toasted English muffin and user with steamed baby kale.",
-        ],
-        "cooking_tips": "Turmeric and black pepper work synergistically to reduce systemic inflammation.",
-        "is_carnivore": False,
-        "is_high_protein": True,
-        "is_kid_friendly": False,
-    },
-    {
         "name": "Overnight Chia & Almond Butter Pudding",
         "meal_type": "breakfast",
         "difficulty": "simple",
@@ -757,7 +695,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Spiced grilled chicken over cucumber tomato salad, pickled onions, and garlic herb tahini.",
-        "image_url": None,
+        "image_url": "/static/images/chicken-shawarma-tahini-platter.jpg",
         "tags": "heart_healthy,user_safe,high_protein,simple",
         "calories": 520,
         "protein_g": 44,
@@ -808,7 +746,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "lunch",
         "difficulty": "simple",
         "description": "Crispy pan-seared salmon over fluffy quinoa, steamed edamame, and sesame oil dressing.",
-        "image_url": None,
+        "image_url": "/static/images/salmon-quinoa-grain-bowl.jpg",
         "tags": "heart_healthy,user_safe,high_protein,simple",
         "calories": 560,
         "protein_g": 42,
@@ -1096,7 +1034,7 @@ SEED_MEALS: list[dict[str, Any]] = [
         "meal_type": "dinner",
         "difficulty": "full_meal",
         "description": "Lean sirloin steak seared in olive oil with garlic-infused tender green beans.",
-        "image_url": None,
+        "image_url": "/static/images/grass-fed-sirloin-steak-sauteed-green-beans.jpg",
         "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
         "calories": 540,
         "protein_g": 50,
@@ -1148,68 +1086,6 @@ SEED_MEALS: list[dict[str, Any]] = [
         "is_carnivore": False,
         "is_high_protein": True,
         "is_kid_friendly": True,
-    },
-    {
-        "name": "Mediterranean Tofu Steak & Roasted Ratatouille",
-        "meal_type": "dinner",
-        "difficulty": "full_meal",
-        "description": "Pan-seared firm tofu over colorful roasted eggplant, zucchini, and bell peppers.",
-        "image_url": None,
-        "tags": "low_carb,heart_healthy,low_sodium,user_safe,high_protein,full_meal",
-        "calories": 390,
-        "protein_g": 26,
-        "carbs_g": 22,
-        "fats_g": 22,
-        "core_base": [
-            {
-                "name": "200g Firm Tofu (sliced)",
-                "category": "Protein",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1 cup Eggplant (cubed)",
-                "category": "Produce",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1 cup Zucchini (cubed)",
-                "category": "Produce",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1/2 cup Red Bell Pepper",
-                "category": "Produce",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-            {
-                "name": "1.5 tbsp Extra Virgin Olive Oil",
-                "category": "Dairy/Fats",
-                "tags": ["user_safe", "heart_healthy", "low_sodium"],
-            },
-        ],
-        "family_additions": [
-            {
-                "name": "1 cup Cooked Quinoa",
-                "category": "Pantry/Grains",
-                "tags": ["family_side"],
-            }
-        ],
-        "user_alternatives": [
-            {
-                "name": "Extra Portion Roasted Ratatouille Veggies",
-                "category": "Produce",
-                "tags": ["user_safe"],
-            }
-        ],
-        "instructions": [
-            "Roast eggplant, zucchini, and bell pepper with olive oil and Herbs de Provence at 200°C for 20 mins.",
-            "Sear tofu slices in olive oil until golden on both sides.",
-            "Serve cooked quinoa for the family, and extra ratatouille for the health-profile portion.",
-        ],
-        "cooking_tips": "Soy protein and extra virgin olive oil promote healthy blood lipid balances.",
-        "is_carnivore": False,
-        "is_high_protein": True,
-        "is_kid_friendly": False,
     },
     {
         "name": "Asian Beef & Broccoli Skillet",
@@ -1615,6 +1491,74 @@ SEED_MEALS: list[dict[str, Any]] = [
 SEED_MEALS.extend(
     [
         {
+            "name": "Smoky BBQ Beef Back Ribs",
+            "meal_type": "dinner",
+            "difficulty": "full_meal",
+            "description": "Slow-roasted beef ribs with a smoky house BBQ glaze, crisp slaw, and tender roasted vegetables.",
+            "image_url": None,
+            "tags": "bbq,high_protein,comfort_food,family_favorite,full_meal",
+            "calories": 680,
+            "protein_g": 48,
+            "carbs_g": 34,
+            "fats_g": 38,
+            "core_base": [
+                {"name": "320g Beef Back Ribs", "category": "Protein", "tags": ["user_safe", "high_protein"]},
+                {"name": "2 tbsp Smoky BBQ Sauce", "category": "Pantry/Grains", "tags": ["user_safe"]},
+                {"name": "1 cup Cabbage & Carrot Slaw", "category": "Produce", "tags": ["user_safe"]},
+                {"name": "1 tsp Smoked Paprika & Garlic", "category": "Pantry/Grains", "tags": ["user_safe"]},
+            ],
+            "family_additions": [
+                {"name": "1 cup Roasted Sweet Potato Wedges", "category": "Pantry/Grains", "tags": ["family_side"]}
+            ],
+            "user_alternatives": [
+                {"name": "Extra Green Beans", "category": "Produce", "tags": ["user_safe"]}
+            ],
+            "instructions": [
+                "Rub ribs with smoked paprika, garlic, and black pepper.",
+                "Roast covered at 150°C for 2.5 hours until tender.",
+                "Brush with BBQ sauce and finish uncovered until caramelized.",
+                "Serve with slaw and sweet potato wedges or extra green beans.",
+            ],
+            "cooking_tips": "Finish the ribs under high heat for a glossy glaze while keeping the meat tender.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
+            "name": "Backyard BBQ Beef Burger",
+            "meal_type": "dinner",
+            "difficulty": "simple",
+            "description": "Juicy grilled beef burger with smoky BBQ sauce, crunchy lettuce, tomato, and a toasted whole-grain bun.",
+            "image_url": None,
+            "tags": "bbq,high_protein,family_favorite,comfort_food,simple",
+            "calories": 590,
+            "protein_g": 42,
+            "carbs_g": 42,
+            "fats_g": 27,
+            "core_base": [
+                {"name": "180g Lean Ground Beef Patty", "category": "Protein", "tags": ["user_safe", "high_protein"]},
+                {"name": "1 Whole-Grain Burger Bun", "category": "Pantry/Grains", "tags": ["user_safe"]},
+                {"name": "1 tbsp Smoky BBQ Sauce", "category": "Pantry/Grains", "tags": ["user_safe"]},
+                {"name": "Lettuce, Tomato & Pickled Onion", "category": "Produce", "tags": ["user_safe"]},
+            ],
+            "family_additions": [
+                {"name": "1 slice Cheddar Cheese", "category": "Dairy/Fats", "tags": ["family_side"]}
+            ],
+            "user_alternatives": [
+                {"name": "Lettuce Wrap", "category": "Produce", "tags": ["user_safe"]}
+            ],
+            "instructions": [
+                "Season the beef patty with smoked paprika, garlic, and black pepper.",
+                "Grill over medium-high heat until cooked to preference.",
+                "Toast the bun, then layer lettuce, tomato, patty, BBQ sauce, and pickled onion.",
+                "Use a lettuce wrap for the lighter profile portion.",
+            ],
+            "cooking_tips": "Do not press the patty while grilling; keeping the juices inside makes the burger tender.",
+            "is_carnivore": False,
+            "is_high_protein": True,
+            "is_kid_friendly": True,
+        },
+        {
             "name": "Thai Basil Chicken & Green Beans",
             "meal_type": "dinner",
             "difficulty": "full_meal",
@@ -1668,64 +1612,6 @@ SEED_MEALS.extend(
                 "Serve with jasmine rice or cauliflower rice.",
             ],
             "cooking_tips": "Add the basil off the heat so its aroma stays bright and fresh.",
-            "is_carnivore": False,
-            "is_high_protein": True,
-            "is_kid_friendly": False,
-        },
-        {
-            "name": "Thai Green Curry Tofu & Vegetables",
-            "meal_type": "dinner",
-            "difficulty": "full_meal",
-            "description": "Silky green curry with seared tofu, zucchini, spinach, and aromatic Thai herbs.",
-            "image_url": "/static/images/thai-green-curry-tofu-vegetables.jpg",
-            "tags": "thai,vegetarian,low_carb,heart_healthy,user_safe,spicy",
-            "calories": 390,
-            "protein_g": 22,
-            "carbs_g": 20,
-            "fats_g": 25,
-            "core_base": [
-                {
-                    "name": "200g Firm Tofu",
-                    "category": "Protein",
-                    "tags": ["user_safe"],
-                },
-                {
-                    "name": "1 cup Zucchini & Spinach",
-                    "category": "Produce",
-                    "tags": ["user_safe"],
-                },
-                {
-                    "name": "1/2 cup Light Coconut Curry Sauce",
-                    "category": "Dairy/Fats",
-                    "tags": ["user_safe"],
-                },
-                {
-                    "name": "1 tbsp Thai Green Curry Paste",
-                    "category": "Pantry/Grains",
-                    "tags": ["user_safe"],
-                },
-            ],
-            "family_additions": [
-                {
-                    "name": "1 cup Steamed Jasmine Rice",
-                    "category": "Pantry/Grains",
-                    "tags": ["family_side"],
-                }
-            ],
-            "user_alternatives": [
-                {
-                    "name": "Extra Steamed Greens",
-                    "category": "Produce",
-                    "tags": ["user_safe"],
-                }
-            ],
-            "instructions": [
-                "Sear tofu until golden on two sides and set aside.",
-                "Bloom green curry paste, then loosen with light coconut sauce.",
-                "Simmer zucchini and spinach until just tender; return tofu to the pan.",
-                "Finish with lime and cilantro; serve with rice or extra greens.",
-            ],
-            "cooking_tips": "Keep the curry at a gentle simmer so the coconut sauce stays smooth.",
             "is_carnivore": False,
             "is_high_protein": True,
             "is_kid_friendly": False,

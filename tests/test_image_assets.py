@@ -25,16 +25,6 @@ def test_all_seeded_local_images_exist():
     )
 
 
-def test_tofu_scramble_uses_a_tofu_image():
-    tofu_scramble = next(
-        meal for meal in SEED_MEALS if meal["name"] == "Tofu & Mushroom Garden Scramble"
-    )
-
-    assert "tofu" in tofu_scramble["image_url"].lower()
-    assert "chicken" not in tofu_scramble["image_url"].lower()
-    assert tofu_scramble["image_url"].endswith("tofu-mushroom-garden-scramble.jpg")
-
-
 def test_shrimp_zucchini_salad_does_not_use_the_curry_image():
     shrimp_salad = next(
         meal
@@ -45,18 +35,23 @@ def test_shrimp_zucchini_salad_does_not_use_the_curry_image():
     assert shrimp_salad["image_url"] is None
 
 
-def test_confirmed_mismatched_recipes_have_no_misleading_image():
+def test_verified_recipe_images_match_the_recipe():
     names_without_verified_images = {
-        "Grilled Chicken Shawarma & Herb Tahini Bowl",
-        "Pan-Seared Salmon & Quinoa Grain Bowl",
         "Rosemary Chicken Thighs & Roasted Brussels Sprouts",
-        "Grass-Fed Sirloin Steak & Sauteed Green Beans",
-        "Mediterranean Tofu Steak & Roasted Ratatouille",
     }
     meals = {meal["name"]: meal for meal in SEED_MEALS}
 
     assert all(
         meals[name]["image_url"] is None for name in names_without_verified_images
+    )
+    assert meals["Pan-Seared Salmon & Quinoa Grain Bowl"]["image_url"].endswith(
+        "salmon-quinoa-grain-bowl.jpg"
+    )
+    assert meals["Grass-Fed Sirloin Steak & Sauteed Green Beans"]["image_url"].endswith(
+        "grass-fed-sirloin-steak-sauteed-green-beans.jpg"
+    )
+    assert meals["Grilled Chicken Shawarma & Herb Tahini Bowl"]["image_url"].endswith(
+        "chicken-shawarma-tahini-platter.jpg"
     )
 
 

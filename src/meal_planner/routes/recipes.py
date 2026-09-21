@@ -2,6 +2,7 @@ import json
 import shutil
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
 
 from fastapi import (
     APIRouter,
@@ -30,6 +31,22 @@ from meal_planner.services.meal_engine import format_meal, parse_ingredient_meas
 router = APIRouter(prefix="/recipes")
 
 
+def manage_url(
+    status: str,
+    q: str = "",
+    meal_type: str = "all",
+    favorite_only: bool = False,
+) -> str:
+    params = {"status": status}
+    if q:
+        params["q"] = q
+    if meal_type and meal_type != "all":
+        params["meal_type"] = meal_type
+    if favorite_only:
+        params["favorite_only"] = "true"
+    return f"/recipes/manage?{urlencode(params)}"
+
+
 @router.get("/image-audit")
 def image_audit(db: Session = Depends(get_db)):
     missing = []
@@ -53,6 +70,8 @@ def manage_recipes(
     q: str | None = None,
     meal_type: str | None = None,
     favorite_only: bool = False,
+    edit_id: int | None = None,
+    status: str | None = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Meal)
@@ -66,6 +85,11 @@ def manage_recipes(
 
     meals = query.all()
     formatted_meals = [format_meal(m) for m in meals]
+    editing_recipe = None
+    if edit_id is not None:
+        editing_meal = db.query(Meal).filter(Meal.id == edit_id).first()
+        if editing_meal:
+            editing_recipe = format_meal(editing_meal)
 
     return templates.TemplateResponse(
         request=request,
@@ -76,6 +100,8 @@ def manage_recipes(
             "query": q or "",
             "selected_meal_type": meal_type or "all",
             "favorite_only": favorite_only,
+            "editing_recipe": editing_recipe,
+            "status": status or "",
         },
     )
 
@@ -110,6 +136,9 @@ def create_recipe(
     cooking_tips: str = Form(""),
     image_url_input: str | None = Form(None),
     image_file: UploadFile | None = File(None),
+    q: str = Form(""),
+    filter_meal_type: str = Form("all"),
+    favorite_only: bool = Form(False),
     db: Session = Depends(get_db),
 ):
     image_url = None
@@ -170,7 +199,10 @@ def create_recipe(
 
     db.add(new_meal)
     db.commit()
-    return RedirectResponse(url="/recipes/manage", status_code=303)
+    return RedirectResponse(
+        url=manage_url("Recipe created.", q, filter_meal_type, favorite_only),
+        status_code=303,
+    )
 
 
 @router.post("/{recipe_id}/update")
@@ -194,6 +226,9 @@ def update_recipe(
     cooking_tips: str = Form(""),
     image_url_input: str | None = Form(None),
     image_file: UploadFile | None = File(None),
+    q: str = Form(""),
+    filter_meal_type: str = Form("all"),
+    favorite_only: bool = Form(False),
     db: Session = Depends(get_db),
 ):
     meal = db.query(Meal).filter(Meal.id == recipe_id).first()
@@ -250,26 +285,48 @@ def update_recipe(
     )
 
     db.commit()
-    return RedirectResponse(url="/recipes/manage", status_code=303)
+    return RedirectResponse(
+        url=manage_url("Recipe updated.", q, filter_meal_type, favorite_only),
+        status_code=303,
+    )
 
 
 @router.post("/{recipe_id}/delete")
-def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
+def delete_recipe(
+    recipe_id: int,
+    q: str = Form(""),
+    filter_meal_type: str = Form("all"),
+    favorite_only: bool = Form(False),
+    db: Session = Depends(get_db),
+):
     meal = db.query(Meal).filter(Meal.id == recipe_id).first()
     if meal:
         db.delete(meal)
         db.commit()
-    return RedirectResponse(url="/recipes/manage", status_code=303)
+    return RedirectResponse(
+        url=manage_url("Recipe deleted.", q, filter_meal_type, favorite_only),
+        status_code=303,
+    )
 
 
 @router.post("/{recipe_id}/favorite")
-def toggle_favorite(recipe_id: int, db: Session = Depends(get_db)):
+def toggle_favorite(
+    recipe_id: int,
+    q: str = Form(""),
+    filter_meal_type: str = Form("all"),
+    favorite_only: bool = Form(False),
+    db: Session = Depends(get_db),
+):
     meal = db.query(Meal).filter(Meal.id == recipe_id).first()
     if not meal:
         raise HTTPException(status_code=404, detail="Recipe not found")
     meal.is_favorite = not meal.is_favorite
     db.commit()
-    return {"id": meal.id, "is_favorite": meal.is_favorite}
+    message = "Added to favorites." if meal.is_favorite else "Removed from favorites."
+    return RedirectResponse(
+        url=manage_url(message, q, filter_meal_type, favorite_only),
+        status_code=303,
+    )
 
 
 @router.post("/{recipe_id}/rate")

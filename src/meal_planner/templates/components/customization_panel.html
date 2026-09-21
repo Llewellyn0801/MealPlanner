@@ -1,0 +1,85 @@
+<section class="customization-section" aria-labelledby="customization-heading">
+    <div class="customization-collapsed">
+        <div class="customization-collapsed-text">
+            <h3 id="customization-heading">Customize today's plan</h3>
+            <p id="customize-summary" class="customization-summary">General wellness · No exclusions · Balanced macros</p>
+        </div>
+        <button type="button" id="customize-toggle-btn" class="btn-secondary" aria-expanded="false" aria-controls="customization-panel">
+            Customize
+        </button>
+    </div>
+
+    <div id="customization-panel" class="customization-panel" aria-hidden="true">
+        <form class="customization-form" onsubmit="return false;">
+            <div class="form-group">
+                <label class="form-label" for="health-profile-input">Planning profile</label>
+                <select id="health-profile-input" class="form-input">
+                    <option value="general">General wellness</option>
+                    <option value="higher_protein">Higher protein</option>
+                    <option value="calorie_aware">Calorie-aware</option>
+                    <option value="heart_friendly">Heart-friendly</option>
+                    <option value="lower_carb">Lower carbohydrate</option>
+                </select>
+                <p class="form-help">Changes planning preferences, not medical advice.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="dislikes-input">Disliked ingredients</label>
+                <input type="text" id="dislikes-input" class="form-input" placeholder="e.g. tuna, mushrooms" value="{{ dislikes }}" />
+                <p class="form-help">Comma-separated exclusions.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="macro-focus-input">Macro focus</label>
+                <select id="macro-focus-input" class="form-input">
+                    <option value="balanced">Balanced macros</option>
+                    <option value="protein">Prioritize protein</option>
+                    <option value="carbs">Prioritize carbohydrates</option>
+                    <option value="fats">Prioritize fats</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="maintenance-calories-input">Maintenance calories</label>
+                <input id="maintenance-calories-input" class="form-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 3000" />
+                <p class="form-help">Optional estimate to maintain weight.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="target-calories-input">Daily intake target</label>
+                <input id="target-calories-input" class="form-input" type="number" min="800" max="10000" step="50" placeholder="e.g. 2000" />
+                <p class="form-help">Recipe calories are estimates per serving.</p>
+            </div>
+
+            <div class="profile-settings-block">
+                <h4 id="profile-settings-title">Your profile</h4>
+                <div class="profile-settings-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="profile-name-input">Profile name</label>
+                        <input id="profile-name-input" class="form-input" type="text" maxlength="50" placeholder="e.g. Llewellyn" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="household-size-input">Household size</label>
+                        <input id="household-size-input" class="form-input" type="number" min="1" max="20" step="1" value="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="activity-level-input">Activity level</label>
+                        <select id="activity-level-input" class="form-input">
+                            <option value="sedentary">Mostly sedentary</option>
+                            <option value="light">Lightly active</option>
+                            <option value="moderate">Moderately active</option>
+                            <option value="high">Very active</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="form-help">Profile details stay in this browser until account support is added.</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="apply-preferences-btn" class="btn btn-primary">
+                    Apply &amp; generate plan
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
