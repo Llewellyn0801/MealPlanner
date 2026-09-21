@@ -1,0 +1,45 @@
+{# Search Panel Component #}
+<div class="search-form-wrapper">
+    <form action="/search" method="get" class="search-form">
+        <input
+            type="search"
+            name="q"
+            class="search-input"
+            placeholder="Search recipes, ingredients, or tags..."
+            value="{{ search_query }}"
+        />
+        <button type="submit" class="btn btn-primary">Search recipes</button>
+    </form>
+</div>
+{% if search_query %}
+<section class="search-panel" aria-live="polite">
+    <div class="search-panel-header">
+        <h2 class="search-panel-title">Results for “{{ search_query }}”</h2>
+        {% if search_results %}
+        <span class="search-panel-meta">{{ search_results|length }} recipe{% if search_results|length != 1 %}s{% endif %}</span>
+        {% endif %}
+    </div>
+    {% if search_results %}
+    <div class="search-result-list">
+        {% for meal in search_results %}
+        <article class="search-result">
+            <h3>{{ meal.name }}</h3>
+            <p>{{ meal.description }}</p>
+            <span class="search-result-meta">{{ meal.meal_type|capitalize }} · {{ meal.total_time_mins }} min · {{ meal.calories }} kcal</span>
+            <div class="search-result-actions">
+                <span class="search-result-meta">Replace today’s {{ meal.meal_type }}</span>
+                <button
+                    type="button"
+                    class="use-search-result-btn"
+                    data-recipe-id="{{ meal.meal_id }}"
+                    data-meal-type="{{ meal.meal_type }}"
+                >Use for today</button>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="search-empty">No matching recipes yet. Try a dish name, ingredient, or tag.</p>
+    {% endif %}
+</section>
+{% endif %}

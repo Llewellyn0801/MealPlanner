@@ -1,158 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weekly Meal Plan Workspace</title>
-    <script>
-        (function () {
-            const stored = localStorage.getItem("theme");
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            document.documentElement.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"));
-        })();
-    </script>
-    <style>
-        :root {
-            --bg: #f7f4ef;
-            --surface: #ffffff;
-            --surface-muted: #f7f4ef;
-            --text: #202a33;
-            --muted: #69747d;
-            --border: #e4ddd4;
-            --accent: #d9574f;
-            --accent-soft: #f8ece8;
-            --success: #17756f;
-            --shadow: 0 10px 24px rgba(32, 42, 51, 0.08);
-        }
-        html[data-theme="dark"] {
-            --bg: #111a21;
-            --surface: #1a2730;
-            --surface-muted: #202f38;
-            --text: #f4f1eb;
-            --muted: #acb5b8;
-            --border: #33434d;
-            --accent: #f07b6e;
-            --accent-soft: rgba(240, 123, 110, 0.14);
-            --success: #78d5ca;
-            --shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-        }
-        .page { max-width: 1180px; margin: 0 auto; padding: 28px 20px 56px; }
-        .topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 28px; }
-        .eyebrow { margin: 0 0 7px; color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-        h1, h2, h3 { margin-top: 0; }
-        h1 { margin-bottom: 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; }
-        .intro { max-width: 680px; margin: 0; color: var(--muted); line-height: 1.6; }
-        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-        .primary-nav { display: flex; gap: 5px; margin-top: 16px; }
-        .primary-nav a { padding: 7px 10px; border-radius: 7px; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: none; }
-        .primary-nav a:hover, .primary-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
-        button, .button-link { border: 1px solid var(--border); border-radius: 8px; padding: 11px 15px; background: var(--surface); color: var(--text); cursor: pointer; font: inherit; font-weight: 700; text-decoration: none; }
-        button.primary { border-color: var(--accent); background: var(--accent); color: #fff; }
-        button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
-        button:disabled { cursor: wait; opacity: .65; }
-        .workspace { display: grid; grid-template-columns: 260px 1fr; gap: 22px; align-items: start; }
-        .panel { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
-        .controls { padding: 18px; position: sticky; top: 18px; }
-        .controls h2 { font-size: 18px; }
-        label { display: block; margin: 16px 0 7px; color: var(--muted); font-size: 13px; font-weight: 700; }
-        input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 11px; background: var(--surface-muted); color: var(--text); font: inherit; }
-        .status { min-height: 22px; margin: 16px 0 0; color: var(--success); font-size: 13px; line-height: 1.45; }
-        .week-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-        .day-card { padding: 17px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
-        .day-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-        .day-header { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 14px; }
-        .day-header h2 { margin: 0; font-size: 19px; }
-        .macro { color: var(--muted); font-size: 12px; font-weight: 700; }
-        .meal-row { padding: 11px 0; border-top: 1px solid var(--border); cursor: grab; }
-        .meal-row:active { cursor: grabbing; }
-        .meal-row.dragging { opacity: .45; }
-        .meal-row:first-of-type { border-top: 0; }
-        .meal-type { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-        .meal-name { margin: 3px 0 0; font-size: 15px; }
-        .meal-actions { display: flex; gap: 7px; margin-top: 8px; }
-        .meal-actions button { padding: 6px 8px; font-size: 11px; }
-        .swap-select { max-width: 100%; padding: 6px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface-muted); color: var(--text); font: inherit; font-size: 12px; }
-        .day-actions { margin-top: 13px; display: flex; justify-content: flex-end; gap: 8px; }
-        .day-actions button { padding: 8px 10px; font-size: 12px; }
-        .day-card.drag-over { border-color: var(--accent); background: var(--accent-soft); }
-        .weekly-grocery { grid-column: 1 / -1; margin-top: 4px; padding: 18px; }
-        .weekly-grocery h2 { margin-bottom: 12px; font-size: 19px; }
-        .grocery-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-        .grocery-category { padding: 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-muted); }
-        .grocery-category h3 { margin-bottom: 8px; font-size: 14px; }
-        .grocery-category ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-        .empty { grid-column: 1 / -1; padding: 30px; text-align: center; color: var(--muted); }
-        .hidden { display: none; }
-        @media (max-width: 760px) {
-            .topbar { align-items: flex-start; flex-direction: column; }
-            .workspace { grid-template-columns: 1fr; }
-            .controls { position: static; }
-            .week-grid, .grocery-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    {% set page_title = "MealPlanner — Weekly Plan" %}
+    {% include "components/base_head.html" %}
 </head>
-<body>
-    <main class="page">
-        <header class="topbar">
+<body class="weekly-page">
+
+    {% set active_page = 'weekly' %}
+    {% include "components/app_header.html" %}
+
+    <main class="page-container">
+        <header class="weekly-intro">
             <div>
-                <p class="eyebrow">Planning workspace</p>
-                <h1>Build your week once.</h1>
+                <p class="eyebrow">Your week at a glance</p>
+                <h1>Weekly planner</h1>
                 <p class="week-range" id="week-range">This week</p>
-                <p class="intro">Create a 7-day plan around your health profile, save it, and open any day in the familiar meal planner when you are ready to cook.</p>
-                <nav class="primary-nav" aria-label="Primary navigation">
-                    <a href="/">Today</a>
-                    <a href="/weekly" aria-current="page">This Week</a>
-                    <a href="/recipes/manage">Recipes</a>
-                </nav>
             </div>
-            <div class="actions">
-                <a class="button-link" href="/">Back to planner</a>
-                <button type="button" id="theme-toggle">☀️ Light mode</button>
+            <div class="weekly-intro-actions">
+                <button class="btn btn-primary" id="generate-week" type="button">Generate 7 days</button>
+                <button class="btn btn-secondary" id="save-week" type="button" disabled>Save week</button>
+                <button class="btn btn-secondary" id="grocery-week" type="button" disabled>Build grocery list</button>
             </div>
         </header>
 
-        <section class="workspace">
-            <aside class="panel controls">
-                <h2>Week settings</h2>
-                <label for="plan-name">Plan name</label>
-                <input id="plan-name" value="My weekly plan" maxlength="80" />
-                <label for="start-date">Week starts</label>
-                <input id="start-date" type="date" />
-                <label for="dislikes">Leave out ingredients</label>
-                <input id="dislikes" placeholder="e.g. mushrooms, tuna" />
-                <label for="macro-focus">Select macro focus</label>
-                <select id="macro-focus">
-                    <option value="balanced">Balanced macros</option>
-                    <option value="protein">Prioritize protein</option>
-                    <option value="carbs">Prioritize carbohydrates</option>
-                    <option value="fats">Prioritize fats</option>
-                </select>
-                <div class="actions" style="margin-top: 18px;">
-                    <button class="primary" id="generate-week" type="button">Generate 7 days</button>
-                    <button id="save-week" type="button" disabled>Save week</button>
+        <div class="weekly-layout">
+            <section class="weekly-controls" aria-label="Week settings">
+                <div class="weekly-controls-header">
+                    <div>
+                        <h2>Plan settings</h2>
+                        <p>Shape the week before you generate it.</p>
+                    </div>
+                    <label class="weekly-plan-name" for="plan-name">
+                        <span>Plan name</span>
+                        <input id="plan-name" class="form-input" value="My weekly plan" maxlength="80" />
+                    </label>
                 </div>
-                <button id="grocery-week" type="button" disabled style="width: 100%; margin-top: 10px;">Build weekly grocery list</button>
-                <p class="status" id="status" aria-live="polite">Generate a week to get started.</p>
-            </aside>
+                <div class="weekly-settings-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="start-date">Week starts</label>
+                        <input id="start-date" class="form-input" type="date" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="dislikes">Leave out ingredients</label>
+                        <input id="dislikes" class="form-input" placeholder="e.g. mushrooms, tuna" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="macro-focus">Macro focus</label>
+                        <select id="macro-focus" class="form-input">
+                            <option value="balanced">Balanced macros</option>
+                            <option value="protein">Prioritize protein</option>
+                            <option value="carbs">Prioritize carbohydrates</option>
+                            <option value="fats">Prioritize fats</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="weekly-status" id="status" aria-live="polite">Generate a week to get started.</p>
+            </section>
 
-            <section class="week-grid" id="week-grid" aria-live="polite">
-                <div class="panel empty">Your seven-day plan will appear here.</div>
-            </section>
-            <section class="panel weekly-grocery hidden" id="weekly-grocery" aria-live="polite">
-                <h2>Weekly grocery list</h2>
-                <div class="grocery-grid" id="grocery-grid"></div>
-            </section>
-        </section>
+            <div class="weekly-main">
+                <section class="week-calendar" id="week-grid" aria-live="polite">
+                    <div class="weekly-empty">Your seven-day plan will appear here.</div>
+                </section>
+
+                <section class="weekly-grocery hidden" id="weekly-grocery" aria-live="polite">
+                    <h2>Weekly grocery list</h2>
+                    <div class="grocery-grid" id="grocery-grid"></div>
+                </section>
+            </div>
+        </div>
     </main>
 
     <script>
+        const themeToggleBtn = document.getElementById("theme-toggle-btn");
+        const themeToggleIcon = document.getElementById("theme-toggle-icon");
+
+        const syncThemeButton = () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            themeToggleIcon.textContent = isDark ? "☀️" : "🌙";
+        };
+
+        themeToggleBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const nextTheme = isDark ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        });
+        syncThemeButton();
+
         let weeklyPlan = null;
         let savedPlanId = null;
         let weekStartDate = new Date();
@@ -160,6 +95,8 @@
         const status = document.getElementById("status");
         const saveButton = document.getElementById("save-week");
         const groceryButton = document.getElementById("grocery-week");
+
+        const dayAbbrev = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
         function preferences() {
             return {
@@ -176,7 +113,7 @@
             const options = { month: "short", day: "numeric" };
             const start = weekStartDate.toLocaleDateString(undefined, options);
             const end = endDate.toLocaleDateString(undefined, options);
-            document.getElementById("week-range").textContent = `${start} - ${end}`;
+            document.getElementById("week-range").textContent = `${start} – ${end}`;
         }
 
         function localDateValue(date) {
@@ -238,35 +175,59 @@
 
         function renderWeek() {
             grid.innerHTML = "";
-            Object.entries(weeklyPlan || {}).forEach(([day, meals]) => {
+            const entries = Object.entries(weeklyPlan || {});
+
+            entries.forEach(([day, meals], index) => {
                 const macros = Object.values(meals).reduce((total, meal) => {
                     total.calories += meal.calories || 0;
                     total.protein_g += meal.protein_g || 0;
+                    total.carbs_g += meal.carbs_g || 0;
                     return total;
-                }, { calories: 0, protein_g: 0 });
+                }, { calories: 0, protein_g: 0, carbs_g: 0 });
+
                 const card = document.createElement("article");
-                card.className = "day-card";
-                card.innerHTML = `<div class="day-header"><h2>${day}</h2><span class="macro">${macros.calories} kcal · ${macros.protein_g}g protein</span></div>`;
+                card.className = "day-column";
+                card.dataset.day = day;
+
+                const dayDate = new Date(weekStartDate);
+                dayDate.setDate(dayDate.getDate() + index);
+                const dateLabel = dayDate.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+                const abbrev = dayAbbrev[index % 7] || day.replace("Day ", "D");
+
+                card.innerHTML = `
+                    <div class="day-column-header">
+                        <p class="day-name">${abbrev}</p>
+                        <p class="day-label">${dateLabel}</p>
+                        <p class="day-macros">${macros.calories} kcal · <span class="prot">${macros.protein_g}g protein</span></p>
+                    </div>
+                `;
+
                 Object.entries(meals).forEach(([type, meal]) => {
                     const row = document.createElement("div");
-                    row.className = "meal-row";
+                    row.className = "day-meal";
                     row.draggable = true;
                     row.dataset.day = day;
                     row.dataset.mealType = type;
-                    row.innerHTML = `<div class="meal-type">${type}</div><h3 class="meal-name"></h3>`;
-                    row.querySelector(".meal-name").textContent = meal.name;
+                    row.innerHTML = `
+                        <div class="day-meal-type">${type}</div>
+                        <h3 class="day-meal-name"></h3>
+                    `;
+                    row.querySelector(".day-meal-name").textContent = meal.name;
+
                     const actions = document.createElement("div");
-                    actions.className = "meal-actions";
+                    actions.className = "day-meal-actions";
                     const swap = document.createElement("button");
                     swap.type = "button";
                     swap.textContent = "Swap";
                     swap.addEventListener("click", () => showSwapChoices(row, day, type));
                     actions.appendChild(swap);
                     row.appendChild(actions);
+
                     row.addEventListener("dragstart", () => row.classList.add("dragging"));
                     row.addEventListener("dragend", () => row.classList.remove("dragging"));
                     card.appendChild(row);
                 });
+
                 card.addEventListener("dragover", (event) => {
                     event.preventDefault();
                     card.classList.add("drag-over");
@@ -275,7 +236,7 @@
                 card.addEventListener("drop", (event) => {
                     event.preventDefault();
                     card.classList.remove("drag-over");
-                    const source = document.querySelector(".meal-row.dragging");
+                    const source = document.querySelector(".day-meal.dragging");
                     if (!source || source.dataset.day === day) return;
                     const sourceDay = source.dataset.day;
                     const mealType = source.dataset.mealType;
@@ -286,16 +247,21 @@
                     renderWeek();
                     status.textContent = `${mealType} moved between ${sourceDay} and ${day}. Save the updated week.`;
                 });
-                const actions = document.createElement("div");
-                actions.className = "day-actions";
+
+                const footer = document.createElement("div");
+                footer.className = "day-column-footer";
                 const open = document.createElement("button");
                 open.type = "button";
                 open.textContent = "Open in planner";
                 open.addEventListener("click", () => {
-                    if (savedPlanId) window.location.href = `/?saved_plan_id=${savedPlanId}&day=${encodeURIComponent(day)}`;
+                    if (savedPlanId) {
+                        window.location.href = `/?saved_plan_id=${savedPlanId}&day=${encodeURIComponent(day)}`;
+                    } else {
+                        status.textContent = "Save the week first to open a day in the planner.";
+                    }
                 });
-                actions.appendChild(open);
-                card.appendChild(actions);
+                footer.appendChild(open);
+                card.appendChild(footer);
                 grid.appendChild(card);
             });
         }
@@ -344,7 +310,11 @@
             button.disabled = true;
             status.textContent = "Building your week...";
             try {
-                const response = await fetch("/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(preferences()) });
+                const response = await fetch("/plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(preferences()),
+                });
                 if (!response.ok) throw new Error("Plan generation failed");
                 const data = await response.json();
                 weeklyPlan = data.plan;
@@ -364,7 +334,19 @@
         async function saveWeek() {
             if (!weeklyPlan) return;
             saveButton.disabled = true;
-            const response = await fetch("/plan/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: document.getElementById("plan-name").value || "My weekly plan", plan: weeklyPlan, metadata: { type: "weekly", start_date: weekStartDate.toISOString().slice(0, 10), days: 7 } }) });
+            const response = await fetch("/plan/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: document.getElementById("plan-name").value || "My weekly plan",
+                    plan: weeklyPlan,
+                    metadata: {
+                        type: "weekly",
+                        start_date: weekStartDate.toISOString().slice(0, 10),
+                        days: 7,
+                    },
+                }),
+            });
             if (!response.ok) {
                 status.textContent = "The week could not be saved. Please try again.";
                 saveButton.disabled = false;
@@ -373,7 +355,7 @@
             const data = await response.json();
             savedPlanId = data.id;
             localStorage.setItem("lastWeeklyPlanId", String(data.id));
-            status.textContent = "Week saved. Choose any day to open it in the main planner.";
+            status.textContent = "Week saved. Choose any day to open it in the daily planner.";
             saveButton.disabled = false;
         }
 
@@ -396,22 +378,18 @@
                 if (!items.length) return;
                 const categoryBox = document.createElement("div");
                 categoryBox.className = "grocery-category";
-                categoryBox.innerHTML = `<h3>${category}</h3><ul></ul>`;
+                categoryBox.innerHTML = `<h3>${category}</h3><ul class="grocery-items-list"></ul>`;
                 const list = categoryBox.querySelector("ul");
                 items.forEach((item) => {
                     const entry = document.createElement("li");
-                    entry.textContent = item.name;
+                    entry.className = "grocery-item-row";
+                    entry.innerHTML = `<span class="grocery-item-label">${item.name}</span>`;
                     list.appendChild(entry);
                 });
                 groceryGrid.appendChild(categoryBox);
             });
             document.getElementById("weekly-grocery").classList.remove("hidden");
             status.textContent = "Weekly grocery list ready.";
-        }
-
-        function syncThemeButton() {
-            const dark = document.documentElement.getAttribute("data-theme") === "dark";
-            document.getElementById("theme-toggle").textContent = dark ? "☀️ Light mode" : "🌙 Dark mode";
         }
 
         document.getElementById("generate-week").addEventListener("click", generateWeek);
@@ -423,14 +401,7 @@
             formatWeekRange();
             status.textContent = "Generate a week to get started.";
         });
-        document.getElementById("theme-toggle").addEventListener("click", () => {
-            const dark = document.documentElement.getAttribute("data-theme") === "dark";
-            document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-            localStorage.setItem("theme", dark ? "light" : "dark");
-            syncThemeButton();
-        });
         document.getElementById("start-date").value = localDateValue(weekStartDate);
-        syncThemeButton();
     </script>
 </body>
 </html>

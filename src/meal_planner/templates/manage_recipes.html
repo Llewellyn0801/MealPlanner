@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Recipes</title>
+    {% set page_title = "MealPlanner — Recipe Manager" %}
+    {% include "components/base_head.html" %}
     <style>
         :root {
-            --bg: #f7f4ef;
-            --card: #ffffff;
-            --text: #202a33;
-            --muted: #69747d;
-            --border: #e4ddd4;
-            --primary: #d9574f;
-            --primary-strong: #b9433d;
+            --bg: var(--color-bg);
+            --card: var(--color-surface);
+            --text: var(--color-text);
+            --muted: var(--color-text-muted);
+            --border: var(--color-border-strong);
+            --primary: var(--color-accent);
+            --primary-strong: var(--color-accent-hover);
             --success: #17756f;
             --warning: #f59e0b;
             --danger: #dc2626;
-            --shadow: 0 10px 24px rgba(32, 42, 51, 0.08);
+            --shadow: var(--shadow-card);
         }
         * { box-sizing: border-box; }
         body {
@@ -39,7 +38,7 @@
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-strong); }
-        .btn-secondary { background: #e7eee6; color: var(--text); }
+        .btn-secondary { background: #e7eee6; color: #20332d; }
         .btn-danger { background: var(--danger); color: white; }
         .layout {
             display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 24px;
@@ -48,157 +47,249 @@
             background: var(--card); border: 1px solid var(--border); border-radius: 10px;
             box-shadow: var(--shadow); padding: 20px;
         }
+        .editor-panel-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px;
+            margin-bottom: 18px;
+        }
+        .editor-panel-header h2 { margin: 0; }
+        .editor-toggle {
+            appearance: none; border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 12px; background: var(--color-surface-elevated); color: var(--text);
+            font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+        }
+        .editor-toggle:hover { border-color: var(--primary); }
+        .editor-cancel { color: var(--muted); font-size: 0.8rem; text-decoration: none; }
+        .editor-cancel:hover { color: var(--text); }
+        .editor-form-panel {
+            overflow: hidden; max-height: 2600px; opacity: 1;
+            transition: max-height 350ms ease, opacity 250ms ease, margin 250ms ease;
+        }
+        .editor-form-panel.collapsed {
+            max-height: 0; opacity: 0; margin-top: -18px;
+        }
         form { display: grid; gap: 14px; }
         .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .field { display: grid; gap: 6px; }
         label { font-size: 0.8rem; font-weight: 700; color: var(--muted); }
         input, select, textarea {
-            width: 100%; border: 1px solid var(--border); background: white; border-radius: 10px;
+            width: 100%; border: 1px solid var(--border); background: var(--color-surface-elevated); border-radius: 10px;
             padding: 10px 12px; font: inherit; color: var(--text);
         }
         textarea { min-height: 100px; resize: vertical; }
         .recipe-list { display: grid; gap: 16px; }
+        .recipe-library-header {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            gap: 16px; flex-wrap: wrap; margin-bottom: 18px;
+        }
+        .recipe-library-header h2 { margin: 0; }
+        .recipe-filters {
+            display: flex; align-items: flex-end; gap: 10px; flex: 1;
+            justify-content: flex-end; flex-wrap: wrap;
+        }
+        .recipe-filter-field { display: grid; gap: 5px; min-width: 150px; }
+        .recipe-filter-field:first-child { min-width: 220px; }
+        .recipe-filter-field label { font-size: 0.72rem; }
+        .recipe-filter-field input,
+        .recipe-filter-field select { padding: 9px 10px; border-radius: 8px; }
+        .favorite-filter {
+            display: inline-flex; align-items: center; gap: 7px; min-height: 40px;
+            padding: 0 8px; color: var(--muted); font-size: 0.8rem; font-weight: 600;
+            white-space: nowrap;
+        }
+        .favorite-filter input { width: 16px; height: 16px; accent-color: var(--primary); }
+        .filter-submit { min-height: 40px; padding: 9px 14px; }
+        .filter-reset { color: var(--muted); font-size: 0.8rem; text-decoration: none; padding-bottom: 10px; }
+        .filter-reset:hover { color: var(--text); }
+        .recipe-status {
+            margin: 0 0 18px; padding: 10px 12px; border-radius: 8px;
+            background: var(--color-accent-soft); color: var(--text); font-size: 0.85rem;
+        }
         .recipe-item {
             border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex;
             gap: 14px; align-items: flex-start; justify-content: space-between;
         }
-        .recipe-meta { flex: 1; }
+        .recipe-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
         .recipe-item h3 { margin: 0 0 8px; }
         .chips {
             display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
         }
         .chip {
             display: inline-flex; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border);
-            font-size: 0.72rem; font-weight: 600; color: var(--muted); background: #f8fafc;
+            font-size: 0.72rem; font-weight: 600; color: var(--muted); background: var(--color-surface-elevated);
         }
-        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .recipe-footer {
+            display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+            margin-top: auto;
+        }
+        .recipe-footer .chips { margin-top: 12px; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
         .tiny { font-size: 0.75rem; color: var(--muted); }
         .image-preview {
             width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border);
-            background: #f1f5f9;
+            background: var(--color-surface-elevated);
         }
         @media (max-width: 900px) {
             .layout { grid-template-columns: 1fr; }
+            .recipe-footer { align-items: flex-start; flex-direction: column; }
+            .recipe-footer .actions { width: 100%; }
         }
     </style>
 </head>
-<body>
+<body class="recipe-manager-page">
+    {% set active_page = 'recipes' %}
+    {% include "components/app_header.html" %}
+
     <div class="container">
         <div class="topbar">
             <div>
                 <p class="eyebrow">Your recipe library</p>
                 <h1>Recipe Manager</h1>
             </div>
-            <nav class="actions" aria-label="Primary navigation">
-                <a class="btn btn-secondary" href="/">Today</a>
-                <a class="btn btn-secondary" href="/weekly">This Week</a>
-                <a class="btn btn-primary" href="/recipes/manage" aria-current="page">Recipes</a>
-            </nav>
         </div>
+
+        {% if status %}
+        <p class="recipe-status" role="status">{{ status }}</p>
+        {% endif %}
 
         <div class="layout">
             <section class="panel">
-                <h2>Add or edit a recipe</h2>
-                <form method="post" action="/recipes/create" enctype="multipart/form-data">
+                <div class="editor-panel-header">
+                    <h2>{% if editing_recipe %}Edit recipe{% else %}Add a recipe{% endif %}</h2>
+                    <button class="editor-toggle" id="recipe-editor-toggle" type="button" aria-expanded="{{ 'true' if editing_recipe else 'false' }}" aria-controls="recipe-editor-form">
+                        {{ 'Hide editor' if editing_recipe else 'Show editor' }}
+                    </button>
+                </div>
+                <div class="editor-form-panel{% if not editing_recipe %} collapsed{% endif %}" id="recipe-editor-form" {% if not editing_recipe %}aria-hidden="true"{% else %}aria-hidden="false"{% endif %}>
+                <form method="post" action="{% if editing_recipe %}/recipes/{{ editing_recipe.meal_id }}/update{% else %}/recipes/create{% endif %}" enctype="multipart/form-data">
+                    <input type="hidden" name="q" value="{{ query }}" />
+                    <input type="hidden" name="filter_meal_type" value="{{ selected_meal_type }}" />
+                    <input type="hidden" name="favorite_only" value="{{ 'true' if favorite_only else 'false' }}" />
                     <div class="field">
                         <label for="name">Recipe name</label>
-                        <input id="name" name="name" type="text" required />
+                        <input id="name" name="name" type="text" required value="{{ editing_recipe.name if editing_recipe else '' }}" />
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="meal_type">Meal type</label>
                             <select id="meal_type" name="meal_type">
-                                <option value="breakfast">Breakfast</option>
-                                <option value="lunch">Lunch</option>
-                                <option value="dinner">Dinner</option>
+                                <option value="breakfast" {% if editing_recipe and editing_recipe.meal_type == "breakfast" %}selected{% endif %}>Breakfast</option>
+                                <option value="lunch" {% if editing_recipe and editing_recipe.meal_type == "lunch" %}selected{% endif %}>Lunch</option>
+                                <option value="dinner" {% if editing_recipe and editing_recipe.meal_type == "dinner" %}selected{% endif %}>Dinner</option>
                             </select>
                         </div>
                         <div class="field">
                             <label for="difficulty">Difficulty</label>
                             <select id="difficulty" name="difficulty">
-                                <option value="simple">Simple</option>
-                                <option value="full_meal">Full meal</option>
+                                <option value="simple" {% if not editing_recipe or editing_recipe.difficulty == "simple" %}selected{% endif %}>Simple</option>
+                                <option value="full_meal" {% if editing_recipe and editing_recipe.difficulty == "full_meal" %}selected{% endif %}>Full meal</option>
                             </select>
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="prep_time_mins">Prep time</label>
-                            <input id="prep_time_mins" name="prep_time_mins" type="number" min="0" value="10" />
+                            <input id="prep_time_mins" name="prep_time_mins" type="number" min="0" value="{{ editing_recipe.prep_time_mins if editing_recipe else 10 }}" />
                         </div>
                         <div class="field">
                             <label for="cook_time_mins">Cook time</label>
-                            <input id="cook_time_mins" name="cook_time_mins" type="number" min="0" value="15" />
+                            <input id="cook_time_mins" name="cook_time_mins" type="number" min="0" value="{{ editing_recipe.cook_time_mins if editing_recipe else 15 }}" />
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="servings_default">Servings</label>
-                            <input id="servings_default" name="servings_default" type="number" min="1" value="4" />
+                            <input id="servings_default" name="servings_default" type="number" min="1" value="{{ editing_recipe.servings_default if editing_recipe else 4 }}" />
                         </div>
                         <div class="field">
                             <label for="calories">Calories</label>
-                            <input id="calories" name="calories" type="number" min="0" value="0" />
+                            <input id="calories" name="calories" type="number" min="0" value="{{ editing_recipe.calories if editing_recipe else 0 }}" />
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="protein_g">Protein</label>
-                            <input id="protein_g" name="protein_g" type="number" min="0" value="0" />
+                            <input id="protein_g" name="protein_g" type="number" min="0" value="{{ editing_recipe.protein_g if editing_recipe else 0 }}" />
                         </div>
                         <div class="field">
                             <label for="carbs_g">Carbs</label>
-                            <input id="carbs_g" name="carbs_g" type="number" min="0" value="0" />
+                            <input id="carbs_g" name="carbs_g" type="number" min="0" value="{{ editing_recipe.carbs_g if editing_recipe else 0 }}" />
                         </div>
                     </div>
                     <div class="field-row">
                         <div class="field">
                             <label for="fats_g">Fats</label>
-                            <input id="fats_g" name="fats_g" type="number" min="0" value="0" />
+                            <input id="fats_g" name="fats_g" type="number" min="0" value="{{ editing_recipe.fats_g if editing_recipe else 0 }}" />
                         </div>
                         <div class="field">
                             <label for="nutrition_basis">Nutrition values represent</label>
                             <select id="nutrition_basis" name="nutrition_basis">
-                                <option value="per_serving">One serving</option>
-                                <option value="whole_recipe">Whole recipe</option>
+                                <option value="per_serving" {% if not editing_recipe or editing_recipe.nutrition_basis == "per_serving" %}selected{% endif %}>One serving</option>
+                                <option value="whole_recipe" {% if editing_recipe and editing_recipe.nutrition_basis == "whole_recipe" %}selected{% endif %}>Whole recipe</option>
                             </select>
                         </div>
                         <div class="field">
                             <label for="tags">Tags</label>
-                            <input id="tags" name="tags" type="text" placeholder="low_carb, family_favorite" />
+                            <input id="tags" name="tags" type="text" placeholder="low_carb, family_favorite" value="{{ editing_recipe.tags if editing_recipe else '' }}" />
                         </div>
                     </div>
                     <div class="field">
                         <label for="description">Description</label>
-                        <textarea id="description" name="description"></textarea>
+                        <textarea id="description" name="description">{{ editing_recipe.description if editing_recipe else '' }}</textarea>
                     </div>
                     <div class="field">
                         <label for="ingredients_raw">Ingredients (one per line)</label>
-                        <textarea id="ingredients_raw" name="ingredients_raw" placeholder="3 eggs&#10;1 avocado"></textarea>
+                        <textarea id="ingredients_raw" name="ingredients_raw" placeholder="3 eggs&#10;1 avocado">{% if editing_recipe %}{{ editing_recipe.ingredients | join('\n') }}{% endif %}</textarea>
                     </div>
                     <div class="field">
                         <label for="instructions_raw">Instructions (one per line)</label>
-                        <textarea id="instructions_raw" name="instructions_raw" placeholder="1. Crack eggs&#10;2. Cook on low heat"></textarea>
+                        <textarea id="instructions_raw" name="instructions_raw" placeholder="1. Crack eggs&#10;2. Cook on low heat">{% if editing_recipe %}{{ editing_recipe.instructions | join('\n') }}{% endif %}</textarea>
                     </div>
                     <div class="field">
                         <label for="cooking_tips">Cooking tips</label>
-                        <textarea id="cooking_tips" name="cooking_tips"></textarea>
+                        <textarea id="cooking_tips" name="cooking_tips">{{ editing_recipe.cooking_tips if editing_recipe else '' }}</textarea>
                     </div>
                     <div class="field">
                         <label for="image_url_input">Image URL</label>
-                        <input id="image_url_input" name="image_url_input" type="url" placeholder="https://..." />
+                        <input id="image_url_input" name="image_url_input" type="url" placeholder="https://..." value="{{ editing_recipe.image_url if editing_recipe and editing_recipe.image_url else '' }}" />
                     </div>
                     <div class="field">
                         <label for="image_file">Image upload</label>
                         <input id="image_file" name="image_file" type="file" accept="image/*" />
                     </div>
-                    <button class="btn btn-primary" type="submit">Save recipe</button>
+                    <div class="actions">
+                        <button class="btn btn-primary" type="submit">{% if editing_recipe %}Update recipe{% else %}Save recipe{% endif %}</button>
+                        {% if editing_recipe %}<a class="editor-cancel" href="/recipes/manage">Cancel edit</a>{% endif %}
+                    </div>
                 </form>
+                </div>
             </section>
 
             <section class="panel">
-                <div class="topbar" style="margin-bottom: 18px;">
+                <div class="recipe-library-header">
                     <h2 style="margin: 0;">Saved recipes</h2>
+                    <form class="recipe-filters" method="get" action="/recipes/manage">
+                        <div class="recipe-filter-field">
+                            <label for="recipe-search">Search</label>
+                            <input id="recipe-search" name="q" type="search" value="{{ query }}" placeholder="Name or tag" />
+                        </div>
+                        <div class="recipe-filter-field">
+                            <label for="meal-type-filter">Meal type</label>
+                            <select id="meal-type-filter" name="meal_type">
+                                <option value="all" {% if selected_meal_type == "all" %}selected{% endif %}>All meals</option>
+                                <option value="breakfast" {% if selected_meal_type == "breakfast" %}selected{% endif %}>Breakfast</option>
+                                <option value="lunch" {% if selected_meal_type == "lunch" %}selected{% endif %}>Lunch</option>
+                                <option value="dinner" {% if selected_meal_type == "dinner" %}selected{% endif %}>Dinner</option>
+                            </select>
+                        </div>
+                        <label class="favorite-filter" for="favorite-filter">
+                            <input id="favorite-filter" name="favorite_only" type="checkbox" value="true" {% if favorite_only %}checked{% endif %} />
+                            Favorites only
+                        </label>
+                        <button class="btn btn-primary filter-submit" type="submit">Filter</button>
+                        {% if query or selected_meal_type != "all" or favorite_only %}
+                        <a class="filter-reset" href="/recipes/manage">Clear</a>
+                        {% endif %}
+                    </form>
                 </div>
 
                 <div class="recipe-list">
@@ -214,19 +305,28 @@
                                     <h3>{{ recipe.name }}</h3>
                                     <div class="tiny">{{ recipe.meal_type }} · {{ recipe.difficulty }} · {{ recipe.total_time_mins }} min total</div>
                                     <p class="tiny" style="margin: 8px 0;">{{ recipe.description or 'No description yet.' }}</p>
-                                    <div class="chips">
-                                        {% if recipe.is_favorite %}<span class="chip">★ Favorite</span>{% endif %}
-                                        {% if recipe.rating %}<span class="chip">⭐ {{ recipe.rating }}/5</span>{% endif %}
-                                        <span class="chip">Serves {{ recipe.servings_default }}</span>
-                                        <span class="chip">{{ recipe.calories }} kcal</span>
-                                    </div>
-                                    <div class="actions" style="margin-top: 12px;">
-                                        <form method="post" action="/recipes/{{ recipe.meal_id }}/favorite">
-                                            <button class="btn btn-secondary" type="submit">{% if recipe.is_favorite %}Unfavorite{% else %}Favorite{% endif %}</button>
-                                        </form>
-                                        <form method="post" action="/recipes/{{ recipe.meal_id }}/delete">
-                                            <button class="btn btn-danger" type="submit">Delete</button>
-                                        </form>
+                                    <div class="recipe-footer">
+                                        <div class="chips">
+                                            {% if recipe.is_favorite %}<span class="chip">★ Favorite</span>{% endif %}
+                                            {% if recipe.rating %}<span class="chip">⭐ {{ recipe.rating }}/5</span>{% endif %}
+                                            <span class="chip">Serves {{ recipe.servings_default }}</span>
+                                            <span class="chip">{{ recipe.calories }} kcal</span>
+                                        </div>
+                                        <div class="actions">
+                                            <a class="btn btn-secondary" href="/recipes/manage?edit_id={{ recipe.meal_id }}">Edit</a>
+                                            <form method="post" action="/recipes/{{ recipe.meal_id }}/favorite">
+                                                <input type="hidden" name="q" value="{{ query }}" />
+                                                <input type="hidden" name="filter_meal_type" value="{{ selected_meal_type }}" />
+                                                <input type="hidden" name="favorite_only" value="{{ 'true' if favorite_only else 'false' }}" />
+                                                <button class="btn btn-secondary" type="submit">{% if recipe.is_favorite %}Unfavorite{% else %}Favorite{% endif %}</button>
+                                            </form>
+                                            <form method="post" action="/recipes/{{ recipe.meal_id }}/delete" onsubmit="return confirm('Delete this recipe? This cannot be undone.');">
+                                                <input type="hidden" name="q" value="{{ query }}" />
+                                                <input type="hidden" name="filter_meal_type" value="{{ selected_meal_type }}" />
+                                                <input type="hidden" name="favorite_only" value="{{ 'true' if favorite_only else 'false' }}" />
+                                                <button class="btn btn-danger" type="submit">Delete</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </article>
@@ -238,5 +338,33 @@
             </section>
         </div>
     </div>
+    <script>
+        const themeToggleBtn = document.getElementById("theme-toggle-btn");
+        const themeToggleIcon = document.getElementById("theme-toggle-icon");
+
+        const syncThemeButton = () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            themeToggleIcon.textContent = isDark ? "☀️" : "🌙";
+        };
+
+        themeToggleBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const nextTheme = isDark ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        });
+        syncThemeButton();
+
+        const recipeEditorToggle = document.getElementById("recipe-editor-toggle");
+        const recipeEditorForm = document.getElementById("recipe-editor-form");
+
+        recipeEditorToggle.addEventListener("click", () => {
+            const isExpanded = recipeEditorToggle.getAttribute("aria-expanded") === "true";
+            recipeEditorToggle.setAttribute("aria-expanded", String(!isExpanded));
+            recipeEditorToggle.textContent = isExpanded ? "Show editor" : "Hide editor";
+            recipeEditorForm.classList.toggle("collapsed", isExpanded);
+        });
+    </script>
 </body>
 </html>

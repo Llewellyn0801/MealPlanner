@@ -1,0 +1,98 @@
+<article class="meal-card" data-meal-type="{{ meal_type }}">
+    <div class="meal-image-wrap">
+        {% if meal.image_url %}
+        <img class="meal-image" src="{{ meal.image_url }}" alt="{{ meal.name }}" loading="lazy" />
+        {% endif %}
+        <span class="meal-type-label">{{ meal_type }}</span>
+        <div class="meal-card-actions">
+            <button class="btn-action recipe-toggle-btn" type="button">View recipe</button>
+            <button class="btn-action reroll-btn" type="button">Swap</button>
+        </div>
+    </div>
+
+    <div class="meal-body">
+        <h2 class="meal-title">{{ meal.name }}</h2>
+        <p class="meal-description">{{ meal.description }}</p>
+
+        <div class="recipe-meta" aria-label="Recipe details">
+            <span class="recipe-time">{{ meal.total_time_mins }} min</span>
+            <span class="recipe-servings">{{ meal.servings_default }} servings</span>
+            <span class="recipe-rating">★ {{ "%.1f"|format(meal.rating) }}</span>
+        </div>
+
+        <div class="card-nutrition" aria-label="Nutrition per serving">
+            <span class="card-nutrition-primary"><span class="m-cal">{{ meal.calories }}</span> kcal</span>
+            <span class="card-nutrition-secondary">
+                <span class="m-prot-val"><span class="m-prot">{{ meal.protein_g }}</span>g protein</span>
+                · <span class="m-carb">{{ meal.carbs_g }}</span>g carbs
+                · <span class="m-fat">{{ meal.fats_g }}</span>g fat
+            </span>
+        </div>
+
+        <div class="ingredient-summary">
+            <div class="ingredient-row">
+                <span class="ingredient-label">Core</span>
+                <span class="ingredient-text core-text">
+                    {% if meal.core_base %}
+                        {{ meal.core_base | map(attribute='display_name') | join(' · ') }}
+                    {% else %}
+                        {{ meal.ingredients | join(' · ') }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-label">Family</span>
+                <span class="ingredient-text family-text">
+                    {% if meal.family_additions %}
+                        {{ meal.family_additions | map(attribute='display_name') | join(' · ') }}
+                    {% else %}
+                        Carb extension side
+                    {% endif %}
+                </span>
+            </div>
+            <div class="ingredient-row">
+                <span class="ingredient-label">Profile</span>
+                <span class="ingredient-text user-text">
+                    {% if meal.user_alternatives %}
+                        {{ meal.user_alternatives | map(attribute='display_name') | join(' · ') }}
+                    {% else %}
+                        Health profile alternative
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="card-actions-mobile">
+            <button class="btn-action recipe-toggle-btn" type="button">View recipe</button>
+            <button class="btn-action reroll-btn" type="button">Swap</button>
+        </div>
+
+        <div class="recipe-details hidden">
+            {% if meal.prep_detail_steps %}
+            <div class="section-subheading">Chef's method</div>
+            <ol class="recipe-list prep-detail-list">
+                {% for step in meal.prep_detail_steps %}
+                <li><strong>{{ step.title }}:</strong> {{ step.detail }}</li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+
+            <div class="section-subheading">Instructions</div>
+            <ol class="recipe-list instructions-list">
+                {% for step in meal.instructions %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ol>
+
+            {% if meal.cooking_tips %}
+            <div class="cooking-tip-box">
+                <strong>Tip:</strong> <span class="tip-text">{{ meal.cooking_tips }}</span>
+            </div>
+            {% else %}
+            <div class="cooking-tip-box hidden">
+                <strong>Tip:</strong> <span class="tip-text"></span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</article>

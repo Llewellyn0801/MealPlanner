@@ -1,0 +1,8 @@
+{# Day selector component for navigating dates #}
+<section class="day-selector">
+  <div class="day-list">
+    {% for day in days %}
+      <a href="?date={{ day }}" class="day-item{% if day == selected_day %} active{% endif %}">{{ day|date('M d') }}</a>
+    {% endfor %}
+  </div>
+</section>

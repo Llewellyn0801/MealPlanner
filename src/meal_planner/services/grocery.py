@@ -16,7 +16,6 @@ def categorize_ingredient(name: str) -> str:
         "shrimp",
         "egg",
         "eggs",
-        "tofu",
         "meatball",
         "meatballs",
         "lentil",

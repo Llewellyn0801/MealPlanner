@@ -1,0 +1,22 @@
+<header class="app-header">
+    <div class="app-header-inner">
+        <a href="/" class="app-brand">
+            <span class="app-brand-mark" aria-hidden="true">🍽</span>
+            <span class="app-brand-name">MealPlanner</span>
+        </a>
+
+        <nav class="app-nav" aria-label="Primary navigation">
+            <a href="/profile" {% if active_page == 'profile' %}aria-current="page"{% endif %}>Profiles</a>
+            <a href="/" {% if active_page == 'home' %}aria-current="page"{% endif %}>Today</a>
+            <a href="/weekly" {% if active_page == 'weekly' %}aria-current="page"{% endif %}>Week</a>
+            <a href="/recipes/manage" {% if active_page == 'recipes' %}aria-current="page"{% endif %}>Recipes</a>
+        </nav>
+
+        <div class="app-header-actions">
+            <a href="/weekly" class="btn-ghost">Weekly planner</a>
+            <button type="button" id="theme-toggle-btn" class="btn-icon" aria-label="Toggle light/dark mode">
+                <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+            </button>
+        </div>
+    </div>
+</header>
